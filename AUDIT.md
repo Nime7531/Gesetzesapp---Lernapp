@@ -2,53 +2,58 @@
 
 Stand: 16.11.2026  
 Arbeitsbranch: `fix/data-file-connection-audit-2026-11-16`  
-Ziel: Datenintegrität zuerst, danach Funktionsstabilität, Installierbarkeit und UI/UX.
+Priorität: Datenintegrität → Funktionsstabilität → Installierbarkeit → UI/UX.
 
-## Befund aus der Quellcodeprüfung
+## Bestand
 
-Die Anwendung ist eine große, eigenständige HTML-Datei mit eingebetteten JavaScript-Modulen und PDF.js. Der Funktionsumfang umfasst Gesetzesimport und -analyse, XML-/ZIP- und PDF-Verarbeitung, Markierungen, Notizen und Querverweise, Übersichten, Lernkarten, Fach-/Modulverwaltung, Kalender, Lernplan, Aufgaben, Timer, Skriptverwaltung mit PDF-Reader und Linkverwaltung.
+Rubrum ist eine eigenständige HTML-Anwendung mit eingebetteten JavaScript-Modulen und PDF.js. Der Bestand umfasst Gesetzesimport und -analyse, XML-/ZIP- und PDF-Verarbeitung, Markierungen, Notizen und Querverweise, Übersichten, Lernkarten, Fach-/Modulverwaltung, Kalender, Lernplan, Aufgaben, Timer, Skriptverwaltung mit PDF-Reader und Linkverwaltung.
 
-Die Oberfläche besitzt bereits drei Farbthemen, ein responsives Layout, Karten-/Glasflächen, mobile Anpassungen und Systemschrift-Stacks. Das Redesign muss daher auf einer behutsamen Konsolidierung aufbauen und darf nicht durch einen Funktionsverlust oder einen kompletten Austausch der App erkauft werden.
+Die Oberfläche hatte bereits drei Farbthemen, responsive Layouts, Karten-/Glasflächen, mobile Anpassungen und Systemschrift-Stacks. Die Änderungen konsolidieren diese Basis, statt die Anwendung durch einen Funktionsverlust zu ersetzen.
 
-## Behobene Fehler und Risiken
+## Behobene Fehler und ergänzte Schutzmaßnahmen
 
-1. **Externe Datendatei nach Neustart:** Der gespeicherte File-Handle wurde wiedergefunden und die Berechtigung abgefragt, aber der Rückgabewert von `fload()` wurde nicht in den App-Zustand übernommen. Die automatische Wiederherstellung lädt die Datei jetzt tatsächlich und setzt den Verbindungsstatus.
-2. **Import-Zusammenführung:** Bei einem Import ohne Markierungsdaten wurden vorhandene Markierungen eines bereits vorhandenen Gesetzes durch ein leeres Objekt ersetzt. Fehlende Markierungsdaten überschreiben bestehende Markierungen jetzt nicht mehr.
-3. **Unvollständige Markierungsobjekte:** Die Prüfung auf vorhandene Markierungen setzte stets ein Array `hl` voraus. Sie ist jetzt defensiv; beim Zugriff werden fehlende Highlight-/Verweis-Arrays initialisiert.
-4. **Lernzeit-Timer:** Ein neuer Timer konnte einen bestehenden Timer unter 60 Sekunden stillschweigend ersetzen. Jeder bereits laufende/gespeicherte Timer muss jetzt zuerst gebucht oder verworfen werden.
-5. **Download-Aufräumen:** Object-URLs der JSON- und Markdown-Backups werden nach dem Download freigegeben.
-6. **Externe Datei-Schreibpfade:** Schreibvorgänge werden serialisiert; fehlerhafte Schreibvorgänge werden abgefangen und als Verbindungsfehler angezeigt. Ungültige Dateien werden vor dem Wechsel des App-Zustands geprüft.
-7. **Import-Validierung:** Gesetzesdatensätze werden vor dem Übernehmen auf ID und vollständige Paragrafenstruktur geprüft; Markierungsdaten werden normalisiert und Merge-Operationen laufen auf einer Kopie des aktuellen Zustands.
-8. **Beschädigter lokaler Speicher:** Ein nicht lesbarer oder strukturell ungültiger localStorage-Datensatz wird vor der nächsten Speicherung als separate Wiederherstellungskopie abgelegt, statt stillschweigend überschrieben zu werden.
-10. **Abweichende Datenstände:** Wenn lokaler Browserstand und verbundene JSON-Datei nach einem Neustart auseinanderlaufen, fragt Rubrum vor dem Überschreiben nach: Datei übernehmen oder Browserstand in die Datei schreiben.
+1. **Externe Datendatei nach Neustart:** Der gespeicherte File-Handle wurde wiedergefunden und die Berechtigung abgefragt, aber der Rückgabewert von `fload()` wurde nicht in den App-Zustand übernommen. Die automatische Wiederherstellung lädt die Datei jetzt tatsächlich.
+2. **Konflikt zwischen Browserstand und Datendatei:** Vor dem Überschreiben fragt Rubrum jetzt, ob die externe Datei übernommen oder der lokale Browserstand in die Datei geschrieben werden soll.
+3. **Beschädigter lokaler Speicher:** Ein nicht lesbarer oder strukturell ungültiger localStorage-Datensatz wird vor der nächsten Speicherung als separate Wiederherstellungskopie abgelegt, statt stillschweigend überschrieben zu werden.
+4. **Import-Zusammenführung von Markierungen:** Fehlende Markierungsdaten eines Imports überschreiben vorhandene Markierungen nicht mehr.
+5. **Markierungsobjekte:** Fehlende Highlight- und Verweis-Arrays werden defensiv normalisiert.
+6. **Import-/Dateivalidierung:** Gesetzesdatensätze werden auf ID und vollständige Paragrafenstruktur geprüft, bevor sie den App-Zustand ersetzen.
+7. **Schreibreihenfolge:** Externe Dateischreibvorgänge werden serialisiert; Schreibfehler werden abgefangen und als Verbindungsfehler angezeigt.
+8. **Lernzeit-Timer:** Ein vorhandener Timer kann nicht mehr versehentlich durch einen neuen Timer überschrieben werden. Im Vollexport wird ein laufender Timer als pausierter Snapshot gesichert, damit ein späterer Import keine künstlich verstrichene Zeit addiert.
+9. **Vollständiger Export von Skripten:** Die eigentlichen Skript-PDFs und Vorschaubilder liegen in einer separaten IndexedDB. Der Vollexport nimmt sie jetzt als Daten-URLs in die Sicherung auf. Beim Import werden sie in einer atomaren IndexedDB-Transaktion wiederhergestellt. Fehlt eine referenzierte PDF-Datei, bricht der Vollexport mit einer verständlichen Meldung ab.
+10. **Zusammenführen aller Module:** Der Merge-Import berücksichtigt neben Gesetzen und Markierungen jetzt auch Fächer, Aufgaben, Skripte, Links, Kalendertermine, Lernpläne und Einstellungen.
+11. **Download-Aufräumen:** Object-URLs der JSON- und Markdown-Backups werden nach dem Download freigegeben.
 
-## PWA-Ergänzung
+## PWA und Bedienoberfläche
 
-- Installationsmanifest mit Rubrum-Name, Startadresse, Theme-Farbe und Icon ergänzt.
-- Bestehendes HTML registriert den Service Worker.
-- Offline-Cache für HTML-App, Manifest und Icon ergänzt.
-- Das originale eigenständige HTML bleibt die eigentliche App; kein iframe-Wrapper und keine zweite Datenhaltung.
-- GitHub-Actions-Workflow zur Veröffentlichung über GitHub Pages ergänzt; er läuft erst bei Push auf `main` oder manuellem Start.
+- Installationsmanifest mit Rubrum-Name, Startadresse, Theme-Farbe und orangefarbenem R-Icon ergänzt.
+- Service Worker mit Offline-Cache für Einstieg, HTML-App, Manifest und Icon ergänzt.
+- `index.html` als Einstiegspunkt ergänzt; die eigentliche Anwendung bleibt das eigenständige HTML-Dokument, ohne iframe und ohne zweite Datenhaltung.
+- GitHub-Actions-Workflow zur Veröffentlichung über GitHub Pages ergänzt. Er läuft erst nach Push auf `main` oder manuellem Start.
+- Tastatur-Fokus, Reduced-Motion-Verhalten und kompakte Mobilansicht verbessert.
 
 ## Durchgeführte Prüfungen
 
-- Alle eingebetteten JavaScript-Blöcke nach den Änderungen erfolgreich mit `new Function()` syntaktisch geprüft.
-- Service-Worker-Skript syntaktisch geprüft.
-- Manifest als JSON geparst.
-- Statische Prüfung der 37 referenzierten DOM-IDs: keine fehlenden IDs.
-- Keine Verwendung von `innerHTML`, `eval`, `new Function` oder `document.write` im Anwendungscode festgestellt (die Syntaxprüfung nutzt `new Function` nur außerhalb der App als Prüfwerkzeug).
-- Linkverwaltung beschränkt nutzbare Linkprotokolle auf HTTP(S) und mailto; externe Tabs erhalten `noopener noreferrer`.
+- Alle vier eingebetteten JavaScript-Blöcke syntaktisch geprüft.
+- Service-Worker-Skript syntaktisch geprüft; Manifest als JSON geparst.
+- 43 statische DOM-IDs geprüft: keine doppelten IDs und keine fehlenden statischen Selektorziele.
+- Kein `innerHTML`, `eval` oder `document.write` im App-Code festgestellt.
+- PWA-Startadresse, Manifest-Link, Service-Worker-Registrierung und Offline-Cache-Ziele statisch geprüft.
+- Kleine Logiktests für Gesetzesvalidierung, Normalisierung unvollständiger Markierungsobjekte und Sicherung eines beschädigten localStorage-Eintrags bestanden.
+- GitHub-Compare zeigt keine Commits, die der Arbeitsbranch hinter `main` liegt; die Änderungen sind auf einer separaten Review-Linie.
 
-## Noch offen – nicht als bestanden behaupten
+## Noch offen – ausdrücklich nicht als bestanden behauptet
 
-- Browser-End-to-End-Tests für Chrome und Edge, insbesondere Dateiauswahl, persistente Berechtigungen und Neustart.
-- Test mit realen, großen JSON-Exporten und XML-/ZIP-/PDF-Dateien.
-- Offline-Test nach Erstinstallation und Cache-Update.
+- Echter Chrome-/Edge-End-to-End-Test: Dateiauswahl, persistente Dateiberechtigungen, Neustart und Konflikt-Dialog.
+- Vollexport und Import mit echten, großen PDF-Anhängen; inklusive IndexedDB-Wiederherstellung und Merge in ein bestehendes Profil.
+- Regressionstest mit persönlichen/großen Datenbeständen sowie XML-/ZIP-/PDF-Dateien.
+- PWA-Installation und Offline-Start auf Windows nach erstem Online-Aufruf.
+- GitHub-Pages-Quelle muss nach dem Merge einmalig auf **GitHub Actions** gestellt werden; ein Deployment ist noch nicht gelaufen.
 - Visuelle Regressionstests auf schmalen Mobilgeräten, Tablet und Desktop.
 - Vollständige Accessibility-Prüfung mit Tastatur und Screenreader.
-- Konfliktbehandlung, wenn Browserstand und externe JSON-Datei nach einem unerwarteten Schließen auseinanderlaufen.
-- Automatisierter Regressionstest des Konflikt-Dialogs und Wiederherstellung beschädigter lokaler Speicherstände auf echten Browserprofilen.
 
-## Sicherheits- und Datenhinweis
+## Datenhinweis
 
-Vor dem produktiven Einsatz einen vollständigen Vollexport erstellen und separat aufbewahren. Die Änderungen liegen in einem eigenen Branch und werden nicht automatisch in `main` übernommen.
+Vor dem produktiven Einsatz einen Vollexport erstellen und separat aufbewahren. Ältere Vollexporte enthalten noch keine eingebetteten Skript-PDFs; diese Dateien müssen bei einer Wiederherstellung aus alten Exporten gegebenenfalls erneut hochgeladen werden.
+
+Die Änderungen liegen in einem eigenen Branch und werden nicht automatisch in `main` übernommen.
