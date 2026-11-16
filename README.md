@@ -24,7 +24,8 @@ Rubrum ist eine browserbasierte Lern- und Arbeitsumgebung für Gesetzestexte und
 - `index.html`: Einstieg über die Repository-/Pages-Startadresse
 - `manifest.webmanifest`: Installationsmetadaten und Startadresse
 - `sw.js`: Offline-Cache für App, Manifest und Icon
-- `icons/rubrum.svg`: skalierbares orangefarbenes Rubrum-R-Icon
+- `icons/rubrum-352.png`: originales Rubrum-App-Icon für Desktop/Apple/PWA
+- `icons/rubrum.svg`: skalierbare Vektorvariante als Fallback
 
 ## Funktionsumfang
 
