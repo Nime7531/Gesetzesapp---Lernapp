@@ -16,6 +16,7 @@ Rubrum ist eine browserbasierte Lern- und Arbeitsumgebung für Gesetzestexte und
 - Beim Zusammenführen eines Imports bleiben vorhandene Markierungen erhalten, wenn der Import für ein Gesetz keine Markierungsdaten enthält.
 - Wenn Browserstand und verbundene Datendatei auseinanderlaufen, fragt Rubrum vor dem Überschreiben nach, welcher Stand behalten werden soll.
 - Eine verbundene Datendatei sollte nach Änderungen vollständig geschrieben werden, bevor Browser oder Gerät geschlossen werden.
+- Dateizugriffsberechtigungen und verbundene Dateihandles sind browser-/gerätegebunden und werden nicht in eine JSON-Sicherung eingebettet. Nach einer Wiederherstellung die externe Datendatei bei Bedarf erneut über „Datei öffnen“ verbinden.
 - Die Browserberechtigung für eine verbundene Datei kann nach Neustart oder Browserupdate erneut angefordert werden.
 
 ## PWA-Dateien
