@@ -11,7 +11,8 @@ Rubrum ist eine browserbasierte Lern- und Arbeitsumgebung für Gesetzestexte und
 ## Datensicherheit
 
 - Die App speichert ihren Arbeitsstand im Browser und kann zusätzlich eine externe JSON-Datendatei verbinden.
-- Nutze regelmäßig **Vollexport** und bewahre die exportierte JSON-Datei an einem zweiten Ort auf.
+- Nutze regelmäßig **Vollexport** und bewahre die exportierte JSON-Datei an einem zweiten Ort auf. Der neue Vollexport enthält auch die in IndexedDB gespeicherten Skript-PDFs und Vorschaubilder; der Import stellt sie wieder her.
+- Ältere Vollexporte enthalten diese PDF-Anhänge noch nicht. Die Skriptdateien müssen dann gegebenenfalls erneut hochgeladen werden.
 - Beim Zusammenführen eines Imports bleiben vorhandene Markierungen erhalten, wenn der Import für ein Gesetz keine Markierungsdaten enthält.
 - Wenn Browserstand und verbundene Datendatei auseinanderlaufen, fragt Rubrum vor dem Überschreiben nach, welcher Stand behalten werden soll.
 - Eine verbundene Datendatei sollte nach Änderungen vollständig geschrieben werden, bevor Browser oder Gerät geschlossen werden.
