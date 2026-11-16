@@ -20,7 +20,7 @@ Die Oberfläche besitzt bereits drei Farbthemen, ein responsives Layout, Karten-
 6. **Externe Datei-Schreibpfade:** Schreibvorgänge werden serialisiert; fehlerhafte Schreibvorgänge werden abgefangen und als Verbindungsfehler angezeigt. Ungültige Dateien werden vor dem Wechsel des App-Zustands geprüft.
 7. **Import-Validierung:** Gesetzesdatensätze werden vor dem Übernehmen auf ID und vollständige Paragrafenstruktur geprüft; Markierungsdaten werden normalisiert und Merge-Operationen laufen auf einer Kopie des aktuellen Zustands.
 8. **Beschädigter lokaler Speicher:** Ein nicht lesbarer oder strukturell ungültiger localStorage-Datensatz wird vor der nächsten Speicherung als separate Wiederherstellungskopie abgelegt, statt stillschweigend überschrieben zu werden.
-9. **Abweichende Datenstände:** Wenn lokaler Browserstand und verbundene JSON-Datei nach einem Neustart auseinanderlaufen, fragt Rubrum vor dem Überschreiben nach: Datei übernehmen oder Browserstand in die Datei schreiben.
+10. **Abweichende Datenstände:** Wenn lokaler Browserstand und verbundene JSON-Datei nach einem Neustart auseinanderlaufen, fragt Rubrum vor dem Überschreiben nach: Datei übernehmen oder Browserstand in die Datei schreiben.
 
 ## PWA-Ergänzung
 
