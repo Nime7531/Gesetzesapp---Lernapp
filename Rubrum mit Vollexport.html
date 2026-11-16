@@ -314,16 +314,17 @@ function hbBuild(){const b=$('#hb');b.replaceChildren();CN.forEach((n,c)=>{const
 hbBuild();
 const mkFile=()=>new File([JSON.stringify(S)],'gesetze-export-'+new Date().toISOString().slice(0,10)+'.json',{type:'application/json'});
 $('#xe').onclick=()=>{const f=mkFile(),a=document.createElement('a');a.href=URL.createObjectURL(f);a.download=f.name;document.body.append(a);a.click();a.remove();$('#me').textContent='Exportiert: '+S.laws.length+' Gesetze mit allen Markierungen, Notizen und Verweisen.'};
-const mkAll=()=>{const ls={};try{for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k&&k.indexOf('gesetzeapp')===0&&k!==K)ls[k]=localStorage.getItem(k)}}catch(e){}
+const mkAll=()=>{const ls=Object.create(null);{for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k&&k.indexOf('gesetzeapp')===0&&k!==K)ls[k]=localStorage.getItem(k)}}
 const o=Object.assign({},S,{_export:{app:'gesetzeapp',art:'vollstaendig',version:1,zeit:new Date().toISOString(),gesetze:S.laws.length,markierte_paragrafen:Object.values(S.marks||{}).reduce((n,m)=>n+Object.keys(m).length,0)},ls});
 return new File([JSON.stringify(o)],'gesetze-vollexport-'+new Date().toISOString().slice(0,10)+'.json',{type:'application/json'})};
-$('#xa').onclick=()=>{const f=mkAll(),a=document.createElement('a');a.href=URL.createObjectURL(f);a.download=f.name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),4000);$('#me').textContent='Vollständig exportiert: alle Gesetze (auch manuell eingetragene Texte), Markierungen, Notizen, Verweise, Farbbezeichnungen und Einstellungen.'};
+$('#xa').onclick=()=>{try{const f=mkAll(),a=document.createElement('a');a.href=URL.createObjectURL(f);a.download=f.name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),4000);$('#me').textContent='Vollständig exportiert: alle Gesetze (auch manuell eingetragene Texte), Markierungen, Notizen, Verweise, Farbbezeichnungen und Einstellungen.'}catch(e){$('#me').textContent='Vollexport fehlgeschlagen: '+e.message}};
 $('#xs').onclick=async()=>{try{await navigator.share({files:[mkFile()],title:'Gesetze-Export'})}catch(e){}};
 try{if(navigator.canShare&&navigator.maxTouchPoints>1&&navigator.canShare({files:[new File(['x'],'x.json',{type:'application/json'})]}))$('#xs').style.display=''}catch(e){}
 $('#xi').onclick=()=>$('#xf').click();
 $('#xf').onchange=async e=>{const f=e.target.files[0];e.target.value='';if(!f)return;
-try{const o=JSON.parse(await f.text());if(!Array.isArray(o.laws))throw 0;
-if($('#xm').checked){o.laws.forEach(l=>{const i=S.laws.findIndex(z=>z.id===l.id);if(i>=0)S.laws[i]=l;else S.laws.push(l);S.marks[l.id]=(o.marks||{})[l.id]||{}});if(o.cn)S.cn=o.cn}
+try{const o=JSON.parse(await f.text());if(!o||!Array.isArray(o.laws))throw 0;
+const ids=new Set();for(const l of o.laws){if(!l||!['string','number'].includes(typeof l.id)||['__proto__','constructor','prototype'].includes(String(l.id))||ids.has(String(l.id))||!Array.isArray(l.paras)||l.paras.some(p=>!p||typeof p.text!=='string'))throw 0;ids.add(String(l.id))}
+if($('#xm').checked){o.laws.forEach(l=>{const i=S.laws.findIndex(z=>z.id===l.id);if(i>=0)S.laws[i]=l;else S.laws.push(l);if(o.marks&&Object.hasOwn(o.marks,l.id))S.marks[l.id]=o.marks[l.id]});if(o.cn)S.cn=o.cn}
 else{S=o;S.marks=S.marks||{}}
 if(o.ls&&typeof o.ls==='object'){try{for(const k in o.ls)if(k.indexOf('gesetzeapp')===0&&k!==K&&typeof o.ls[k]==='string')localStorage.setItem(k,o.ls[k])}catch(e){}}
 if(!S.laws.some(z=>z.id===cur))cur=S.laws[0]&&S.laws[0].id;hbBuild();save();$('#md').style.display='none';draw();toast('Importiert: '+o.laws.length+' Gesetz(e)')}
