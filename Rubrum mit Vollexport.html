@@ -345,24 +345,31 @@ function hbBuild(){const b=$('#hb');b.replaceChildren();CN.forEach((n,c)=>{const
 hbBuild();
 const mkFile=()=>new File([JSON.stringify(S)],'gesetze-export-'+new Date().toISOString().slice(0,10)+'.json',{type:'application/json'});
 $('#xe').onclick=()=>{const f=mkFile(),a=document.createElement('a');a.href=URL.createObjectURL(f);a.download=f.name;document.body.append(a);a.click();a.remove();$('#me').textContent='Exportiert: '+S.laws.length+' Gesetze mit allen Markierungen, Notizen und Verweisen.'};
-const mkAll=()=>{const ls={};try{for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k&&k.indexOf('gesetzeapp')===0&&k!==K)ls[k]=localStorage.getItem(k)}}catch(e){}
-const o=Object.assign({},S,{_export:{app:'gesetzeapp',art:'vollstaendig',version:1,zeit:new Date().toISOString(),gesetze:S.laws.length,markierte_paragrafen:Object.values(S.marks||{}).reduce((n,m)=>n+Object.keys(m).length,0)},ls});
+const blobToDataUrl=blob=>new Promise((res,rej)=>{const src=blob.type?blob:new Blob([blob],{type:'application/pdf'}),r=new FileReader();r.onload=()=>res(r.result);r.onerror=()=>rej(r.error||new Error('PDF konnte nicht gelesen werden'));r.readAsDataURL(src)});
+function dataUrlToBlob(url){const m=String(url).match(/^data:([^;,]+)?;base64,([A-Za-z0-9+/=]+)$/);if(!m)throw new Error('Ungültiger PDF-Anhang im Export');const raw=atob(m[2]),bytes=new Uint8Array(raw.length);for(let i=0;i<raw.length;i++)bytes[i]=raw.charCodeAt(i);return new Blob([bytes],{type:m[1]||'application/pdf'})}
+const mkAll=async()=>{const ls={},scriptFiles=[];try{for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k&&k.indexOf('gesetzeapp')===0&&k!==K)ls[k]=localStorage.getItem(k)}}catch(e){}
+for(const s of S.scripts||[]){const rec=await sdb('get',s.id);if(!rec||!rec.blob)throw new Error('PDF-Datei fehlt im lokalen Speicher: '+(s.name||s.id));scriptFiles.push({id:s.id,name:s.name||s.id,size:rec.blob.size||s.size||0,data:await blobToDataUrl(rec.blob),thumbnail:rec.th||''})}
+const o=Object.assign({},S,{_export:{app:'gesetzeapp',art:'vollstaendig',version:2,zeit:new Date().toISOString(),gesetze:S.laws.length,markierte_paragrafen:Object.values(S.marks||{}).reduce((n,m)=>n+Object.keys(m).length,0),skript_pdf:scriptFiles.length},ls,script_files:scriptFiles});
 return new File([JSON.stringify(o)],'gesetze-vollexport-'+new Date().toISOString().slice(0,10)+'.json',{type:'application/json'})};
-$('#xa').onclick=()=>{const f=mkAll(),a=document.createElement('a');a.href=URL.createObjectURL(f);a.download=f.name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),4000);$('#me').textContent='Vollständig exportiert: alle Gesetze (auch manuell eingetragene Texte), Markierungen, Notizen, Verweise, Farbbezeichnungen und Einstellungen.'};
+$('#xa').onclick=async()=>{const b=$('#xa');b.disabled=true;b.textContent='Export wird erstellt …';try{const f=await mkAll(),u=URL.createObjectURL(f),a=document.createElement('a');a.href=u;a.download=f.name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),4000);$('#me').textContent='Vollständig exportiert: Gesetze, Markierungen, Notizen, Einstellungen und '+(S.scripts||[]).length+' Skript-PDF(s).'}catch(e){$('#me').textContent='Vollexport abgebrochen: '+(e.message||'Daten konnten nicht gelesen werden');console.error('Vollexport fehlgeschlagen:',e)}finally{b.disabled=false;b.textContent='Vollständiger Export (alle App-Daten)'}};
 $('#xs').onclick=async()=>{try{await navigator.share({files:[mkFile()],title:'Gesetze-Export'})}catch(e){}};
 try{if(navigator.canShare&&navigator.maxTouchPoints>1&&navigator.canShare({files:[new File(['x'],'x.json',{type:'application/json'})]}))$('#xs').style.display=''}catch(e){}
 $('#xi').onclick=()=>$('#xf').click();
 $('#xf').onchange=async e=>{const f=e.target.files[0];e.target.value='';if(!f)return;
 try{const o=JSON.parse(await f.text());
 if(!o||!Array.isArray(o.laws)||o.laws.some(l=>!validLaw(l)))throw new Error('Ungültige Gesetzesdaten: Gesetzes-ID oder Paragrafenstruktur fehlt');
-const incomingMarks=normalizeMarks(o.marks);
+const incomingMarks=normalizeMarks(o.marks),scriptFiles=Array.isArray(o.script_files)?o.script_files:[];
+const scriptEntries=scriptFiles.map(f=>{if(!f||typeof f.id!=='string'||!f.id||typeof f.data!=='string')throw new Error('Ungültiger Skript-Anhang im Export');const blob=dataUrlToBlob(f.data);if(f.size&&blob.size!==f.size)throw new Error('Größenprüfung des Skript-Anhangs fehlgeschlagen: '+(f.name||f.id));return[f.id,{blob,th:typeof f.thumbnail==='string'?f.thumbnail:''}]});
+const legacyScripts=Array.isArray(o.scripts)&&o.scripts.length>0&&scriptFiles.length===0;
 let next;
 if($('#xm').checked){next=JSON.parse(JSON.stringify(S));next.laws=Array.isArray(next.laws)?next.laws:[];next.marks=next.marks&&typeof next.marks==='object'?next.marks:{};
-o.laws.forEach(l=>{const i=next.laws.findIndex(z=>z.id===l.id);if(i>=0)next.laws[i]=l;else next.laws.push(l);if(Object.prototype.hasOwnProperty.call(incomingMarks,l.id))next.marks[l.id]=incomingMarks[l.id];else if(!next.marks[l.id])next.marks[l.id]={}});if(o.cn)next.cn=o.cn}
+o.laws.forEach(l=>{const i=next.laws.findIndex(z=>z.id===l.id);if(i>=0)next.laws[i]=l;else next.laws.push(l);if(Object.prototype.hasOwnProperty.call(incomingMarks,l.id))next.marks[l.id]=incomingMarks[l.id];else if(!next.marks[l.id])next.marks[l.id]={}});if(o.cn)next.cn=o.cn;
+if(Array.isArray(o.scripts)){next.scripts=Array.isArray(next.scripts)?next.scripts:[];o.scripts.forEach(x=>{if(!x||typeof x.id!=='string')return;const i=next.scripts.findIndex(z=>z.id===x.id);if(i>=0)next.scripts[i]=x;else next.scripts.push(x)})}}
 else{next=o;next.marks=incomingMarks}
-S=next;S.marks=normalizeMarks(S.marks);
+if(scriptEntries.length)await sdbBulk(scriptEntries);
+S=next;S.marks=normalizeMarks(S.marks);delete S.script_files;delete S._export;delete S.ls;
 if(o.ls&&typeof o.ls==='object'&&!Array.isArray(o.ls)){try{for(const k in o.ls)if(k.indexOf('gesetzeapp')===0&&k!==K&&typeof o.ls[k]==='string')localStorage.setItem(k,o.ls[k])}catch(e){console.warn('Zusätzliche Einstellungsdaten konnten nicht importiert werden:',e)}}
-if(!S.laws.some(z=>z.id===cur))cur=S.laws[0]&&S.laws[0].id;hbBuild();save();$('#md').style.display='none';draw();toast('Importiert: '+o.laws.length+' Gesetz(e)')}
+if(!S.laws.some(z=>z.id===cur))cur=S.laws[0]&&S.laws[0].id;hbBuild();save();$('#md').style.display='none';draw();toast('Importiert: '+o.laws.length+' Gesetz(e)'+(scriptEntries.length?' · '+scriptEntries.length+' Skript-PDF(s) wiederhergestellt':'')+(legacyScripts?' · ältere Sicherung enthält keine PDF-Anhänge':''))}
 catch(x){$('#me').textContent='Import abgebrochen: '+(x.message||'ungültige Export-Datei');console.error('JSON-Import fehlgeschlagen:',x)}};
 function legend(s){const lg=el('div','mut');lg.style.cssText='margin-top:12px;font-size:13px';lg.append('Gib jeder Farbe eine Bedeutung, z. B. „Tatbestand“ oder „Frist“.');
 CN.forEach((n,c)=>{const r=el('div'),d=el('span'),i=el('input');r.style.cssText='display:flex;gap:6px;align-items:center;margin-top:4px';
@@ -668,7 +675,8 @@ if(Object.keys(S.map).length){const rs=el('button',null,'Alle Zuordnungen zurüc
 function tmMode(m){const T=S.timer;if(!T||T.mode===m)return;const n=Date.now();if(T.run&&T.ph==='f')T.acc+=n-T.t0;T.mode=m;T.ph='f';T.t0=n;if(m==='p'){T.pe=n+S.pp.po.f*MIN;T.rem=S.pp.po.f*MIN;T.n=0}S.pp.tmode=m;save();draw()}
 /* Skripte */
 let skf='',skq='',sko='last';
-const sdb=(m,k,v)=>new Promise((res,rej)=>{try{const r=indexedDB.open('rubrum-skripte',1);r.onupgradeneeded=()=>r.result.createObjectStore('f');r.onerror=()=>rej(r.error);r.onsuccess=()=>{const st=r.result.transaction('f',m==='get'?'readonly':'readwrite').objectStore('f'),q=m==='get'?st.get(k):m==='put'?st.put(v,k):st.delete(k);q.onsuccess=()=>res(q.result);q.onerror=()=>rej(q.error)}}catch(e){rej(e)}});
+const sdb=(m,k,v)=>new Promise((res,rej)=>{try{const r=indexedDB.open('rubrum-skripte',1);r.onupgradeneeded=()=>{if(!r.result.objectStoreNames.contains('f'))r.result.createObjectStore('f')};r.onerror=()=>rej(r.error);r.onsuccess=()=>{const db=r.result;db.onversionchange=()=>db.close();let tx;try{tx=db.transaction('f',m==='get'?'readonly':'readwrite')}catch(e){db.close();rej(e);return}const st=tx.objectStore('f'),q=m==='get'?st.get(k):m==='put'?st.put(v,k):st.delete(k);q.onsuccess=()=>res(q.result);q.onerror=()=>rej(q.error);tx.oncomplete=()=>db.close();tx.onerror=()=>rej(tx.error)}}catch(e){rej(e)}});
+function sdbBulk(entries){return new Promise((res,rej)=>{const r=indexedDB.open('rubrum-skripte',1);r.onupgradeneeded=()=>{if(!r.result.objectStoreNames.contains('f'))r.result.createObjectStore('f')};r.onerror=()=>rej(r.error);r.onsuccess=()=>{const db=r.result;db.onversionchange=()=>db.close();let tx;try{tx=db.transaction('f','readwrite')}catch(e){db.close();rej(e);return}const st=tx.objectStore('f');for(const [key,value] of entries)st.put(value,key);tx.oncomplete=()=>{db.close();res(true)};tx.onerror=()=>{const e=tx.error;db.close();rej(e)};tx.onabort=()=>{const e=tx.error||new Error('Skriptdateien konnten nicht vollständig gespeichert werden');db.close();rej(e)}}})}
 const fmtB=b=>b>1048576?f1(b/1048576)+' MB':Math.max(1,Math.round(b/1024))+' KB';
 function guessF(name){const tk=new Set(nrm(name.replace(/\.pdf$/i,'')).split(' '));let b=0,id='';S.fach.forEach(f=>{const nt=nrm(f.name).split(' ').filter(w=>w&&!SW.has(w)),cd=nrm(f.code);let sc=0;if(cd&&tk.has(cd))sc=100;else if(nt.length&&nt.every(w=>tk.has(w)))sc=nt.join('').length;if(sc>b){b=sc;id=f.id}});return id}
 async function skAdd(files){ini();if(!window.pdfjsLib)return toast('PDF-Bibliothek nicht verfügbar');let n=0,un=0;
