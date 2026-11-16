@@ -209,9 +209,9 @@ button:active{transform:translateY(1px)}
 <p class="mut">Der grüne Punkt am Symbol zeigt, dass deine Daten in einer Datei gesichert werden. Orange heißt: noch keine Datei verbunden.</p></div></div>
 <div id="md"><div><b id="mt"></b><input id="mn" placeholder="Name, z. B. EStG"><input type="file" id="mf" accept=".xml,.zip,application/pdf"><textarea id="mx"></textarea><div id="mb" style="display:none;gap:8px;flex-wrap:wrap;align-items:center"><button id="xe" class="p">Alles exportieren (Datei)</button><button id="xa">Vollständiger Export (alle App-Daten)</button><button id="xs" style="display:none">Teilen …</button><button id="xi">Datei importieren …</button><label><input type="checkbox" id="xm" checked> mit vorhandenen Daten zusammenführen</label><input type="file" id="xf" accept=".json,application/json" style="display:none"></div><div class="mut" id="me"></div><div style="display:flex;gap:8px;justify-content:flex-end"><button id="mc">Abbrechen</button><button class="p" id="mo">OK</button></div></div></div>
 <script>
-const K='gesetzeapp.v1';let S={laws:[],marks:{}};
-try{const r=localStorage.getItem(K);if(r)S=JSON.parse(r)}catch(e){}
-const save=()=>{try{localStorage.setItem(K,JSON.stringify(S))}catch(e){if(!fh)alert('Browser-Speicher voll – bitte eine Datendatei verbinden (Button oben).')}fsave()};
+const K='gesetzeapp.v1';let S={laws:[],marks:{}},storageRecovery=null;
+try{const r=localStorage.getItem(K);if(r){const v=JSON.parse(r);if(!v||typeof v!=='object'||Array.isArray(v)||!Array.isArray(v.laws)||v.laws.some(l=>!l||typeof l.id!=='string'||!l.id||!Array.isArray(l.paras)||l.paras.some(p=>!p||typeof p.key!=='string'||typeof p.text!=='string')))throw new Error('Ungültiger lokaler Datenstand');S=v}}catch(e){try{storageRecovery=localStorage.getItem(K)}catch(_){}}
+const save=()=>{try{if(storageRecovery!==null){localStorage.setItem(K+'.recovery.'+Date.now(),storageRecovery);storageRecovery=null}localStorage.setItem(K,JSON.stringify(S))}catch(e){if(!fh)alert(storageRecovery!==null?'Der bisherige lokale Dateninhalt konnte nicht sicher gesichert werden. Bitte vor weiteren Änderungen Speicherplatz freigeben.':'Browser-Speicher voll – bitte eine Datendatei verbinden (Button oben).')}fsave()};
 const $=s=>document.querySelector(s);
 let cur=S.laws[0]&&S.laws[0].id,view='read',q='',lim=60,pend=null,mode='',delArm=false;
 function el(t,c,x){const e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e}
@@ -900,6 +900,7 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape')$('#st').style.displ
 (async()=>{if(FS){try{const x=await idb('get');if(x){fh=x;if(await x.queryPermission({mode:'readwrite'})==='granted')await connectExistingFile(x,true)}}catch(e){fstat='err';console.error('Gespeicherte Datendatei konnte nicht wiederhergestellt werden:',e)}}fui();draw()})();
 
 draw();
+if(storageRecovery!==null)toast('Der lokale Datenstand war nicht lesbar. Der Rohinhalt wird vor der nächsten Speicherung als Wiederherstellungskopie gesichert.');
 </script><script>
 if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(e=>console.warn('Offline-Modus konnte nicht aktiviert werden:',e)))}
 </script></body></html>
