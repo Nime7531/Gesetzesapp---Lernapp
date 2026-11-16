@@ -26,7 +26,7 @@ Die Oberfläche hatte bereits drei Farbthemen, responsive Layouts, Karten-/Glasf
 
 ## PWA und Bedienoberfläche
 
-- Installationsmanifest mit Rubrum-Name, Startadresse, Theme-Farbe und orangefarbenem R-Icon ergänzt.
+- Installationsmanifest mit Rubrum-Name, Startadresse, Theme-Farbe und dem originalen orangefarbenen R-PNG-Icon ergänzt; eine skalierbare SVG-Variante bleibt als Fallback enthalten.
 - Service Worker mit Offline-Cache für Einstieg, HTML-App, Manifest und Icon ergänzt.
 - `index.html` als Einstiegspunkt ergänzt; die eigentliche Anwendung bleibt das eigenständige HTML-Dokument, ohne iframe und ohne zweite Datenhaltung.
 - GitHub-Actions-Workflow zur Veröffentlichung über GitHub Pages ergänzt. Er läuft erst nach Push auf `main` oder manuellem Start.
