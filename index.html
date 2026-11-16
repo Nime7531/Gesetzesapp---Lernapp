@@ -167,25 +167,123 @@ main{padding:22px 24px 80px}main h2{font-size:24px;font-weight:700;letter-spacin
 .lk-c a{font-weight:600;color:var(--ac);text-decoration:none;word-break:break-word}.lk-c a:hover{text-decoration:underline}
 .lk-c .u{font-size:12px;color:var(--mut);word-break:break-all}.lk-c .n{font-size:13px;color:var(--mut);margin-top:2px}
 .lk-a{display:flex;gap:4px;flex-shrink:0}.lk-a button{padding:4px 8px;font-size:13px}
+</style><style>
+body{font-family:system-ui,-apple-system,"Segoe UI",sans-serif}button,input,select,textarea{border-radius:9px}button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid #e77c40;outline-offset:3px}.para,.kt,.tkc{border-radius:14px}.row{row-gap:8px}@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+</style><style>button:disabled{opacity:.55;cursor:wait} .para,.skc,.tkc{border-radius:16px} button{transition:background-color .15s,border-color .15s} @media(prefers-reduced-motion:reduce){button{transition:none}}</style><style>
+/* Rubrum: klare, ruhige Arbeitsoberfläche */
+:root{--bg:#f6f4ef;--card:#fffdf9;--fg:#24201c;--mut:#61584f;--bd:#e7e0d7;--ac:#ae3d16;--acf:#fff;--lk:#9b3314;--sel:#eee9e0;--st:#fff2df;--r:17px;--sh:0 2px 7px #2d20100b;--gb:var(--bd);--gs:var(--sh)}
+:root[data-theme=mittel]{--ac:#f878b0;--acf:#171127}:root[data-theme=dunkel]{--ac:#86a7ff;--acf:#151b2d}
+html{scroll-padding-top:126px}body{background:var(--bg);letter-spacing:normal}*[hidden]{display:none!important}
+header,#md,#st,#hb,#ts,#tmchip,.cal-h,.kt,.pop,#md>div,.sheet{-webkit-backdrop-filter:none;backdrop-filter:none}
+header{top:env(safe-area-inset-top,0px);margin:0;border-width:0 0 1px;border-radius:0;background:var(--card);padding:10px clamp(14px,3vw,36px);box-shadow:none;gap:16px}
+.brand img{border-radius:8px;display:block}.brand{font-size:18px}.seg{min-width:0;background:var(--sel)}.seg button{white-space:nowrap}.seg button.on{background:var(--card);color:var(--fg);box-shadow:var(--sh);outline:1px solid var(--bd)}
+header input[type=search]{min-width:0;background:var(--sel)}#app{max-width:1280px}main{padding:27px clamp(16px,3vw,36px) 80px;max-width:900px}main h2{line-height:1.24}.para,.skc,.kt,.cal,.lk-c{background:var(--card);border-radius:var(--r);box-shadow:var(--sh)}.para.star{background:var(--st)}.tmc{background:var(--card)}.cal-h,.pop,#md>div,.sheet,#hb{background:var(--card)}#ts{background:var(--fg);max-width:calc(100vw - 32px);box-sizing:border-box}#ts button{color:inherit;background:transparent;text-decoration:underline}#tmchip{background:var(--ac);color:var(--acf)}
+button.p{box-shadow:none}.skt{width:100%}#md,#st{background:#12100d87}#md>div,.sheet{padding:clamp(15px,4vw,26px);max-height:calc(100dvh - 34px);overflow:auto;box-sizing:border-box}#m>*:nth-child(-n+14){animation:none}
+.storage-alert{background:var(--st);border-bottom:1px solid var(--bd);padding:8px 16px;font-size:14px} .skn,.lk-c,.para{overflow-wrap:anywhere}.fgrid{grid-template-columns:repeat(auto-fit,minmax(min(100%,350px),1fr))}
+@media(max-width:850px){header{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:8px;padding:8px 12px}header .seg{grid-row:2;grid-column:1/-1;overflow:auto;justify-content:flex-start;scrollbar-width:thin}header input[type=search]{width:100%;max-width:none;box-sizing:border-box}.brand{display:flex}#gear{grid-column:3;grid-row:1}#sb{top:114px}}
+@media(max-width:700px){#app{display:block}main{box-sizing:border-box;width:100%;padding:16px 12px 70px}#sb{max-width:100%;box-sizing:border-box}.para{padding:14px}.cal{overflow-x:auto}.cal-h,.cal-g{min-width:550px}.svb{flex-wrap:wrap}.svc .pg{margin-left:auto;margin-right:auto}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
+</style><style id="rubrum-glass">
+/* Glass on floating controls, solid reading surfaces for contrast. */
+:root{--glass-rim:#ffffffa0;--glass-shadow:#321a151c;--glass-warm:#eb844b;--glass-cool:#a3b6e4}
+:root[data-theme=mittel],:root[data-theme=dunkel]{--glass-rim:#ffffff21;--glass-shadow:#0005;--glass-warm:var(--ac);--glass-cool:#8a84df}
+body{min-height:100vh;background:radial-gradient(ellipse at 7% 0%,color-mix(in srgb,var(--glass-warm) 21%,transparent),transparent 48%),radial-gradient(ellipse at 96% 12%,color-mix(in srgb,var(--glass-cool) 24%,transparent),transparent 54%),var(--bg);background-size:100% min(920px,115vh);background-repeat:no-repeat}
+header{top:calc(env(safe-area-inset-top,0px) + 8px);margin:8px clamp(8px,2vw,28px) 0;border:1px solid var(--gb);border-radius:22px;box-shadow:inset 0 1px var(--glass-rim),0 9px 28px var(--glass-shadow)}
+header .seg{border-radius:15px;background:color-mix(in srgb,var(--fg) 7%,transparent)}
+header .seg button{border-radius:12px}header .seg button.on{outline:none;box-shadow:inset 0 1px var(--glass-rim),0 1px 5px var(--glass-shadow)}
+header input[type=search],#gear{border-radius:14px;background:color-mix(in srgb,var(--fg) 7%,transparent)}
+.para,.skc,.kt,.cal,.lk-c,.tkc,.tmc{border-radius:20px;box-shadow:inset 0 1px var(--glass-rim),0 5px 18px var(--glass-shadow)}
+#md>div,.sheet,.pop,#hb,.svb,.svr{border:1px solid var(--gb);box-shadow:inset 0 1px var(--glass-rim),0 18px 52px var(--glass-shadow)}
+#md>div,.sheet{border-radius:26px}
+@supports ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
+ header,.svb,#hb{background:color-mix(in srgb,var(--card) 77%,transparent);-webkit-backdrop-filter:blur(24px) saturate(1.55);backdrop-filter:blur(24px) saturate(1.55)}
+ #md>div,.sheet,.pop,.svr{background:color-mix(in srgb,var(--card) 91%,transparent);-webkit-backdrop-filter:blur(24px) saturate(1.4);backdrop-filter:blur(24px) saturate(1.4)}
+}
+@media(min-width:851px){#sb{top:88px;max-height:calc(100vh - 98px)}}
+@media(max-width:850px){header{border-radius:18px}#sb{top:128px}}
+@media(prefers-reduced-transparency:reduce){header,#md>div,.sheet,.pop,#hb,.svb,.svr{background:var(--card);-webkit-backdrop-filter:none;backdrop-filter:none}}
+@media print{body{background:#fff}.para{box-shadow:none;border-radius:0}}
+/* Decorative, non-blocking, finite intro. */
+#rubrum-intro{position:fixed;inset:0;z-index:1000;display:grid;place-items:center;overflow:hidden;pointer-events:none;isolation:isolate;background:radial-gradient(ellipse at 49% 35%,#43231f 0%,#231825 36%,#100f17 75%);color:#fff8f4;animation:rubrumBootExit 1.55s both}
+.rubrum-aura{position:absolute;inset:0;z-index:-1;background:radial-gradient(ellipse at 43% 46%,#f268316f,transparent 39%),radial-gradient(ellipse at 61% 44%,#9b6ae861,transparent 40%);animation:rubrumAura 1.4s ease-out both}
+.rubrum-lockup{text-align:center;display:grid;justify-items:center;gap:22px;padding:20px}
+.rubrum-tile{position:relative;display:grid;place-items:center;width:clamp(132px,34vw,176px);aspect-ratio:1;border-radius:30%;overflow:hidden;background:linear-gradient(145deg,#ffffff40,#ffffff0a 47%,#f2b9e222);border:1px solid #ffffff46;box-shadow:inset 0 1px #ffffff8a,inset 0 -1px #ffffff20,0 22px 65px #0503067a,0 0 55px #ff733138;-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);animation:rubrumTile .75s cubic-bezier(.17,.83,.33,1.15) both}
+.rubrum-tile img{width:76%;height:auto;border-radius:23%;filter:drop-shadow(0 8px 15px #120b1273)}
+.rubrum-tile::after{content:"";position:absolute;inset:-40%;background:linear-gradient(111deg,transparent 42%,#ffeadb56 49%,#fff9ee8a 50%,transparent 58%);mix-blend-mode:screen;animation:rubrumSweep .9s .19s ease-in-out both}
+.rubrum-word{font-weight:700;font-size:clamp(38px,9vw,62px);line-height:1;letter-spacing:-.064em;animation:rubrumWord .63s .24s ease-out both}
+.rubrum-caption{font-size:11px;font-weight:650;letter-spacing:.24em;text-transform:uppercase;color:#f2d1c6;margin-top:-9px;animation:rubrumWord .58s .40s ease-out both}
+@keyframes rubrumBootExit{0%,77%{opacity:1;visibility:visible}100%{opacity:0;visibility:hidden}}
+@keyframes rubrumAura{from{opacity:.23;transform:scale(.85)}to{opacity:1;transform:scale(1.15)}}
+@keyframes rubrumTile{from{opacity:0;transform:translateY(18px) scale(.83)}to{opacity:1;transform:none}}
+@keyframes rubrumSweep{from{transform:translateX(-72%)}to{transform:translateX(72%)}}
+@keyframes rubrumWord{from{transform:translateY(9px);opacity:0}to{transform:none;opacity:1}}
+@media print,(prefers-reduced-motion:reduce){#rubrum-intro{display:none!important}}
+</style><style id="rubrum-phone-css">
+.rubrum-phone{--phone-bar:calc(79px + env(safe-area-inset-bottom,0px));scroll-padding-top:82px;scroll-padding-bottom:var(--phone-bar)}
+.rubrum-phone header{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:8px;padding:6px 10px;margin:8px max(10px,env(safe-area-inset-right)) 0 max(10px,env(safe-area-inset-left));top:calc(5px + env(safe-area-inset-top,0px))}
+.rubrum-phone header .seg,.rubrum-phone:not([data-phone-view=read]) #q{display:none}
+.rubrum-phone #gear{width:44px;height:44px}.rubrum-phone #q{font-size:16px;min-width:0}
+.rubrum-phone #app{display:block}.rubrum-phone main{width:100%;box-sizing:border-box;padding:20px max(14px,env(safe-area-inset-right)) calc(var(--phone-bar) + 18px) max(14px,env(safe-area-inset-left))}.rubrum-phone #sb{position:static;width:100%;max-height:28vh;padding:9px 14px 0}
+.rubrum-phone #app>main:focus:not(:focus-visible){outline:none}
+#phone-nav{box-sizing:border-box;position:fixed;z-index:8;bottom:calc(8px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);width:min(480px,calc(100% - 20px - env(safe-area-inset-left,0px) - env(safe-area-inset-right,0px)));display:grid;grid-template-columns:repeat(4,minmax(0,1fr));align-items:center;gap:4px;padding:5px;color:var(--fg);background:var(--card);border:1px solid var(--gb);border-radius:22px;box-shadow:inset 0 1px var(--glass-rim),0 8px 30px var(--glass-shadow)}
+#phone-nav button,#phone-nav summary{min-height:46px;box-sizing:border-box;font-size:13px;font-weight:650;border:0;border-radius:16px;background:transparent;color:var(--fg);padding:6px}
+#phone-nav summary{display:grid;place-items:center;cursor:pointer;list-style:none}#phone-nav summary::-webkit-details-marker{display:none}
+#phone-nav button[aria-current=page],#phone-nav .phone-current{background:var(--sel);color:var(--lk);box-shadow:inset 0 1px var(--glass-rim)}
+.phone-menu{position:absolute;right:0;bottom:calc(100% + 8px);width:min(235px,100%);background:var(--card);border:1px solid var(--gb);border-radius:19px;padding:5px;box-shadow:0 12px 36px var(--glass-shadow)}.phone-menu button{display:block;width:100%;text-align:left;padding-inline:14px!important}
+@media not (prefers-reduced-transparency:reduce){@supports ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){#phone-nav,.phone-menu{background:color-mix(in srgb,var(--card) 88%,transparent);-webkit-backdrop-filter:blur(22px) saturate(1.6);backdrop-filter:blur(22px) saturate(1.6)}}}
+.rubrum-phone #hb,.rubrum-phone #ts,.rubrum-phone #tmchip{bottom:var(--phone-bar)}.rubrum-phone #tmchip{overflow:hidden;max-width:calc(100vw - 32px);white-space:nowrap;text-overflow:ellipsis;box-sizing:border-box}
+.rubrum-phone .pop{top:auto!important;left:50%!important;transform:translateX(-50%);bottom:calc(7px + env(safe-area-inset-bottom,0px));width:min(420px,calc(100% - 20px));box-sizing:border-box;max-height:calc(100dvh - 18px - env(safe-area-inset-top,0px));overflow:auto;padding:16px}.rubrum-phone .pop input,.rubrum-phone .pop select{font-size:16px}.rubrum-phone .pop .row input[type=time]{width:auto;flex:1 1 90px;min-width:0}
+.phone-planner{max-width:610px;margin:auto}.phone-hero{padding:3px 2px 15px}.phone-kicker{color:var(--lk);font-size:11px;letter-spacing:.14em;font-weight:750}.phone-hero h1{font-size:clamp(30px,8vw,42px);line-height:1.08;letter-spacing:-.055em;margin:6px 0 0}
+.phone-week{padding:10px!important}.phone-week-head{display:grid;grid-template-columns:44px 1fr 44px;align-items:center;gap:4px;text-align:center;font-size:13px}.phone-week-head button{height:44px;font-size:19px;padding:0}
+.phone-days{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:3px;margin:8px 0}.phone-days button{padding:4px 0;min-height:61px;border-radius:13px;display:grid;justify-items:center;gap:1px;background:transparent;border:1px solid transparent}.phone-days button>span{font-size:11px}.phone-days button[aria-pressed=true]{background:var(--ac);color:var(--acf)}.phone-days i{height:4px;width:4px;border-radius:50%;display:block}.phone-days i.has-events{background:currentColor}
+.phone-week-actions{display:flex;justify-content:space-between;gap:6px}.phone-week-actions button{min-height:44px}
+.phone-agenda{margin:23px 0 16px}.phone-agenda h2{font-size:23px;letter-spacing:-.04em;margin:4px 0 10px}.phone-list{padding:0 10px!important}.phone-entry{display:grid;grid-template-columns:82px minmax(0,1fr) 10px;gap:8px;align-items:center;text-align:left;width:100%;min-height:62px;border:none;border-radius:0;padding:8px 0;background:transparent}.phone-entry+.phone-entry{border-top:1px solid var(--bd)}.phone-time{font-size:11px;font-variant-numeric:tabular-nums;font-weight:650;border-left:3px solid var(--bd);padding-left:5px}.phone-entry[data-kind=learn] .phone-time{border-color:var(--ac)}.phone-entry[data-kind=u] .phone-time{border-color:#788cc8}.phone-entry-label small,.phone-deadline small{display:block;color:var(--mut);font-size:11px}.phone-entry-label strong{display:block;overflow-wrap:anywhere;font-size:14px}.phone-arrow,.phone-empty{color:var(--mut)}
+.phone-tools>summary,.phone-grid>summary,.phone-deadlines>summary{min-height:32px;align-content:center;cursor:pointer;font-weight:650}.phone-tools>button{margin:8px 0;min-height:44px}.phone-tools .para:last-child{margin-bottom:0}.phone-tools,.phone-grid{scroll-margin-top:10px}.phone-deadline{display:grid;grid-template-columns:77px minmax(0,1fr);gap:4px 8px;padding:9px 0;border-top:1px solid var(--bd);font-size:13px}.phone-deadline small{grid-column:2}.phone-grid .cal{margin-top:8px;overflow-x:auto}.phone-grid :is(.cal-g,.cal-h){min-width:550px}
+@media print{#phone-nav,.phone-tools,.phone-grid summary,.phone-week-actions{display:none!important}}
 </style></head><body>
+<div id="rubrum-intro" aria-hidden="true" hidden>
+  <div class="rubrum-aura"></div>
+  <div class="rubrum-lockup">
+    <div class="rubrum-tile"><img alt="" width="132" height="132"></div>
+    <div class="rubrum-word">Rubrum</div>
+    <div class="rubrum-caption">Lesen · Lernen · Planen</div>
+  </div>
+</div>
+<script id="rubrum-startup">
+(()=>{
+  const intro=document.getElementById('rubrum-intro');
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches){intro.remove();return}
+  intro.querySelector('img').src=document.querySelector('link[rel=icon]').href;
+  const listeners=new AbortController();
+  const cleanup=()=>{clearTimeout(watchdog);listeners.abort();intro.remove()};
+  const watchdog=setTimeout(cleanup,1800);
+  for(const type of ['pointerdown','keydown','focusin'])
+    document.addEventListener(type,cleanup,{capture:true,signal:listeners.signal});
+  intro.addEventListener('animationend',e=>{if(e.target===intro)cleanup()});
+  intro.hidden=false;
+})();
+</script>
+
 <header>
-<b class="brand"><span>§</span>Rubrum</b>
-<div class="seg"><button id="vr">Lesen</button><button id="vs">Übersicht</button><i class="sp"></i><button id="vl">Lernen</button><button id="vk">Skripte</button><button id="vw">Woche</button><button id="vf">Fächer</button><button id="vn">Links</button></div>
-<input type="search" id="q" placeholder="Suchen: § 15, Stichwort …">
+<b class="brand"><img id="brand-icon" alt="" width="30" height="30">Rubrum</b>
+<nav class="seg" aria-label="Arbeitsbereiche"><button id="vr">Lesen</button><button id="vs">Übersicht</button><i class="sp"></i><button id="vl">Lernen</button><button id="vk">Skripte</button><button id="vw">Woche</button><button id="vf">Fächer</button><button id="vn">Links</button></nav>
+<input type="search" aria-label="Gesetze durchsuchen" id="q" placeholder="Suchen: § 15, Stichwort …">
 <button id="gear" aria-label="Einstellungen" title="Einstellungen"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12M20 18h0"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/></svg></button>
 </header>
-<div id="app"><aside id="sb"></aside><main id="m"></main></div>
-<div id="ts"></div><div id="hb"></div>
-<div id="st"><div class="sheet"><div class="sh"><span>Einstellungen</span><button id="stx" class="p">Fertig</button></div>
+<div class="storage-alert" data-storage-status role="alert" hidden></div><div id="app"><aside id="sb"></aside><main id="m"></main></div>
+<div id="ts" role="status" aria-live="polite"></div><div id="hb"></div>
+<div id="st" role="dialog" aria-modal="true" aria-labelledby="settings-title"><div class="sheet"><div class="sh"><span id="settings-title">Einstellungen</span><button id="stx" class="p">Fertig</button></div>
 <div class="lb">Darstellung</div><div class="ths" id="th"></div>
 <div class="lb">Markierungsfarben</div><div id="lg"></div>
-<div class="lb">Daten</div><div class="rowb"><button id="fb" class="p"></button><button id="fo">Datei öffnen</button><button id="bd" style="display:none">Backup herunterladen</button><button id="bk">Export / Import</button></div>
-<p class="mut">Der grüne Punkt am Symbol zeigt, dass deine Daten in einer Datei gesichert werden. Orange heißt: noch keine Datei verbunden.</p></div></div>
-<div id="md"><div><b id="mt"></b><input id="mn" placeholder="Name, z. B. EStG"><input type="file" id="mf" accept=".xml,.zip,application/pdf"><textarea id="mx"></textarea><div id="mb" style="display:none;gap:8px;flex-wrap:wrap;align-items:center"><button id="xe" class="p">Alles exportieren (Datei)</button><button id="xa">Vollständiger Export (alle App-Daten)</button><button id="xs" style="display:none">Teilen …</button><button id="xi">Datei importieren …</button><label><input type="checkbox" id="xm" checked> mit vorhandenen Daten zusammenführen</label><input type="file" id="xf" accept=".json,application/json" style="display:none"></div><div class="mut" id="me"></div><div style="display:flex;gap:8px;justify-content:flex-end"><button id="mc">Abbrechen</button><button class="p" id="mo">OK</button></div></div></div>
+<div class="lb">Daten</div><div class="rowb"><button id="fb" class="p"></button><button id="fo">Datei öffnen</button><button id="bd">JSON ohne PDFs</button><button id="raw-backup" hidden>Beschädigte Rohdaten sichern</button><button id="bk">Export / Import</button></div>
+<p id="file-status" class="mut" role="status"></p><p class="mut">Skript-PDFs werden nur im Vollexport gesichert.</p></div></div>
+<div id="md" role="dialog" aria-modal="true" aria-labelledby="mt"><div><b id="mt"></b><input id="mn" aria-label="Gesetzesname" placeholder="Name, z. B. EStG"><input type="file" id="mf" aria-label="Gesetzesdatei" accept=".xml,.zip,application/pdf"><textarea id="mx" aria-label="Gesetzestext"></textarea><div id="mb" style="display:none;gap:8px;flex-wrap:wrap;align-items:center"><button id="xe">JSON ohne PDFs</button><button id="xa" class="p">Vollexport inklusive PDFs</button><button id="xs" style="display:none">Teilen …</button><button id="xi">Datei importieren …</button><button id="replace">Datenstand wiederherstellen …</button><label><input type="checkbox" id="xm" checked> Beim Dateiimport nur Gesetze zusammenführen</label><input type="file" id="xf" accept=".json,application/json" style="display:none"></div><div class="mut" id="me" role="status" aria-live="polite"></div><div style="display:flex;gap:8px;justify-content:flex-end"><button id="mc">Abbrechen</button><button class="p" id="mo">OK</button></div></div></div>
 <script>
-const K='gesetzeapp.v1';let S={laws:[],marks:{}};
-try{const r=localStorage.getItem(K);if(r)S=JSON.parse(r)}catch(e){}
-const save=()=>{try{localStorage.setItem(K,JSON.stringify(S))}catch(e){if(!fh)alert('Browser-Speicher voll – bitte eine Datendatei verbinden (Button oben).')}fsave()};
+const K='gesetzeapp.v1';let S={laws:[],marks:{}},broken=null,storageProblem='',dataBusy=false,scriptBusy=false;
+try{const raw=localStorage.getItem(K);if(raw!==null){broken=raw;S=validateData(JSON.parse(raw));broken=null}}catch(e){storageProblem=broken!==null?'Der gespeicherte Datenstand ist nicht lesbar. Erst sichern, dann einen gültigen Stand importieren.':'Browserspeicher nicht verfügbar. Änderungen als JSON sichern.'}
+const store=next=>localStorage.setItem(K,JSON.stringify(next));
+function storageStatus(){for(const b of document.querySelectorAll('[data-storage-status]')){b.hidden=!storageProblem;b.textContent=storageProblem}$('#raw-backup').hidden=broken===null}
+const save=()=>{if(broken===null){try{store(S);storageProblem=''}catch(e){storageProblem='Nicht im Browser gespeichert. Bitte einen JSON-Export erstellen.'}}storageStatus();if(broken===null)fsave()};
 const $=s=>document.querySelector(s);
 let cur=S.laws[0]&&S.laws[0].id,view='read',q='',lim=60,pend=null,mode='',delArm=false;
 function el(t,c,x){const e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e}
@@ -246,7 +344,7 @@ cn.onclick=()=>{ed=null;form()};r.append(sv,cn);g.append(ti,ur,ca,no,dl,r);box.a
 function list(){ls.replaceChildren();const q=f.trim().toLowerCase();
 const it=L.filter(x=>!q||[x.title,x.url,x.cat,x.note].some(v=>(v||'').toLowerCase().includes(q)));
 if(!it.length){ls.append(el('p','mut',L.length?'Keine Treffer.':'Noch keine Links. Mit „+ Link“ legst du den ersten an.'));return}
-const gr={};it.forEach(x=>{(gr[x.cat||'Ohne Kategorie']=gr[x.cat||'Ohne Kategorie']||[]).push(x)});
+const gr=Object.create(null);it.forEach(x=>{(gr[x.cat||'Ohne Kategorie']=gr[x.cat||'Ohne Kategorie']||[]).push(x)});
 Object.keys(gr).sort((a,b)=>a==='Ohne Kategorie'?1:b==='Ohne Kategorie'?-1:a.localeCompare(b,'de')).forEach(k=>{
 ls.append(el('div','lk-h',k));const g=el('div','lk-g');
 gr[k].sort((a,b)=>a.title.localeCompare(b.title,'de')).forEach(x=>{
@@ -260,14 +358,12 @@ list();if(ed)form()}
 paint()}
 function draw(){
 document.querySelectorAll('.pop').forEach(x=>x.remove());const y=scrollY,m=$('#m');m.replaceChildren();
-side();const wide=view==='week'||view==='fach'||view==='skr'||view==='links';m.ondrop=m.ondragover=null;m.style.maxWidth=wide?'none':'';$('#sb').style.display=wide?'none':'';
+side();navState();phoneNavState();const wide=view==='week'||view==='fach'||view==='skr'||view==='links';m.ondrop=m.ondragover=null;m.style.maxWidth=wide?'none':'';$('#sb').style.display=wide?'none':'';
 $('#vr').className=view==='read'?'on':'';$('#vl').className=view==='learn'?'on':'';$('#vs').className=view==='sum'?'on':'';$('#vw').className=view==='week'?'on':'';$('#vf').className=view==='fach'?'on':'';$('#vk').className=view==='skr'?'on':'';$('#vn').className=view==='links'?'on':'';
-if(view==='links'){linksV(m);return}
+if(view==='links'){linksV(m);return}if(view==='skr'){skrV(m);return}if(view==='week'){weekV(m);return}if(view==='fach'){fachV(m);return}if(view==='learn'){dash(m);learn(m);return}
 if(!S.laws.length){const d=el('div','para');
 d.append(el('b',null,'Willkommen!'),el('p',null,'Klicke auf „+ Gesetz“ und füge den Volltext eines Gesetzes ein (z. B. von gesetze-im-internet.de: Gesetz öffnen, Text kopieren). Die App teilt ihn automatisch in Paragrafen. Danach kannst du Text markieren, ganze § merken und dir die Übersicht ansehen.'));
 m.append(d);return}
-if(view==='links'){linksV(m);return}if(view==='skr'){skrV(m);return}if(view==='week'){weekV(m);return}if(view==='fach'){fachV(m);return}
-if(view==='learn'){dash(m);learn(m);return}
 if(view==='read'){const l=law();if(!l)return;
 const f=l.paras.filter(p=>!q||p.key.toLowerCase().includes(q)||p.text.toLowerCase().includes(q));
 const bar=el('div','mut noprint',f.length+' von '+l.paras.length+' Abschnitten · Text markieren und unten auf „Auswahl markieren“ tippen');bar.style.marginBottom='10px';m.append(bar);
@@ -312,42 +408,88 @@ if(c2===c){ns=Math.min(ns,a);ne=Math.max(ne,b)}else{if(a<s)keep.push([a,s,c2]);i
 keep.push([ns,ne,c]);mm.hl=keep;save();getSelection().removeAllRanges();draw()}
 function hbBuild(){const b=$('#hb');b.replaceChildren();CN.forEach((n,c)=>{const x=el('button','cb');x.style.background='var(--h'+c+')';x.title=cl(c);x.setAttribute('aria-label',cl(c));x.onclick=()=>applyHl(c);b.append(x)})}
 hbBuild();
-const mkFile=()=>new File([JSON.stringify(S)],'gesetze-export-'+new Date().toISOString().slice(0,10)+'.json',{type:'application/json'});
-$('#xe').onclick=()=>{const f=mkFile(),a=document.createElement('a');a.href=URL.createObjectURL(f);a.download=f.name;document.body.append(a);a.click();a.remove();$('#me').textContent='Exportiert: '+S.laws.length+' Gesetze mit allen Markierungen, Notizen und Verweisen.'};
-const mkAll=()=>{const ls={};try{for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k&&k.indexOf('gesetzeapp')===0&&k!==K)ls[k]=localStorage.getItem(k)}}catch(e){}
-const o=Object.assign({},S,{_export:{app:'gesetzeapp',art:'vollstaendig',version:1,zeit:new Date().toISOString(),gesetze:S.laws.length,markierte_paragrafen:Object.values(S.marks||{}).reduce((n,m)=>n+Object.keys(m).length,0)},ls});
-return new File([JSON.stringify(o)],'gesetze-vollexport-'+new Date().toISOString().slice(0,10)+'.json',{type:'application/json'})};
-$('#xa').onclick=()=>{const f=mkAll(),a=document.createElement('a');a.href=URL.createObjectURL(f);a.download=f.name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),4000);$('#me').textContent='Vollständig exportiert: alle Gesetze (auch manuell eingetragene Texte), Markierungen, Notizen, Verweise, Farbbezeichnungen und Einstellungen.'};
-$('#xs').onclick=async()=>{try{await navigator.share({files:[mkFile()],title:'Gesetze-Export'})}catch(e){}};
+function object(o){return o!==null&&typeof o==='object'&&!Array.isArray(o)}
+function safeKey(id){return typeof id==='string'&&!!id&&!Object.hasOwn(Object.prototype,id)}
+function validateData(o){
+const fail=k=>{throw Error('Ungültige Daten: '+k)};
+const array=(v,k)=>{if(!Array.isArray(v))fail(k);return v};
+const rec=(v,k)=>{if(!object(v))fail(k);return v};
+const strings=(v,ks)=>ks.every(k=>v[k]==null||typeof v[k]==='string');
+const ids=(a,k,check)=>{const used=new Set();for(const v of array(a,k)){if(!object(v)||!safeKey(v.id)||used.has(v.id)||!check(v))fail(k);used.add(v.id)}};
+rec(o,'Datei');ids(o.laws,'Gesetze',l=>typeof l.name==='string'&&strings(l,['title','src'])&&Array.isArray(l.paras)&&l.paras.every(p=>object(p)&&safeKey(p.key)&&typeof p.text==='string'&&strings(p,['sec'])));
+o.marks??={};for(const [id,group] of Object.entries(rec(o.marks,'Markierungen'))){if(!safeKey(id))fail('Markierungen');for(const [key,m] of Object.entries(rec(group,'Markierungen'))){if(!safeKey(key)||!object(m)||!strings(m,['note']))fail('Markierungen');m.hl??=[];
+if(!Array.isArray(m.hl)||m.hl.some(h=>!Array.isArray(h)||!Number.isSafeInteger(h[0])||!Number.isSafeInteger(h[1])||h[0]<0||h[1]<=h[0]||(h[2]!=null&&![0,1,2,3,4].includes(h[2]))))fail('Textmarkierungen');
+if(m.refs!=null&&array(m.refs,'Verweise').some(r=>!object(r)||!safeKey(r.law)||!safeKey(r.key)))fail('Verweise');}}
+if(o.cn!=null&&array(o.cn,'Farbnamen').some(n=>n!=null&&typeof n!=='string'))fail('Farbnamen');
+if(o.scripts!=null)ids(o.scripts,'Skripte',v=>typeof v.name==='string'&&(v.bm==null||Array.isArray(v.bm)));
+if(o.fach!=null)ids(o.fach,'Fächer',v=>typeof v.name==='string'&&strings(v,['kw','code','exam','themen'])&&(v.log==null||Array.isArray(v.log)&&v.log.every(x=>object(x)&&typeof x.d==='string')));
+if(o.tasks!=null)ids(o.tasks,'Aufgaben',v=>typeof v.title==='string'&&strings(v,['due']));
+if(o.links!=null)ids(o.links,'Links',v=>typeof v.url==='string'&&/^(https?:|mailto:)/i.test(v.url)&&strings(v,['title','cat','note']));
+if(o.ev!=null){rec(o.ev,'Kalender');for(const k of ['uni','privat','mine']){o.ev[k]??=[];if(array(o.ev[k],'Kalender').some(e=>k==='mine'?(!object(e)||!Number.isFinite(e.s)||!Number.isFinite(e.e)||!strings(e,['t'])):(!Array.isArray(e)||!Number.isFinite(e[0])||!Number.isFinite(e[1])||typeof e[2]!=='string')))fail('Kalender')}}
+if(o.plan!=null)for(const v of Object.values(rec(o.plan,'Wochenplan')))if(array(v,'Wochenplan').some(b=>!object(b)||typeof b.l!=='string'))fail('Wochenplan');
+if(o.map!=null)rec(o.map,'Terminzuordnungen');if(o.pp!=null){rec(o.pp,'Lernplan-Einstellungen');if(o.pp.po!=null)rec(o.pp.po,'Pomodoro')}if(o.timer!=null)rec(o.timer,'Timer');
+return o}
+function download(blob,name){const a=el('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),30000)}
+const dated=()=>new Date().toISOString().slice(0,10);
+const mkFile=()=>new File([JSON.stringify(S)],'gesetze-export-'+dated()+'.json',{type:'application/json'});
+function setDataBusy(b){dataBusy=b;for(const id of ['#xa','#xi','#replace','#xm','#xe','#xs','#fb','#fo'])$(id).disabled=b;$('#md').setAttribute('aria-busy',String(b))}
+$('#xe').onclick=()=>{const f=mkFile();download(f,f.name);$('#me').textContent='JSON ohne Skript-PDFs erstellt.'};
+const mkAll=async()=>{const snapshot=validateData(JSON.parse(JSON.stringify(S))),pdfs=[],ls={};
+for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k&&k.startsWith('gesetzeapp.')&&k!==K)ls[k]=localStorage.getItem(k)}
+for(const item of snapshot.scripts||[]){const r=await sdb('get',item.id);if(!r?.blob)throw Error('Skriptdatei fehlt: '+item.name);const data=await new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve(reader.result.slice(reader.result.indexOf(',')+1));reader.onerror=reader.onabort=()=>reject(Error('Skriptdatei nicht lesbar: '+item.name));reader.readAsDataURL(r.blob)});pdfs.push({id:item.id,data,th:r.th||''})}
+return new File([JSON.stringify({...snapshot,_pdfs:pdfs,_export:{app:'gesetzeapp',art:'vollstaendig',version:1,zeit:new Date().toISOString(),gesetze:snapshot.laws.length,markierte_paragrafen:Object.values(snapshot.marks).reduce((n,m)=>n+Object.keys(m).length,0)},ls})],'gesetze-vollexport-'+dated()+'.json',{type:'application/json'})};
+$('#xa').onclick=async()=>{if(dataBusy||scriptBusy)return;setDataBusy(true);$('#me').textContent='Vollexport wird erstellt …';try{const f=await mkAll();download(f,f.name);$('#me').textContent='Vollexport mit Skript-PDFs erstellt.'}catch(e){$('#me').textContent='Vollexport fehlgeschlagen: '+e.message}finally{setDataBusy(false)}};
+$('#xs').onclick=async()=>{try{await navigator.share({files:[mkFile()],title:'Gesetze-Export'})}catch(e){if(e.name!=='AbortError')$('#me').textContent='Teilen nicht verfügbar. Bitte JSON herunterladen.'}};
 try{if(navigator.canShare&&navigator.maxTouchPoints>1&&navigator.canShare({files:[new File(['x'],'x.json',{type:'application/json'})]}))$('#xs').style.display=''}catch(e){}
-$('#xi').onclick=()=>$('#xf').click();
-$('#xf').onchange=async e=>{const f=e.target.files[0];e.target.value='';if(!f)return;
-try{const o=JSON.parse(await f.text());if(!Array.isArray(o.laws))throw 0;
-if($('#xm').checked){o.laws.forEach(l=>{const i=S.laws.findIndex(z=>z.id===l.id);if(i>=0)S.laws[i]=l;else S.laws.push(l);S.marks[l.id]=(o.marks||{})[l.id]||{}});if(o.cn)S.cn=o.cn}
-else{S=o;S.marks=S.marks||{}}
-if(o.ls&&typeof o.ls==='object'){try{for(const k in o.ls)if(k.indexOf('gesetzeapp')===0&&k!==K&&typeof o.ls[k]==='string')localStorage.setItem(k,o.ls[k])}catch(e){}}
-if(!S.laws.some(z=>z.id===cur))cur=S.laws[0]&&S.laws[0].id;hbBuild();save();$('#md').style.display='none';draw();toast('Importiert: '+o.laws.length+' Gesetz(e)')}
-catch(x){$('#me').textContent='Das ist keine gültige Export-Datei.'}};
+let importForce=false;
+$('#xi').onclick=()=>{importForce=false;$('#xf').click()};
+$('#replace').onclick=()=>{importForce=true;$('#xf').click()};
+function pdfArchive(o){if(!Object.hasOwn(o,'_pdfs'))return null;
+const scripts=new Map((o.scripts||[]).map(s=>[s.id,s])),seen=new Set();
+if(!Array.isArray(o._pdfs)||o._pdfs.length!==scripts.size)throw Error('PDF-Archiv und Skriptliste stimmen nicht überein.');
+return o._pdfs.map(r=>{if(!r||!scripts.has(r.id)||seen.has(r.id)||typeof r.data!=='string')throw Error('Ungültiger PDF-Eintrag.');seen.add(r.id);
+const raw=atob(r.data);if(!raw.slice(0,1024).includes('%PDF-'))throw Error('Ungültige PDF-Datei: '+scripts.get(r.id).name);
+const bytes=new Uint8Array(raw.length);for(let i=0;i<raw.length;i++)bytes[i]=raw.charCodeAt(i);
+return [r.id,{blob:new Blob([bytes],{type:'application/pdf'}),th:typeof r.th==='string'&&r.th.startsWith('data:image/jpeg;base64,')?r.th:''}]})}
+async function replaceData(o){const archive=pdfArchive(o),oldState=JSON.stringify(S);
+const next={...o};delete next._pdfs;delete next._export;delete next.ls;
+if(!next.theme&&['hell','mittel','dunkel'].includes(o.ls?.['gesetzeapp.theme']))next.theme=o.ls['gesetzeapp.theme'];
+let staged=false;try{if(archive?.length){const ids=new Map();for(const entry of archive){if(await sdb('get',entry[0])){let id;do{id=uid()}while(archive.some(x=>x[0]===id)||await sdb('get',id));ids.set(entry[0],id);entry[0]=id}}
+next.scripts=next.scripts.map(x=>ids.has(x.id)?{...x,id:ids.get(x.id)}:x);await restorePdfs(archive);staged=true}
+if(archive===null){const missing=[];for(const x of next.scripts||[])if(!(await sdb('get',x.id))?.blob)missing.push(x.name);
+if(missing.length&&!confirm(missing.length+' Skript-PDF(s) fehlen in dieser Datei und im Browser. Trotzdem nur den übrigen Stand übernehmen?'))return false}
+if(JSON.stringify(S)!==oldState)throw Error('Der aktuelle Stand wurde während des Imports geändert. Bitte erneut versuchen.');
+store(next);S=next;broken=null;storageProblem='';storageStatus();return true}catch(e){if(staged)try{await dbRun(dbName,'f','readwrite',st=>{for(const [id] of archive)st.delete(id)})}catch(err){console.warn('Zwischengespeicherte PDF-Kopie konnte nicht aufgeräumt werden.',err)}throw e}}
+$('#xf').onchange=async e=>{const f=e.target.files[0];e.target.value='';if(!f||dataBusy||scriptBusy)return;
+const merge=!importForce&&$('#xm').checked;setDataBusy(true);$('#me').textContent='Datei wird geprüft …';
+try{const o=validateData(JSON.parse(await f.text()));if(merge){if(broken!==null)throw Error('Zuerst den defekten Browserstand sichern und einen gültigen Stand wiederherstellen.');
+const current=new Map(S.laws.map(l=>[l.id,l]));const overlap=o.laws.filter(l=>current.has(l.id)).length;
+if(!confirm('Nur Gesetze und ihre Markierungen übernehmen?'+(overlap?' '+overlap+' bestehende Gesetz(e) samt Markierungen werden ersetzt.':'')+(Object.hasOwn(o,'_pdfs')?' Skript-PDFs und Lernplan werden dabei nicht übernommen.':''))){$('#me').textContent='Import abgebrochen.';return}
+for(const l of o.laws)current.set(l.id,l);const next={...S,laws:[...current.values()],marks:{...S.marks}};for(const l of o.laws)next.marks[l.id]=o.marks[l.id]||{};
+if(o.cn)next.cn=o.cn;store(next);S=next;
+}else{if(!confirm('Aktuellen App-Datenstand ersetzen? Vorher bei Bedarf einen Vollexport erstellen.')){$('#me').textContent='Import abgebrochen.';return}if(!await replaceData(o)){$('#me').textContent='Import abgebrochen.';return}}
+resetAfterImport();fsave();setDataBusy(false);closeDialog('#md');toast(merge?'Gesetze importiert.':'Datenstand wiederhergestellt.');
+}catch(x){$('#me').textContent='Import nicht durchgeführt: '+(x?.message||'Unbekannter Fehler')}finally{setDataBusy(false)}};
+function resetAfterImport(){if(!S.laws.some(z=>z.id===cur))cur=S.laws[0]?.id;q='';$('#q').value='';lim=60;delArm=false;pend=null;deckLaw=null;hbBuild();draw()}
 function legend(s){const lg=el('div','mut');lg.style.cssText='margin-top:12px;font-size:13px';lg.append('Gib jeder Farbe eine Bedeutung, z. B. „Tatbestand“ oder „Frist“.');
 CN.forEach((n,c)=>{const r=el('div'),d=el('span'),i=el('input');r.style.cssText='display:flex;gap:6px;align-items:center;margin-top:4px';
 d.style.cssText='width:14px;height:14px;border-radius:50%;flex:none;background:var(--h'+c+')';i.value=(S.cn&&S.cn[c])||'';i.placeholder=n;i.style.cssText='width:100%;min-width:0;padding:2px 6px;font-size:13px';
 i.oninput=()=>{S.cn=S.cn||[];S.cn[c]=i.value;clearTimeout(tt2);tt2=setTimeout(()=>{save();hbBuild()},500)};r.append(d,i);lg.append(r)});s.append(lg)}
 
-function modal(m){mode=m;pendLaw=null;$('#md').style.display='flex';$('#me').textContent=m==='add'?'Empfohlen: XML-Datei (oder die ZIP davon) von gesetze-im-internet.de – so werden Paragrafen, Absätze und Gliederung sicher erkannt.':'';
+function modal(m){if(dataBusy)return;mode=m;pendLaw=null;lawReadToken++;$('#mn').value='';$('#mo').disabled=false;openDialog('#md');$('#me').textContent=m==='add'?'Empfohlen: XML-Datei (oder die ZIP davon) von gesetze-im-internet.de – so werden Paragrafen, Absätze und Gliederung sicher erkannt.':'';
 const add=m==='add';$('#mn').style.display=add?'block':'none';$('#mf').style.display=add?'block':'none';$('#mf').value='';
 $('#mt').textContent=add?'Gesetz hinzufügen':'Daten exportieren / importieren';$('#mb').style.display=add?'none':'flex';
 $('#mx').value='';$('#mx').style.display=add?'block':'none';$('#mo').style.display=add?'':'none';$('#mx').placeholder='Gesetzestext hier einfügen …';
 $('#mo').textContent=add?'Hinzufügen':'Einspielen'}
 $('#bk').onclick=()=>modal('bk');
-$('#mc').onclick=()=>{$('#md').style.display='none'};
+$('#mc').onclick=()=>closeDialog('#md');
 $('#mo').onclick=()=>{
-if(mode==='add'){const n=$('#mn').value.trim(),ps=pendLaw?pendLaw.paras:parse($('#mx').value);
+if(mode!=='add')return;const n=$('#mn').value.trim(),ps=pendLaw?pendLaw.paras:parse($('#mx').value);
 if(!n||!ps.length){$('#me').textContent='Bitte Name eingeben und Text mit Zeilen wie „§ 1 …“ einfügen.';return}
-const id='l'+Date.now();S.laws.push(pendLaw?{id,name:n,title:pendLaw.title,src:'xml',paras:ps}:{id,name:n,paras:ps});pendLaw=null;cur=id;view='read';q='';lim=60;$('#q').value=''}
-else{try{const o=JSON.parse($('#mx').value);if(!Array.isArray(o.laws))throw 0;S=o;cur=S.laws[0]&&S.laws[0].id}catch(e){$('#me').textContent='Das ist kein gültiges Backup.';return}}
-save();$('#md').style.display='none';draw()};
+const id='l'+uid();S.laws.push(pendLaw?{id,name:n,title:pendLaw.title,src:'xml',paras:ps}:{id,name:n,paras:ps});pendLaw=null;cur=id;view='read';q='';lim=60;$('#q').value='';
+save();closeDialog('#md');draw()};
 
-$('#vr').onclick=()=>{view='read';draw()};$('#vs').onclick=()=>{view='sum';draw()};$('#vl').onclick=()=>{view='learn';build();draw()};
+$('#vr').onclick=()=>{view='read';draw()};$('#vs').onclick=()=>{view='sum';draw()};$('#vl').onclick=()=>{view='learn';if(law())build();draw()};
 $('#q').oninput=e=>{q=e.target.value.toLowerCase().trim();lim=60;view='read';draw()};
 const ST=['○ neu','◐ unsicher','● sitzt'];let deck=[],di=0,shown=false,all=false,deckLaw=null;
 function build(){const l=law();if(!l){deck=[];return}const mk=S.marks[l.id]||{};deckLaw=cur;
@@ -371,24 +513,24 @@ if(!shown){const b=el('button','p','Aufdecken');b.onclick=()=>{shown=true;draw()
 else[['Nochmal',0],['Unsicher',1],['Sitzt',2]].forEach(([n,v])=>{const b=el('button',v===2?'p':null,n);b.onclick=()=>{mm.st=v;save();di++;shown=false;draw()};r.append(b)});
 m.append(r)}
 if(window.pdfjsLib)try{pdfjsLib.GlobalWorkerOptions.workerSrc=URL.createObjectURL(new Blob([document.getElementById('pdfw').textContent],{type:'text/javascript'}))}catch(e){}
-$('#mf').onchange=async e=>{const f=e.target.files[0];if(!f)return;const me=$('#me');
-if(/\.(xml|zip)$/i.test(f.name)){me.textContent='Gesetz wird gelesen …';
-try{const x=/\.zip$/i.test(f.name)?await unzipXml(await f.arrayBuffer()):await f.text(),r=parseXml(x);if(!r||!r.paras.length)throw 0;
+$('#mf').onchange=async e=>{const f=e.target.files[0];if(!f)return;const me=$('#me'),token=++lawReadToken;const ok=()=>token===lawReadToken&&mode==='add'&&$('#md').style.display==='flex';$('#mo').disabled=true;
+if(/\.(xml|zip)$/i.test(f.name)){me.textContent='Gesetz wird gelesen …';pendLaw=null;
+try{const x=/\.zip$/i.test(f.name)?await unzipXml(await f.arrayBuffer()):await f.text(),r=parseXml(x);if(!ok())return;if(!r||!r.paras.length)throw 0;
 pendLaw=r;$('#mx').value='';if(!$('#mn').value)$('#mn').value=r.name;me.textContent=r.paras.length+' Paragrafen erkannt'+(r.title?' ('+r.title+')':'')+'. Klicke auf „Hinzufügen“.'}
-catch(x2){pendLaw=null;me.textContent='Diese Datei konnte nicht gelesen werden. Bitte die XML-Datei (oder die ZIP) von gesetze-im-internet.de wählen.'}return}
+catch(x2){if(ok()){pendLaw=null;me.textContent='Diese Datei konnte nicht gelesen werden. Bitte die XML-Datei (oder die ZIP) von gesetze-im-internet.de wählen.'}}finally{if(ok())$('#mo').disabled=false}return}
 pendLaw=null;
-if(!window.pdfjsLib){me.textContent='PDF-Bibliothek konnte nicht geladen werden. Du kannst den Text auch direkt einfügen.';return}
+if(!window.pdfjsLib){me.textContent='PDF-Bibliothek konnte nicht geladen werden. Du kannst den Text auch direkt einfügen.';$('#mo').disabled=false;return}
 me.textContent='PDF wird gelesen …';
-try{const pdf=await pdfjsLib.getDocument({data:await f.arrayBuffer()}).promise;let t='',ly=null;
+let task;try{task=pdfjsLib.getDocument({isEvalSupported:false,data:await f.arrayBuffer()});const pdf=await task.promise;let t='',ly=null;
 for(let i=1;i<=pdf.numPages;i++){const c=await(await pdf.getPage(i)).getTextContent();
 for(const it of c.items){const y=it.transform[5];if(ly!==null&&Math.abs(y-ly)>2&&!t.endsWith('\n'))t+='\n';t+=it.str;if(it.hasEOL)t+='\n';ly=y}t+='\n'}
-$('#mx').value=t;if(!$('#mn').value)$('#mn').value=f.name.replace(/\.pdf$/i,'');
+if(!ok())return;$('#mx').value=t;if(!$('#mn').value)$('#mn').value=f.name.replace(/\.pdf$/i,'');
 me.textContent=pdf.numPages+' Seiten gelesen. Prüfe kurz den Text und klicke auf „Hinzufügen“.'}
-catch(x){me.textContent='PDF konnte nicht gelesen werden (gescannte PDFs ohne Textebene gehen nicht).'}};
+catch(x){if(ok())me.textContent='PDF konnte nicht gelesen werden (gescannte PDFs ohne Textebene gehen nicht).'}finally{if(ok())$('#mo').disabled=false;await task?.destroy().catch(()=>{})}};
 let tocOpen=true,tt,tt2,sumC=-1;
 function toast(msg,undo){const t=$('#ts');t.replaceChildren(msg+' ');if(undo){const b=el('button',null,'Rückgängig');b.onclick=()=>{undo();t.style.display='none'};t.append(b)}t.style.display='block';clearTimeout(tt);tt=setTimeout(()=>{t.style.display='none'},7000)}
 function side(){const s=$('#sb');s.replaceChildren();document.documentElement.dataset.theme=curTheme();s.append(el('div','sbh','Gesetze'));const a=el('button','add','＋ Gesetz hinzufügen');a.onclick=()=>modal('add');s.append(a);
-S.laws.forEach(l=>{const mk=S.marks[l.id]||{},n=l.paras.filter(p=>isM(mk[p.key])).length;
+S.laws.forEach(l=>{const mk=S.marks[l.id]||{},n=Object.values(mk).filter(isM).length;
 const b=el('button','li'+(l.id===cur?' on':''));b.append(el('span',null,l.name),el('small',null,n?n+' ★':l.paras.length+' §'));
 b.title=l.title||l.name;b.onclick=()=>{cur=l.id;delArm=false;lim=60;q='';$('#q').value='';if(view==='learn')build();draw()};s.append(b)})}
 let cutMode=false,cutAt=-1;
@@ -401,19 +543,16 @@ if(cutMode){const n=el('div','tnote');
 if(cutAt<0)n.textContent='Klicke auf den ersten Paragrafen des echten Gesetzestextes (nicht auf einen Eintrag der Inhaltsübersicht).';
 else{n.append('Die '+cutAt+' Einträge vor '+l.paras[cutAt].key+' werden entfernt. ');const y=el('button','p','Entfernen');y.onclick=()=>{l.paras.splice(0,cutAt);cutAt=-1;cutMode=false;save();draw()};n.append(y)}
 d.append(n)}
-const gs=[];l.paras.forEach((p,i)=>{if(p.sec||!gs.length)gs.push({t:p.sec||'',r:[]});gs[gs.length-1].r.push([p,i])});
-const many=gs.length>8,box=el('div','tg');
-gs.forEach(g=>{const single=!g.t&&gs.length===1,sec=single?el('div','tsec'):document.createElement('details');
-if(!single){sec.className='tsec';sec.open=!many;sec.append(el('summary',null,(g.t||'Ohne Abschnitt')+' ('+g.r.length+')'))}
-const lst=el('div','tl');
-g.r.forEach(([p,i])=>{const m=mk[p.key],t=p.text.split('\n')[0].replace(p.key,'').trim(),r=el('button','tr'+(cutAt===i?' on':''));
-r.dataset.s=(p.key+' '+t).toLowerCase();
-r.append(el('span','tk',p.key),el('span','tt',t||'–'),el('span','tm',(m&&(m.star||m.hl.length)?'★':'')+(m&&m.note?' 📝':'')));
-r.onclick=()=>{if(cutMode){cutAt=i;draw()}else go(l.id,p.key)};lst.append(r)});
-sec.append(lst);box.append(sec)});
-fi.oninput=()=>{const s=fi.value.toLowerCase().trim();box.querySelectorAll('.tsec').forEach(sc=>{let any=false;
-sc.querySelectorAll('.tr').forEach(r=>{const ok=!s||r.dataset.s.includes(s);r.style.display=ok?'':'none';if(ok)any=true});
-sc.style.display=any?'':'none';if(s&&any)sc.open=true})};
+let tocLimit=180;const makeGroups=()=>{const gs=[];l.paras.forEach((p,i)=>{if(p.sec||!gs.length)gs.push({t:p.sec||'',r:[]});gs[gs.length-1].r.push([p,i])});
+return gs};const gs=makeGroups(),many=gs.length>8,box=el('div','tg');
+function renderToc(){const filter=fi.value.toLowerCase().trim();let count=0,visible=0;box.replaceChildren();
+for(const g of gs){const single=!g.t&&gs.length===1,lst=el('div','tl');let matches=0;
+for(const [p,i] of g.r){const t=p.text.slice(0,p.text.indexOf('\n')<0?undefined:p.text.indexOf('\n')).replace(p.key,'').trim();if(filter&&!(p.key+' '+t).toLowerCase().includes(filter))continue;matches++;count++;if(visible>=tocLimit)continue;visible++;
+const m=mk[p.key],r=el('button','tr'+(cutAt===i?' on':''));r.append(el('span','tk',p.key),el('span','tt',t||'–'),el('span','tm',(m&&(m.star||m.hl.length)?'★':'')+(m&&m.note?' 📝':'')));
+r.onclick=()=>{if(cutMode){cutAt=i;draw()}else go(l.id,p.key)};lst.append(r)}
+if(!lst.childElementCount)continue;const sec=single?el('div','tsec'):document.createElement('details');if(!single){sec.className='tsec';sec.open=!!filter||!many;sec.append(el('summary',null,(g.t||'Ohne Abschnitt')+' ('+matches+')'))}sec.append(lst);box.append(sec)}
+if(!count)box.append(el('p','mut','Keine Treffer.'));else if(visible<count){const b=el('button',null,'Weitere Einträge · '+visible+' von '+count);b.onclick=()=>{tocLimit+=180;renderToc();box.querySelector('.tr:nth-child(181)')?.focus({preventScroll:true})};box.append(b)}}
+fi.setAttribute('aria-label','Im Inhaltsverzeichnis suchen');fi.oninput=()=>{tocLimit=180;renderToc()};renderToc();
 d.append(box);return d}
 function go(id,key){cur=id;view='read';q='';$('#q').value='';delArm=false;const l=law(),i=l?l.paras.findIndex(p=>p.key===key):-1;if(i<0){draw();return}
 lim=Math.max(lim,i+15);draw();const e=document.querySelector('[data-i="'+i+'"]');if(e){e.scrollIntoView({block:'start'});e.style.outline='2px solid var(--ac)'}}
@@ -424,7 +563,7 @@ function backs(l,key){const r=[];for(const id in S.marks)for(const k in S.marks[
 function chip(r,dir,rm){const L=S.laws.find(z=>z.id===r.law),b=el('button','chip',dir+' '+(L?L.name+' ':'')+r.key);b.onclick=()=>go(r.law,r.key);
 if(!rm)return b;const w=el('span','chipw'),x=el('button','chipx','×');x.title='Verweis entfernen';x.onclick=rm;w.append(b,x);return w}
 function extras(d,l,p,m){const x=el('div','ex'),mk=()=>getM(l,p.key);
-const box=()=>{const t=el('textarea');t.rows=2;t.placeholder='Notiz …';t.value=mk().note||'';let h;t.oninput=()=>{mk().note=t.value;clearTimeout(h);h=setTimeout(save,500)};return t};
+const box=()=>{const t=el('textarea');t.rows=2;t.placeholder='Notiz …';t.value=mk().note||'';t.oninput=()=>{mk().note=t.value;save()};return t};
 if(m.note)x.append(box());const row=el('div','exr');
 if(!m.note){const nb=el('button',null,'📝 Notiz');nb.onclick=()=>{const t=box();x.prepend(t);t.focus();nb.remove()};row.append(nb)}
 (m.refs||[]).forEach(r=>row.append(chip(r,'→',()=>{const mm=mk();mm.refs=mm.refs.filter(z=>!(z.law===r.law&&z.key===r.key));save();draw()})));
@@ -434,7 +573,7 @@ ri.onkeydown=e=>{if(e.key!=='Enter')return;const t=resolve(l,ri.value);if(!t){ri
 const mm=mk();mm.refs=mm.refs||[];if(!mm.refs.some(z=>z.law===t.law&&z.key===t.key))mm.refs.push(t);save();draw()};
 row.append(ri);x.append(row);d.append(x)}
 /*NEW-START*/
-let pendLaw=null;$('#mx').oninput=()=>{pendLaw=null};
+let pendLaw=null,lawReadToken=0;$('#mx').oninput=()=>{pendLaw=null;lawReadToken++;$('#mo').disabled=false};
 function rmHl(l,p,s,e){if(!getSelection().isCollapsed)return;const mm=getM(l,p.key),old=mm.hl.slice();mm.hl=mm.hl.filter(x=>!(x[0]===s&&x[1]===e));save();draw();toast('Markierung entfernt',()=>{getM(l,p.key).hl=old;save();draw()})}
 function frag(box,t,a,hl,l,p){const b=a+t.length;let pos=a;
 for(const[s,e,c]of hl){if(e<=pos||s>=b)continue;const ss=Math.max(s,pos),ee=Math.min(e,b);if(ss>pos)box.append(t.slice(pos-a,ss-a));
@@ -512,13 +651,13 @@ for(const l of L){if(l==='BEGIN:VEVENT'){c={x:[],t:''};continue}if(l==='END:VEVE
 const i=l.indexOf(':');if(i<0)continue;const k=l.slice(0,i).split(';')[0],v=l.slice(i+1);
 if(k==='DTSTART'){c.s=icd(v);c.ad=v.length===8}else if(k==='DTEND')c.e=icd(v);else if(k==='SUMMARY')c.t=v.replace(/\\n/gi,' ').replace(/\\([,;])/g,'$1');else if(k==='RRULE')c.r=v;else if(k==='EXDATE')v.split(',').forEach(x=>c.x.push(icd(x)))}
 const n=Date.now(),R0=n-150*D1,R1=n+150*D1,out=[];
-for(const e of raw){if(e.ad||e.s==null)continue;const du=(e.e||e.s+H1)-e.s;
+for(const e of raw){if(e.ad||e.s==null)continue;const du=(e.e??e.s+H1)-e.s;if(!(du>0))continue;
 const add=t=>{if(e.x.includes(t))return;if(t+du>R0&&t<R1)out.push([t,t+du,e.t])};
 if(!e.r){add(e.s);continue}
-const r={};e.r.split(';').forEach(p=>{const[a,b]=p.split('=');r[a]=b});const iv=+r.INTERVAL||1,un=r.UNTIL?icd(r.UNTIL.length===8?r.UNTIL+'T235959':r.UNTIL):1/0,cnt=+r.COUNT||1/0,b0=new Date(e.s),w0=(b0.getDay()+6)%7;
+const r={};e.r.split(';').forEach(p=>{const[a,b]=p.split('=');r[a]=b});const iv=Math.max(1,Math.min(366,Math.trunc(+r.INTERVAL)||1)),un=r.UNTIL?icd(r.UNTIL.length===8?r.UNTIL+'T235959':r.UNTIL):1/0,cnt=+r.COUNT||1/0,b0=new Date(e.s),w0=(b0.getDay()+6)%7;
 const bd=(r.BYDAY||'').split(',').map(x=>['MO','TU','WE','TH','FR','SA','SU'].indexOf(x.slice(-2))).filter(x=>x>=0);let n2=0;
-if(r.FREQ==='WEEKLY'){const days=(bd.length?bd:[w0]).slice().sort((a,b)=>a-b);for(let k=0,st=false;!st;k+=iv){for(const d of days){const t=new Date(b0.getFullYear(),b0.getMonth(),b0.getDate()+7*k+d-w0,b0.getHours(),b0.getMinutes()).getTime();if(t<e.s)continue;if(t>un||n2>=cnt||t>R1){st=true;break}n2++;add(t)}}}
-else if(r.FREQ==='DAILY'){for(let k=0;;k+=iv){const t=new Date(b0.getFullYear(),b0.getMonth(),b0.getDate()+k,b0.getHours(),b0.getMinutes()).getTime();if(t>un||n2>=cnt||t>R1)break;n2++;add(t)}}
+if(r.FREQ==='WEEKLY'){const days=(bd.length?bd:[w0]).slice().sort((a,b)=>a-b);for(let k=0,st=false;!st&&k<52000;k+=iv){for(const d of days){const t=new Date(b0.getFullYear(),b0.getMonth(),b0.getDate()+7*k+d-w0,b0.getHours(),b0.getMinutes()).getTime();if(t<e.s)continue;if(t>un||n2>=cnt||t>R1){st=true;break}n2++;add(t)}}}
+else if(r.FREQ==='DAILY'){for(let k=0;k<366000;k+=iv){const t=new Date(b0.getFullYear(),b0.getMonth(),b0.getDate()+k,b0.getHours(),b0.getMinutes()).getTime();if(t>un||n2>=cnt||t>R1)break;n2++;add(t)}}
 else add(e.s)}
 return out}
 /* Planer */
@@ -548,7 +687,7 @@ if(f){f.log=f.log||[];if(b.ok)f.log.push({id:uid(),d:ymd(new Date(b.s)),h:+h.toF
 const t=S.tasks.find(x=>x.id===b.tid);if(t)t.spent=Math.max(0,(t.spent||0)+(b.ok?h:-h));save();draw()}
 /* PDF -> Aufgaben */
 async function pdfTasks(f){if(!window.pdfjsLib)return toast('PDF-Bibliothek nicht verfügbar');
-try{const pdf=await pdfjsLib.getDocument({data:await f.arrayBuffer()}).promise;let L=[];
+let task;try{task=pdfjsLib.getDocument({isEvalSupported:false,data:await f.arrayBuffer()});const pdf=await task.promise;let L=[];
 for(let i=1;i<=pdf.numPages;i++){const c=await(await pdf.getPage(i)).getTextContent();let t='',ly=null;for(const it of c.items){const y=it.transform[5];if(ly!==null&&Math.abs(y-ly)>2)t+='\n';t+=it.str;ly=y}L.push(...t.split('\n'))}
 L=L.map(x=>x.trim()).filter(Boolean);
 const hd=/^(Aufgabe|Übung|Fall|Fallstudie|Fallbeispiel|Task|Hausaufgabe|Arbeitsauftrag|Teilaufgabe)\s*\d+[a-z]?\b/i,dt=/(\d{1,2})\.(\d{1,2})\.(\d{4}|\d{2})?/,fr=/(Abgabe|abgeben|bis|Frist|fällig|spätestens)/i;
@@ -558,22 +697,22 @@ const all=L.join(' ').toLowerCase()+' '+f.name.toLowerCase(),gf=(S.fach.find(x=>
 const idx=[];L.forEach((l,i)=>{if(hd.test(l))idx.push(i)});
 let r=idx.map((i,j)=>{const blk=L.slice(i,idx[j+1]??L.length),ti=blk[0].length<25&&blk[1]?blk[0]+' '+blk[1]:blk[0],dl=blk.find(l=>fr.test(l)&&dt.test(l));return{on:true,t:ti.slice(0,110),due:dl?gd(dl):gdue,h:Math.min(6,Math.max(1,Math.round((blk.join(' ').length/500+blk.filter(l=>/^(\(?[a-f]\)|\d+[.)]\s)/i.test(l)).length*.5)*2)/2)),f:gf}});
 if(!r.length)r=[{on:true,t:f.name.replace(/\.pdf$/i,''),due:gdue,h:2,f:gf}];
-imp={name:f.name,r};draw()}catch(e){toast('PDF konnte nicht gelesen werden (gescannte PDFs gehen nicht)')}}
+imp={name:f.name,r};draw()}catch(e){toast('PDF konnte nicht gelesen werden (gescannte PDFs gehen nicht)')}finally{await task?.destroy().catch(()=>{})}}
 function fsel(v,cb){const s=el('select');S.fach.forEach(f=>{const o=el('option',null,f.name||'(ohne Namen)');o.value=f.id;s.append(o)});s.value=v;s.onchange=()=>{cb(s.value);save()};return s}
 /* Ansichten */
 function weekV(m){ini();const w0=mon0(wk),k=ymd(w0),pl=S.plan[k]||[],now=Date.now(),w6=new Date(w0);w6.setDate(w6.getDate()+6);
 const top=el('div','noprint row'),pv=el('button',null,'‹'),nx=el('button',null,'›'),pb=el('button','p','Plan berechnen');
 pv.onclick=()=>{wk--;draw()};nx.onclick=()=>{wk++;draw()};pb.onclick=mkPlan;
 const ti=el('b',null,'KW '+isoWk(w0)+' · '+w0.getDate()+'.'+(w0.getMonth()+1)+'.–'+w6.getDate()+'.'+(w6.getMonth()+1)+'.');
-const tb=el('button',null,'Heute');tb.onclick=()=>{wk=0;draw()};const nt=el('button',null,'＋ Termin');nt.onclick=()=>{const d=new Date();d.setMinutes(0,0,0);d.setHours(d.getHours()+1);edPop({s:d.getTime(),e:d.getTime()+H1,k:'p',mode:'new',t:''},innerWidth/2-140,130)};top.append(pv,ti,nx,tb,nt,pb);m.append(top);
+const tb=el('button',null,'Heute');tb.onclick=()=>{wk=0;draw()};const nt=el('button',null,'＋ Termin');nt.onclick=()=>{const d=new Date();d.setMinutes(0,0,0);d.setHours(d.getHours()+1);edPop({s:d.getTime(),e:d.getTime()+H1,k:'p',mode:'new',t:''},innerWidth/2-140,130)};top.append(pv,ti,nx,tb,nt,pb);if(!phoneQuery.matches)m.append(top);
 const pln=pl.reduce((a,b)=>a+(b.e-b.s),0)/H1,dn=pl.filter(b=>b.ok).reduce((a,b)=>a+(b.e-b.s),0)/H1;
-m.append(el('div','mut',pl.length?'Geplant '+f1(pln)+' h · davon erledigt '+f1(dn)+' h':'Noch kein Plan. Trage im Tab „Fächer“ die Klausurtermine ein (oder lege Aufgaben an), dann „Plan berechnen“.'));
-m.append(calEl(w0,pl,k));
+if(!phoneQuery.matches)m.append(el('div','mut',pl.length?'Geplant '+f1(pln)+' h · davon erledigt '+f1(dn)+' h':'Noch kein Plan. Trage im Tab „Fächer“ die Klausurtermine ein (oder lege Aufgaben an), dann „Plan berechnen“.'));
+if(!phoneQuery.matches)m.append(calEl(w0,pl,k));
 /* Kalender-Import */
 const ci=el('details','para noprint'),cs=el('summary',null,'Kalender importieren (.ics) · Uni '+S.ev.uni.length+' · Privat '+S.ev.privat.length+' Termine');cs.style.cssText='cursor:pointer;font-weight:600';ci.append(cs);
 const cr=el('div','row'),sel=el('select');[['uni','Uni-Stundenplan'],['privat','Privatkalender']].forEach(([v,n])=>{const o=el('option',null,n);o.value=v;sel.append(o)});
 const ff=el('input');ff.type='file';ff.accept='.ics,text/calendar';ff.multiple=true;
-ff.onchange=async()=>{let all=[];for(const f of ff.files)all.push(...icsParse(await f.text()));S.ev[sel.value]=all;save();draw();toast(all.length+' Termine importiert (±5 Monate)')};
+ff.onchange=async()=>{const files=[...ff.files],target=sel.value,prev=S.ev[target];ff.value='';if(!files.length||ff.disabled)return;ff.disabled=true;try{const all=new Map();for(const f of files){const text=await f.text();if(!/^BEGIN:VCALENDAR\s*$/m.test(text)||!/^END:VCALENDAR\s*$/m.test(text))throw Error(f.name+' ist keine vollständige iCalendar-Datei.');for(const entry of icsParse(text))all.set(JSON.stringify(entry),entry)}if(!all.size)throw Error('Keine importierbaren Termine im betrachteten Zeitraum.');if(S.ev[target]!==prev)throw Error('Datenstand inzwischen geändert.');if(prev.length&&!confirm('Vorhandene Termine dieser Quelle durch '+all.size+' neue Termine ersetzen?'))return;S.ev[target]=[...all.values()];save();draw();toast(all.size+' Termine importiert (±5 Monate)')}catch(e){toast('Kalenderimport nicht durchgeführt: '+e.message)}finally{ff.disabled=false}};
 cr.append(sel,ff);ci.append(cr,el('div','mut','Erneutes Importieren ersetzt die Termine der gewählten Quelle. Ganztägige Termine blockieren keine Lernzeit. Uni-Termine ordnest du im Tab „Fächer“ den Modulen zu, sie zählen dann als Vorlesungszeit.'));
 /* Einstellungen */
 const st=el('details','para noprint');st.append(el('summary',null,'Planer-Einstellungen'));st.firstChild.style.cssText='cursor:pointer;font-weight:600';
@@ -597,7 +736,7 @@ ar.append(tt0,fsl,du,hh,el('span','mut','h'),ab);tp.append(ar)}
 const od=!t.done&&t.due&&t.due<ymd(new Date()),ti2=el('span',null,t.title);ti2.style.cssText='flex:1;min-width:140px'+(t.done?';text-decoration:line-through;opacity:.55':'');
 const mt=el('span','mut',fn(t.f)+' · '+(t.due?t.due.split('-').reverse().join('.'):'ohne Frist')+' · '+f1(t.spent||0)+'/'+f1(t.h)+' h');if(od)mt.style.color='#d33';
 const rm=el('button',null,'×');rm.style.cssText='padding:0 8px;background:transparent;color:var(--mut)';rm.onclick=()=>{S.tasks=S.tasks.filter(z=>z!==t);save();draw()};x.append(c,ti2,mt,rm);tp.append(x)});
-m.append(tp,ci,st)}
+if(phoneQuery.matches)phoneWeekUI(m,{w0,w6,k,pl,pv,nx,tb,pb,tp,ci,st});else m.append(tp,ci,st)}
 function fachV(m){ini();const P=S.pp,pass=S.fach.filter(f=>f.pass).reduce((a,f)=>a+(+f.cp||0),0),tot=S.fach.reduce((a,f)=>a+(+f.cp||0),0),eq=S.fach.reduce((a,f)=>a+Math.min(+f.cp||0,ist(f)/P.hpc),0);
 const h=el('div','para');h.append(el('b',null,'Studienfortschritt'));
 const r1=el('div','row');const l1=el('label','mut','Gesamt-CP des Studiengangs ');l1.append(fi('number',P.cp,v=>{P.cp=+v||P.cp;},null,'70px'));const l2=el('label','mut','Stunden pro CP ');l2.append(fi('number',P.hpc,v=>{P.hpc=+v||P.hpc},null,'60px'));r1.append(l1,l2);h.append(r1);
@@ -632,16 +771,21 @@ if(Object.keys(S.map).length){const rs=el('button',null,'Alle Zuordnungen zurüc
 function tmMode(m){const T=S.timer;if(!T||T.mode===m)return;const n=Date.now();if(T.run&&T.ph==='f')T.acc+=n-T.t0;T.mode=m;T.ph='f';T.t0=n;if(m==='p'){T.pe=n+S.pp.po.f*MIN;T.rem=S.pp.po.f*MIN;T.n=0}S.pp.tmode=m;save();draw()}
 /* Skripte */
 let skf='',skq='',sko='last';
-const sdb=(m,k,v)=>new Promise((res,rej)=>{try{const r=indexedDB.open('rubrum-skripte',1);r.onupgradeneeded=()=>r.result.createObjectStore('f');r.onerror=()=>rej(r.error);r.onsuccess=()=>{const st=r.result.transaction('f',m==='get'?'readonly':'readwrite').objectStore('f'),q=m==='get'?st.get(k):m==='put'?st.put(v,k):st.delete(k);q.onsuccess=()=>res(q.result);q.onerror=()=>rej(q.error)}}catch(e){rej(e)}});
+function dbRun(name,storeName,mode,job){return new Promise((resolve,reject)=>{
+const r=indexedDB.open(name,1);r.onupgradeneeded=()=>r.result.createObjectStore(storeName);r.onerror=()=>reject(r.error);r.onblocked=()=>reject(Error('Datenbank von einem anderen Fenster blockiert.'));
+r.onsuccess=()=>{const db=r.result;let tx,q;try{tx=db.transaction(storeName,mode);tx.oncomplete=()=>{db.close();resolve(q?.result)};tx.onabort=()=>{db.close();reject(tx.error||Error('Speichervorgang abgebrochen.'))};q=job(tx.objectStore(storeName))}catch(e){try{tx?.abort()}catch{}db.close();reject(e)}}})}
+const dbName='rubrum-skripte';
+const sdb=(m,k,v)=>dbRun(dbName,'f',m==='get'?'readonly':'readwrite',st=>m==='get'?st.get(k):m==='put'?st.put(v,k):st.delete(k));
+const restorePdfs=entries=>dbRun(dbName,'f','readwrite',st=>{for(const [id,record] of entries)st.add(record,id)});
 const fmtB=b=>b>1048576?f1(b/1048576)+' MB':Math.max(1,Math.round(b/1024))+' KB';
 function guessF(name){const tk=new Set(nrm(name.replace(/\.pdf$/i,'')).split(' '));let b=0,id='';S.fach.forEach(f=>{const nt=nrm(f.name).split(' ').filter(w=>w&&!SW.has(w)),cd=nrm(f.code);let sc=0;if(cd&&tk.has(cd))sc=100;else if(nt.length&&nt.every(w=>tk.has(w)))sc=nt.join('').length;if(sc>b){b=sc;id=f.id}});return id}
-async function skAdd(files){ini();if(!window.pdfjsLib)return toast('PDF-Bibliothek nicht verfügbar');let n=0,un=0;
+async function skAdd(files){if(dataBusy||scriptBusy||broken!==null)return toast('Speichervorgang läuft oder der Browserstand muss wiederhergestellt werden.');ini();if(!window.pdfjsLib)return toast('PDF-Bibliothek nicht verfügbar');scriptBusy=true;let n=0,un=0;try{
 for(const f of files){if(!/\.pdf$/i.test(f.name)&&f.type!=='application/pdf'){toast(f.name+': bitte als PDF exportieren');continue}
-try{const pdf=await pdfjsLib.getDocument({data:new Uint8Array(await f.arrayBuffer())}).promise;let th='';
+let task;try{task=pdfjsLib.getDocument({isEvalSupported:false,data:new Uint8Array(await f.arrayBuffer())});const pdf=await task.promise;let th='';
 try{const pg=await pdf.getPage(1),v0=pg.getViewport({scale:1}),v=pg.getViewport({scale:240/v0.width}),cv=document.createElement('canvas');cv.width=v.width;cv.height=v.height;await pg.render({canvasContext:cv.getContext('2d'),viewport:v}).promise;th=cv.toDataURL('image/jpeg',.72)}catch(e){}
-const id=uid(),fid=guessF(f.name);await sdb('put',id,{blob:f,th});S.scripts.push({id,name:f.name.replace(/\.pdf$/i,''),f:fid,pages:pdf.numPages,size:f.size,added:Date.now(),opened:0,last:1,bm:[]});if(!fid)un++;n++;pdf.destroy()}
-catch(e){toast(f.name+' konnte nicht gespeichert werden')}}
-save();draw();if(n)toast(n+' Skript'+(n>1?'e':'')+' hinzugefügt'+(un?' – '+un+' ohne Fach':''))}
+const id=uid(),fid=guessF(f.name);await sdb('put',id,{blob:f,th});S.scripts.push({id,name:f.name.replace(/\.pdf$/i,''),f:fid,pages:pdf.numPages,size:f.size,added:Date.now(),opened:0,last:1,bm:[]});if(!fid)un++;n++}
+catch(e){toast(f.name+' konnte nicht gespeichert werden')}finally{await task?.destroy().catch(()=>{})}}
+save();draw();if(n)toast(n+' Skript'+(n>1?'e':'')+' hinzugefügt'+(un?' – '+un+' ohne Fach':''))}finally{scriptBusy=false}}
 function skrV(m){ini();const all=S.scripts,top=el('div','row'),h=el('h2',null,'Skripte');h.style.margin='0';top.style.justifyContent='space-between';
 const inp=el('input');inp.type='file';inp.accept='.pdf,application/pdf';inp.multiple=true;inp.style.display='none';inp.onchange=()=>{skAdd([...inp.files]);inp.value=''};
 const ub=el('button','p','＋ Skripte hochladen');ub.onclick=()=>inp.click();top.append(h,ub,inp);m.append(top);
@@ -650,12 +794,12 @@ m.ondragover=e=>e.preventDefault();m.ondrop=e=>{e.preventDefault();if(e.dataTran
 const tb=el('div','row'),q=fi('search',skq,v=>{skq=v;rg()},'Skript suchen …','220px'),so=el('select');[['last','Zuletzt geöffnet'],['name','Name'],['new','Neueste zuerst']].forEach(([v,n])=>{const o=el('option',null,n);o.value=v;so.append(o)});so.value=sko;so.onchange=()=>{sko=so.value;rg()};
 const chips=el('div','row'),gw=el('div');tb.append(q,so);m.append(tb,chips,gw);
 const nof=x=>!S.fach.some(f=>f.id===x.f);
-function card(s){const c=el('div','skc'),im=el('div','skt','PDF');im.onclick=()=>skOpen(s.id);sdb('get',s.id).then(r=>{if(r&&r.th){const i=el('img');i.src=r.th;im.replaceChildren(i)}}).catch(()=>{});
+function card(s){const c=el('div','skc'),im=el('button','skt','PDF');im.setAttribute('aria-label','Skript öffnen: '+s.name);im.onclick=()=>skOpen(s.id);sdb('get',s.id).then(r=>{if(im.isConnected&&r&&r.th){const i=el('img');i.alt='';i.src=r.th;im.replaceChildren(i)}}).catch(()=>{});
 const t=el('b','skn',s.name);t.title=s.name;t.onclick=()=>skOpen(s.id);
 const sl=el('select');[['','Ohne Fach'],...S.fach.map(f=>[f.id,f.name])].forEach(([v,n])=>{const o=el('option',null,n);o.value=v;sl.append(o)});sl.value=nof(s)?'':s.f;sl.onchange=()=>{s.f=sl.value;save();rg()};
 const rn=el('button',null,'✎'),dl=el('button',null,'🗑'),ar=el('div','row');ar.style.margin=0;[rn,dl].forEach(b=>b.style.cssText='padding:3px 10px;font-size:13px');
 rn.title='Umbenennen';dl.title='Löschen';rn.onclick=()=>{const v=prompt('Name des Skripts',s.name);if(v&&v.trim()){s.name=v.trim();save();rg()}};
-dl.onclick=async()=>{if(confirm('Skript „'+s.name+'“ löschen?')){try{await sdb('del',s.id)}catch(e){}S.scripts=S.scripts.filter(z=>z!==s);save();draw()}};
+dl.onclick=async()=>{if(dataBusy||scriptBusy||broken!==null)return;if(!confirm('Skript „'+s.name+'“ löschen?'))return;scriptBusy=true;try{const next={...S,scripts:S.scripts.filter(z=>z!==s)};store(next);S=next;fsave();draw();await sdb('del',s.id)}catch(e){toast('Skript konnte nicht vollständig gelöscht werden.')}finally{scriptBusy=false}};
 ar.append(rn,dl);c.append(im,t,el('div','mut',s.pages+' S. · '+fmtB(s.size)+((s.bm||[]).length?' · ★ '+s.bm.length:'')),bar((s.last||1)/s.pages*100),el('div','mut',s.opened?'Seite '+s.last+' von '+s.pages:'Noch nicht geöffnet'),sl,ar);return c}
 function rg(){chips.replaceChildren();gw.replaceChildren();
 [['','Alle',all.length],...S.fach.map(f=>[f.id,f.name,all.filter(x=>x.f===f.id).length]).filter(c=>c[2]),['-','Ohne Fach',all.filter(nof).length]].filter(c=>c[2]||c[0]==='').forEach(([v,n,k])=>{const b=el('button',skf===v?'on':null,n+' · '+k);b.style.cssText='border-radius:99px;padding:5px 12px;font-size:13px';b.onclick=()=>{skf=v;rg()};chips.append(b)});
@@ -664,16 +808,17 @@ const k=nrm(skq),fl=all.filter(s=>(skf===''||(skf==='-'?nof(s):s.f===skf))&&(!k|
 const grp=(t,a)=>{if(!a.length)return;if(skf==='')gw.append(el('div','skh',t+' · '+a.length));const g=el('div','skg');srt(a).forEach(s=>g.append(card(s)));gw.append(g)};
 if(skf==='')S.fach.forEach(f=>grp(f.name,fl.filter(s=>s.f===f.id)));grp('Ohne Fach',skf===''?fl.filter(nof):fl);if(!fl.length)gw.append(el('div','mut','Keine Treffer.'))}
 rg()}
-async function skOpen(id){const s=S.scripts.find(x=>x.id===id);if(!s)return;let rec;try{rec=await sdb('get',id)}catch(e){}
+let closeReader=null,readerRequest=0;
+async function skOpen(id){const request=++readerRequest;const s=S.scripts.find(x=>x.id===id);if(!s)return;let rec;try{rec=await sdb('get',id)}catch(e){}
 if(!rec||!rec.blob)return toast('Die Datei ist auf diesem Gerät nicht gespeichert – bitte erneut hochladen.');
-let pdf;try{pdf=await pdfjsLib.getDocument({data:new Uint8Array(await rec.blob.arrayBuffer())}).promise}catch(e){return toast('PDF konnte nicht geöffnet werden')}
-document.querySelectorAll('#sv').forEach(x=>x.remove());const ov=el('div'),bar0=el('div','svb'),body=el('div','svc'),N=pdf.numPages;ov.id='sv';
+let pdf,task;try{task=pdfjsLib.getDocument({isEvalSupported:false,data:new Uint8Array(await rec.blob.arrayBuffer())});pdf=await task.promise}catch(e){await task?.destroy().catch(()=>{});return toast('PDF konnte nicht geöffnet werden')}
+if(request!==readerRequest||view!=='skr'){await pdf.destroy();return}closeReader?.(false);const ov=el('div'),bar0=el('div','svb'),body=el('div','svc'),N=pdf.numPages;ov.id='sv';
 let z=1,cur=Math.min(N,s.last||1),io=null,ratio=1.41,W=800,txt=null,tok=0,st=0;
-const r1=(await pdf.getPage(1)).getViewport({scale:1});ratio=r1.height/r1.width;
-const kd=e=>{if(e.key==='Escape')cl()},cl=()=>{tok++;document.removeEventListener('keydown',kd);if(io)io.disconnect();ov.remove();try{pdf.destroy()}catch(e){}save();if(view==='skr')draw()};document.addEventListener('keydown',kd);
-const un=d=>{d._r=0;d.replaceChildren()},rn=d=>{if(d._r)return;d._r=1;(async()=>{const pg=await pdf.getPage(+d.dataset.i),v1=pg.getViewport({scale:1}),v=pg.getViewport({scale:W/v1.width*Math.min(2,devicePixelRatio||1)}),cv=document.createElement('canvas');cv.width=v.width;cv.height=v.height;cv.style.cssText='width:100%;height:100%;display:block';d.style.height=W*v1.height/v1.width+'px';await pg.render({canvasContext:cv.getContext('2d'),viewport:v}).promise;if(d._r)d.replaceChildren(cv)})().catch(()=>{d._r=0})};
+try{const r1=(await pdf.getPage(1)).getViewport({scale:1});ratio=r1.height/r1.width}catch(e){await pdf.destroy().catch(()=>{});return toast('Erste PDF-Seite nicht lesbar.')}if(request!==readerRequest||view!=='skr'){await pdf.destroy();return}
+const kd=e=>{if(e.key==='Escape')cl()},cl=(redraw=true)=>{if(closeReader!==cl)return;closeReader=null;tok++;document.removeEventListener('keydown',kd);io?.disconnect();for(const d of body.children)un(d);ov.remove();pdf.destroy().catch(()=>{});save();if(redraw&&view==='skr')draw()};closeReader=cl;document.addEventListener('keydown',kd);
+const un=d=>{const r=d._r;d._r=null;r?.task?.cancel();d.replaceChildren()},rn=d=>{if(d._r)return;const r=d._r={};(async()=>{const pg=await pdf.getPage(+d.dataset.i);if(d._r!==r)return;const v1=pg.getViewport({scale:1}),v=pg.getViewport({scale:Math.min(W/v1.width*Math.min(2,devicePixelRatio||1),Math.sqrt(8000000/(v1.width*v1.height)))}),cv=document.createElement('canvas');cv.width=v.width;cv.height=v.height;cv.style.cssText='width:100%;height:100%;display:block';d.style.height=W*v1.height/v1.width+'px';r.task=pg.render({canvasContext:cv.getContext('2d'),viewport:v});await r.task.promise;if(d._r===r)d.replaceChildren(cv)})().catch(()=>{if(d._r===r){d._r=null;d.textContent='Seite konnte nicht gerendert werden.'}})};
 const go=n=>{cur=Math.max(1,Math.min(N,n));const d=body.children[cur-1];if(d)body.scrollTop=d.offsetTop-8;pin.value=cur;star()};
-const build=()=>{if(io)io.disconnect();body.replaceChildren();W=Math.round(Math.min(body.clientWidth-32,900)*z);io=new IntersectionObserver(es=>es.forEach(e=>e.isIntersecting?rn(e.target):un(e.target)),{root:body,rootMargin:'700px 0px'});
+const build=()=>{io?.disconnect();for(const d of body.children)un(d);body.replaceChildren();W=Math.max(80,Math.round(Math.min(body.clientWidth-32,900)*z));io=new IntersectionObserver(es=>es.forEach(e=>e.isIntersecting?rn(e.target):un(e.target)),{root:body,rootMargin:'700px 0px'});
 for(let i=1;i<=N;i++){const d=el('div','pg');d.dataset.i=i;d.style.cssText='width:'+W+'px;height:'+W*ratio+'px';body.append(d);io.observe(d)}};
 const xb=el('button',null,'✕ Schließen'),tt=el('b','svt',s.name),pin=el('input'),pn=el('button',null,'‹'),px=el('button',null,'›'),zm=el('button',null,'−'),zp=el('button',null,'＋'),sb=el('button',null,'☆ Seite'),bl=el('button',null,'Lesezeichen'),sq=el('input');
 pin.type='number';pin.min=1;pin.max=N;sq.type='search';sq.placeholder='Im Skript suchen …';tt.style.cssText='flex:1;min-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap';
@@ -747,9 +892,9 @@ while((m=re.exec(t))){const name=m[2].trim();if(seen.has(m[1]))continue;seen.add
 if(/Bachelor-Thesis\s+6\s+10/.test(t))R.push({on:true,name:'Bachelor-Thesis',cp:10,sem:6,themen:''});return{R,tot}}
 /*MHT-END*/
 async function mhPdf(f){if(!window.pdfjsLib)return toast('PDF-Bibliothek nicht verfügbar');
-try{const pdf=await pdfjsLib.getDocument({data:await f.arrayBuffer()}).promise;let t='';for(let i=1;i<=pdf.numPages;i++){const c=await(await pdf.getPage(i)).getTextContent();t+=' '+c.items.map(x=>x.str).join(' ')}
+let task;try{task=pdfjsLib.getDocument({isEvalSupported:false,data:await f.arrayBuffer()});const pdf=await task.promise;let t='';for(let i=1;i<=pdf.numPages;i++){const c=await(await pdf.getPage(i)).getTextContent();t+=' '+c.items.map(x=>x.str).join(' ')}
 const{R,tot}=mhText(t);if(!R.length)return toast('Keine Module erkannt – schick mir die Datei, dann passe ich den Import an');
-if(tot){ini();S.pp.cp=tot}const s1=R.some(x=>x.sem===1)?'1':'';R.forEach(x=>{x.on=!s1||x.sem===1});mh={name:f.name.length>40?'Modulhandbuch (PDF)':f.name,r:R,sem:s1};draw()}catch(e){toast('PDF konnte nicht gelesen werden')}}
+if(tot){ini();S.pp.cp=tot}const s1=R.some(x=>x.sem===1)?'1':'';R.forEach(x=>{x.on=!s1||x.sem===1});mh={name:f.name.length>40?'Modulhandbuch (PDF)':f.name,r:R,sem:s1};draw()}catch(e){toast('PDF konnte nicht gelesen werden')}finally{await task?.destroy().catch(()=>{})}}
 /* Modulhandbuch (HTML) */
 function mhParse(html,name){const doc=new DOMParser().parseFromString(html,'text/html'),tx=n=>(n.textContent||'').replace(/\s+/g,' ').trim(),num=s=>{const m=(s||'').match(/(\d+(?:[.,]\d+)?)/);return m?+m[1].replace(',','.'):0},R=[],seen=new Set();
 const CP=/\b(cp|ects|credits?|leistungspunkte?|lp)\b/i,NM=/modul|bezeichnung|veranstaltung|titel|fach|lehrveranst/i;
@@ -813,30 +958,30 @@ const hh=el('h2',null,'Karteikarten');hh.style.margin='24px 0 10px';m.append(hh)
 $('#vk').onclick=()=>{view='skr';draw()};$('#vw').onclick=()=>{view='week';draw()};$('#vf').onclick=()=>{view='fach';draw()};$('#vn').onclick=()=>{view='links';draw()};
 /*WOCHE-END*/
 
-const FS=!!(window.showSaveFilePicker&&window.showOpenFilePicker);let fh=null,ft=null,fstat='';
-const FT=[{description:'Gesetze-Daten',accept:{'application/json':['.json']}}];
-function idb(m,v){return new Promise((res,rej)=>{const r=indexedDB.open('gesetzeapp',1);r.onupgradeneeded=()=>r.result.createObjectStore('h');r.onerror=()=>rej(r.error);
-r.onsuccess=()=>{const st=r.result.transaction('h',m==='get'?'readonly':'readwrite').objectStore('h'),q=m==='get'?st.get('fh'):st.put(v,'fh');q.onsuccess=()=>res(q.result);q.onerror=()=>rej(q.error)}})}
-function fui(){const b=$('#fb'),o=$('#fo');
-if(!FS){b.style.display=o.style.display='none';$('#bd').style.display='';return}
-if(fh&&fstat==='ok'){b.textContent='💾 '+fh.name+' ✓';o.style.display='none'}
-else if(fh){b.textContent=fstat==='err'?'⚠ Datei nicht beschreibbar – neu verbinden':'Datendatei verbinden';o.style.display='none'}
-else{b.textContent='Datendatei anlegen';o.style.display=''}}
-async function fwrite(){if(!fh||fstat!=='ok')return;
-try{const w=await fh.createWritable();await w.write(JSON.stringify(S));await w.close()}catch(e){fstat='err';fui()}}
-function fsave(){clearTimeout(ft);ft=setTimeout(fwrite,400)}
-async function fload(){const o=JSON.parse(await(await fh.getFile()).text());if(!Array.isArray(o.laws))throw 0;
-S=o;cur=S.laws[0]&&S.laws[0].id;fstat='ok'}
-$('#fb').onclick=async()=>{try{
-if(fh&&fstat==='ok'){await fwrite();return}
-if(fh){if(await fh.requestPermission({mode:'readwrite'})!=='granted')return;await fload()}
-else{fh=await showSaveFilePicker({suggestedName:'gesetze-daten.json',types:FT});fstat='ok';await idb('put',fh);await fwrite()}
-fui();draw()}catch(e){if(e&&e.name!=='AbortError'){fstat='err'}fui()}};
-$('#fo').onclick=async()=>{try{const[x]=await showOpenFilePicker({types:FT});
-if(await x.requestPermission({mode:'readwrite'})!=='granted')return;fh=x;await fload();await idb('put',fh);save();fui();draw()}
-catch(e){if(!fstat)fh=null;fui()}};
-$('#bd').onclick=()=>{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(S)],{type:'application/json'}));a.download='gesetze-backup-'+new Date().toISOString().slice(0,10)+'.json';a.click()};
-
+const FS=!!(window.showSaveFilePicker&&window.showOpenFilePicker);let fh=null,ft=null,fstat='',fileRevision=null,writes=Promise.resolve(),connecting=false;
+const FT=[{description:'Rubrum-Daten',accept:{'application/json':['.json']}}];
+const idb=(m,v)=>dbRun('gesetzeapp','h',m==='get'?'readonly':'readwrite',st=>m==='get'?st.get('fh'):st.put(v,'fh'));
+function fui(){const b=$('#fb'),o=$('#fo');b.hidden=o.hidden=!FS;$('#bd').hidden=false;
+b.textContent=!fh?'Datendatei anlegen':fstat==='ok'?'Jetzt speichern · '+fh.name:fstat==='err'?'Datei erneut verbinden':'Datendatei verbinden';
+$('#file-status').textContent=fstat==='ok'?'Verbunden: '+fh.name+' · JSON ohne PDFs':fh?'Datei nicht aktiv. Beim Verbinden wird der Dateiinhalt zuerst geprüft.':FS?'Keine Datendatei verbunden.':'Dateiverbindung nicht verfügbar. Verwende Import und Export.';
+$('#gear').dataset.s=FS?(fstat==='ok'?'ok':'warn'):''}
+function fwrite(){clearTimeout(ft);if(!fh||fstat!=='ok'||connecting||broken!==null)return writes;const handle=fh;
+return writes=writes.then(async()=>{if(handle!==fh||fstat!=='ok'||connecting)return;let w;try{const data=JSON.stringify(S);const actual=await (await handle.getFile()).text();if(actual!==fileRevision)throw Error('Datei wurde außerhalb von Rubrum geändert.');if(data===actual)return;w=await handle.createWritable();await w.write(data);await w.close();fileRevision=data}catch(e){try{await w?.abort()}catch{}if(handle===fh){fstat='err';fui();toast('Datendatei nicht gespeichert: '+e.message+' Bitte Export erstellen.')}}})}
+function fsave(){clearTimeout(ft);ft=setTimeout(fwrite,240)}
+async function connect(open){if(connecting||dataBusy||scriptBusy)return;connecting=true;setDataBusy(true);const state=JSON.stringify(S);
+try{if(!open&&fh&&fstat==='ok'){connecting=false;await fwrite();return}
+const handle=open?(await showOpenFilePicker({types:FT}))[0]:fh||await showSaveFilePicker({suggestedName:'gesetze-daten.json',types:FT});
+if(await handle.requestPermission({mode:'readwrite'})!=='granted')throw Error('Schreibberechtigung fehlt.');
+const raw=await (await handle.getFile()).text();await writes;if(state!==JSON.stringify(S))throw Error('Der App-Datenstand wurde inzwischen geändert.');
+if(raw.trim()){const next=validateData(JSON.parse(raw));if(!confirm('„'+handle.name+'“ laden und den aktuellen Stand ersetzen?'))return;if(!await replaceData(next))return;resetAfterImport()}
+else if(open||handle===fh)throw Error('Die gewählte Datei ist leer.');
+else if(broken!==null)throw Error('Bitte zuerst den beschädigten Browserstand sichern und wiederherstellen.');
+clearTimeout(ft);fh=handle;fileRevision=raw;fstat='ok';connecting=false;fui();if(!raw.trim())await fwrite();
+try{await idb('put',fh)}catch(e){toast('Datei ist für diese Sitzung verbunden, aber die Verbindung wurde nicht vorgemerkt.')}
+}catch(e){if(e?.name!=='AbortError')toast('Datendatei nicht verbunden: '+e.message)}finally{connecting=false;setDataBusy(false);fui()}}
+$('#fb').onclick=()=>connect(false);$('#fo').onclick=()=>connect(true);
+$('#bd').onclick=()=>{const f=mkFile();download(f,f.name)};
+$('#raw-backup').onclick=()=>{if(broken!==null)download(new Blob([broken],{type:'application/json'}),'rubrum-rohdaten-'+dated()+'.json')};
 const THEMES=[['hell','Hell','Cream · Ink · Burnt Orange',['#F3EEE3','#111111','#D9541E']],['mittel','Mittel','Navy · Hot Pink',['#0F1B3D','#F2EFE8','#FF3D8B']],['dunkel','Dunkel','Charcoal · Sand · Electric Blue',['#1E1E1C','#D8CBB3','#2F6BFF']]];
 function curTheme(){let t=S.theme;if(!t){try{t=localStorage.getItem('gesetzeapp.theme')}catch(e){}}
 if(!THEMES.some(x=>x[0]===t))t=(window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches)?'dunkel':'hell';return t}
@@ -844,12 +989,53 @@ function buildSet(){const th=$('#th');th.replaceChildren();
 THEMES.forEach(([id,n,sub,cs])=>{const b=el('button','tile'+(curTheme()===id?' on2':'')),sw=el('span','sw');cs.forEach(c=>{const i=el('i');i.style.background=c;sw.append(i)});
 b.append(sw,el('b',null,n),el('small',null,sub));b.onclick=()=>{S.theme=id;try{localStorage.setItem('gesetzeapp.theme',id)}catch(e){}save();draw();buildSet()};th.append(b)});
 const lg=$('#lg');lg.replaceChildren();legend(lg)}
-$('#gear').onclick=()=>{buildSet();$('#st').style.display='flex'};
-$('#stx').onclick=()=>{$('#st').style.display='none'};
-$('#st').onclick=e=>{if(e.target.id==='st')$('#st').style.display='none'};
-document.addEventListener('keydown',e=>{if(e.key==='Escape')$('#st').style.display='none'});
-{const _f=fui;fui=function(){_f();const g=$('#gear');if(g)g.dataset.s=FS?(fh&&fstat==='ok'?'ok':'warn'):''}}
-(async()=>{if(FS){try{const x=await idb('get');if(x){fh=x;if(await x.queryPermission({mode:'readwrite'})==='granted')await fload()}}catch(e){fstat='err'}}fui();draw()})();
+const dialogFocus=new Map();
+function layers(){const md=$('#md'),st=$('#st'),front=md.style.display==='flex'?md:st.style.display==='flex'?st:null;for(const t of [$('#app'),document.querySelector('header'),st,md])t.inert=!!front&&t!==front}
+function openDialog(id){const d=$(id);dialogFocus.set(d,document.activeElement);d.style.display='flex';layers();requestAnimationFrame(()=>{if(d.style.display==='flex')d.querySelector(id==='#md'?(mode==='add'?'#mn':'#xa'):'#stx').focus()})}
+function closeDialog(id){const d=$(id);if(d.style.display!=='flex'||id==='#md'&&dataBusy)return;d.style.display='none';if(id==='#md')lawReadToken++;layers();const prev=dialogFocus.get(d);dialogFocus.delete(d);if(prev?.isConnected)prev.focus()}
+$('#gear').onclick=()=>{buildSet();openDialog('#st')};$('#stx').onclick=()=>closeDialog('#st');
+for(const id of ['#st','#md'])$(id).onclick=e=>{if(e.target===$(id))closeDialog(id)};
+document.addEventListener('keydown',e=>{const id=$('#md').style.display==='flex'?'#md':$('#st').style.display==='flex'?'#st':null;if(!id)return;if(e.key==='Escape'){e.preventDefault();closeDialog(id)}else if(e.key==='Tab'){const a=[...$(id).querySelectorAll('button,input,select,textarea,a[href]')].filter(x=>!x.disabled&&x.getClientRects().length);if(!a.length)return;if(e.shiftKey&&document.activeElement===a[0]){e.preventDefault();a.at(-1).focus()}else if(!e.shiftKey&&document.activeElement===a.at(-1)){e.preventDefault();a[0].focus()}}});
+(async()=>{if(!FS)return;try{const x=await idb('get');if(!x||fh||connecting)return;fh=x;fstat='pending';if(broken===null&&await x.queryPermission({mode:'readwrite'})==='granted'&&!connecting&&fh===x){const raw=await (await x.getFile()).text();if(!connecting&&fh===x&&raw===JSON.stringify(S)){fileRevision=raw;fstat='ok'}}}catch{if(fh&&!connecting)fstat='err'}finally{fui()}})();
+function navState(){for(const [id,v] of Object.entries({vr:'read',vs:'sum',vl:'learn',vk:'skr',vw:'week',vf:'fach',vn:'links'}))$('#'+id).setAttribute('aria-pressed',String(view===v))}
+$('#brand-icon').src=document.querySelector('link[rel=icon]').href;fui();storageStatus();
+
+/* Phone presentation only; shared planner, editors and persistence. */
+const phoneQuery=matchMedia('(any-pointer: coarse) and (max-width: 640px), (any-pointer: coarse) and (max-height: 520px) and (max-width: 1000px) and (orientation: landscape)');
+const phoneNav=el('nav');phoneNav.id='phone-nav';phoneNav.hidden=true;phoneNav.setAttribute('aria-label','Mobile Navigation');$('#app').append(phoneNav);
+const phoneMore=el('details','phone-more'),phoneSummary=el('summary',null,'Mehr'),phoneMenu=el('div','phone-menu');phoneMore.append(phoneSummary,phoneMenu);
+const phoneButtons={};
+function phoneButton(label,id,host,after){const b=el('button',null,label);b.type='button';b.onclick=()=>{phoneMore.open=false;$('#'+id).click();window.scrollTo(0,0);after?.()};host.append(b);return b}
+phoneButtons.week=phoneButton('Plan','vw',phoneNav);phoneButton('Aufgaben','vw',phoneNav,()=>{const d=$('#phone-tools');if(d){d.open=true;$('#phone-task-title').focus({preventScroll:true});d.scrollIntoView({block:'start'})}});
+phoneButtons.fach=phoneButton('Fächer','vf',phoneNav);phoneNav.append(phoneMore);
+for(const [v,id,label] of [['read','vr','Gesetze lesen'],['sum','vs','Markierungen'],['learn','vl','Lernmodus'],['skr','vk','Skriptbibliothek'],['links','vn','Links']])phoneButtons[v]=phoneButton(label,id,phoneMenu,()=>$('#m').focus({preventScroll:true}));
+$('#m').tabIndex=-1;
+function phoneNavState(){if(!phoneQuery.matches)return;document.documentElement.dataset.phoneView=view;for(const [v,b] of Object.entries(phoneButtons)){if(v===view)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current')}phoneSummary.classList.toggle('phone-current',view!=='week'&&view!=='fach')}
+function phoneMode(){document.documentElement.classList.toggle('rubrum-phone',phoneQuery.matches);phoneNav.hidden=!phoneQuery.matches;if(!phoneQuery.matches)phoneMore.open=false}
+phoneMode();if(phoneQuery.matches)view='week';phoneQuery.addEventListener('change',()=>{phoneMode();draw()});
+document.addEventListener('pointerdown',e=>{if(phoneMore.open&&!phoneMore.contains(e.target))phoneMore.open=false});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&phoneMore.open){phoneMore.open=false;phoneSummary.focus()}});
+let phoneDay,phoneWeek,phoneToolsOpen=false,phoneGridOpen=false;
+const phoneLongDate=new Intl.DateTimeFormat('de-DE',{weekday:'long',day:'numeric',month:'long'}),phoneShortDate=new Intl.DateTimeFormat('de-DE',{day:'numeric',month:'short'});
+function phoneWeekUI(m,{w0,w6,k,pl,pv,nx,tb,pb,tp,ci,st}){
+ const today=ymd(new Date());const days=Array.from({length:7},(_,i)=>new Date(w0.getFullYear(),w0.getMonth(),w0.getDate()+i));
+ if(phoneWeek!==k){phoneWeek=k;phoneDay=days.findIndex(d=>ymd(d)===today);if(phoneDay<0)phoneDay=0}
+ const day=days[phoneDay],end=new Date(day.getFullYear(),day.getMonth(),day.getDate()+1);
+ const events=[...S.ev.uni.map(([s,e,t])=>({s,e,t,k:'u',mode:'imp'})),...S.ev.privat.map(([s,e,t])=>({s,e,t,k:'p',mode:'imp'})),...S.ev.mine.map(ref=>({...ref,ref,mode:'mine'})),...pl.map(ref=>({s:ref.s,e:ref.e,t:ref.l.startsWith('Lernen:')?ref.l:fn(ref.f)+': '+ref.l,k:'l',ref,mode:'bl',wk:k}))].sort((a,b)=>a.s-b.s||a.e-b.e);
+ const onDay=d=>{const after=new Date(d.getFullYear(),d.getMonth(),d.getDate()+1);return events.filter(x=>x.s<+after&&x.e>+d)};
+ const root=el('section','phone-planner'),hero=el('div','phone-hero');hero.append(el('div','phone-kicker','DEIN STUDIENPLAN'),el('h1',null,'Wochenplan'));root.append(hero);
+ const week=el('div','phone-week para'),head=el('div','phone-week-head');pv.setAttribute('aria-label','Vorherige Woche');nx.setAttribute('aria-label','Nächste Woche');head.append(pv,el('strong',null,phoneShortDate.format(w0)+' – '+phoneShortDate.format(w6)+' · KW '+isoWk(w0)),nx);week.append(head);
+ const strip=el('div','phone-days');strip.setAttribute('role','group');strip.setAttribute('aria-label','Tag auswählen');days.forEach((d,i)=>{const b=el('button');const isToday=ymd(d)===today;b.id='phone-day-'+i;b.setAttribute('aria-label',phoneLongDate.format(d)+(isToday?' (heute)':''));b.setAttribute('aria-pressed',String(i===phoneDay));b.append(el('span',null,DN[i]),el('strong',null,d.getDate()),el('i',onDay(d).length?'has-events':null));b.onclick=()=>{phoneDay=i;draw();$('#phone-day-'+i)?.focus({preventScroll:true})};strip.append(b)});week.append(strip);
+ const reset=tb.onclick;tb.onclick=()=>{phoneWeek=null;reset()};const controls=el('div','phone-week-actions');controls.append(tb);const add=el('button',null,'＋ Termin');add.onclick=()=>{const d=new Date(day);d.setHours(9,0,0,0);edPop({s:+d,e:+d+H1,k:'p',mode:'new',t:''},0,0)};controls.append(add);week.append(controls);root.append(week);
+ const agenda=el('section','phone-agenda'),items=onDay(day);agenda.append(el('div','phone-kicker',ymd(day)===today?'HEUTE':'TAGESAGENDA'),el('h2',null,phoneLongDate.format(day)));
+ if(!items.length)agenda.append(el('div','para phone-empty','Keine Termine oder Lernblöcke für diesen Tag.'));
+ else{const list=el('div','para phone-list');for(const x of items){const b=el('button','phone-entry');const meta=x.mode==='bl'?(x.ref.ok?'Lernblock · erledigt':'Lernblock'):x.k==='u'?'Uni':'Privat';const time=x.s<=+day&&x.e>=+end?'Ganztägig':(x.s<+day?'00:00':hm(x.s))+'–'+(x.e>=+end?'24:00':hm(x.e));const label=el('span','phone-entry-label');label.append(el('strong',null,x.t),el('small',null,meta));b.dataset.kind=x.mode==='bl'?'learn':x.k;b.append(el('span','phone-time',time),label,el('span','phone-arrow','›'));b.lastChild.setAttribute('aria-hidden','true');b.onclick=()=>edPop(x,0,0);list.append(b)}agenda.append(list)}root.append(agenda);
+ const deadlines=[...S.tasks.filter(t=>!t.done&&t.due).map(t=>({d:t.due,t:t.title,k:t.due<today?'Überfällig':'Aufgabe'})),...S.fach.filter(f=>!f.pass&&f.exam&&f.exam>=today).map(f=>({d:f.exam,t:f.name,k:'Klausur'}))].sort((a,b)=>a.d.localeCompare(b.d));
+ if(deadlines.length){const section=el('details','para phone-deadlines');section.append(el('summary',null,'Offene Fristen & Klausuren · '+deadlines.length));for(const x of deadlines){const r=el('div','phone-deadline');r.append(el('span',null,x.d.split('-').reverse().join('.')),el('strong',null,x.t),el('small',null,x.k));section.append(r)}root.append(section)}
+ const tools=el('details','para phone-tools');tools.id='phone-tools';tools.open=phoneToolsOpen;tools.addEventListener('toggle',()=>{if(tools.isConnected)phoneToolsOpen=tools.open});
+ const taskTitle=el('summary',null,'Aufgaben & Planwerkzeuge');taskTitle.id='phone-task-title';tools.append(taskTitle,pb,tp,ci,st);root.append(tools);
+ const grid=el('details','para phone-grid');grid.open=phoneGridOpen;grid.append(el('summary',null,'Wochenraster anzeigen'));const renderGrid=()=>{if(grid.open&&grid.childElementCount===1)grid.append(calEl(w0,pl,k));if(grid.isConnected)phoneGridOpen=grid.open};grid.addEventListener('toggle',renderGrid);root.append(grid);m.append(root);renderGrid();
+}
 
 draw();
 </script></body></html>
