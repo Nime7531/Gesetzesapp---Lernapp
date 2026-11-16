@@ -813,29 +813,34 @@ const hh=el('h2',null,'Karteikarten');hh.style.margin='24px 0 10px';m.append(hh)
 $('#vk').onclick=()=>{view='skr';draw()};$('#vw').onclick=()=>{view='week';draw()};$('#vf').onclick=()=>{view='fach';draw()};$('#vn').onclick=()=>{view='links';draw()};
 /*WOCHE-END*/
 
-const FS=!!(window.showSaveFilePicker&&window.showOpenFilePicker);let fh=null,ft=null,fstat='';
+const FS=!!(window.showSaveFilePicker&&window.showOpenFilePicker);let fh=null,ft=null,fstat='',fwq=Promise.resolve();
 const FT=[{description:'Gesetze-Daten',accept:{'application/json':['.json']}}];
-function idb(m,v){return new Promise((res,rej)=>{const r=indexedDB.open('gesetzeapp',1);r.onupgradeneeded=()=>r.result.createObjectStore('h');r.onerror=()=>rej(r.error);
-r.onsuccess=()=>{const st=r.result.transaction('h',m==='get'?'readonly':'readwrite').objectStore('h'),q=m==='get'?st.get('fh'):st.put(v,'fh');q.onsuccess=()=>res(q.result);q.onerror=()=>rej(q.error)}})}
+function idb(m,v){return new Promise((res,rej)=>{const r=indexedDB.open('gesetzeapp',1);r.onupgradeneeded=()=>{if(!r.result.objectStoreNames.contains('h'))r.result.createObjectStore('h')};r.onerror=()=>rej(r.error);r.onblocked=()=>rej(new Error('IndexedDB ist blockiert'));
+r.onsuccess=()=>{const db=r.result;db.onversionchange=()=>db.close();let tx;try{tx=db.transaction('h',m==='get'?'readonly':'readwrite')}catch(e){db.close();rej(e);return}const q=m==='get'?tx.objectStore('h').get('fh'):tx.objectStore('h').put(v,'fh');q.onsuccess=()=>res(q.result);q.onerror=()=>rej(q.error);tx.oncomplete=()=>db.close();tx.onerror=()=>rej(tx.error)}})}
+async function rememberHandle(handle){try{await idb('put',handle)}catch(e){console.warn('Dateiverbindung kann nicht für den nächsten Start gespeichert werden:',e)}}
 function fui(){const b=$('#fb'),o=$('#fo');
 if(!FS){b.style.display=o.style.display='none';$('#bd').style.display='';return}
 if(fh&&fstat==='ok'){b.textContent='💾 '+fh.name+' ✓';o.style.display='none'}
-else if(fh){b.textContent=fstat==='err'?'⚠ Datei nicht beschreibbar – neu verbinden':'Datendatei verbinden';o.style.display='none'}
+else if(fh&&fstat==='err'){b.textContent='⚠ Fehler – neue Datendatei wählen';o.style.display=''}
+else if(fh){b.textContent='Datendatei verbinden';o.style.display=''}
 else{b.textContent='Datendatei anlegen';o.style.display=''}}
-async function fwrite(){if(!fh||fstat!=='ok')return;
-try{const w=await fh.createWritable();await w.write(JSON.stringify(S));await w.close()}catch(e){fstat='err';fui()}}
-function fsave(){clearTimeout(ft);ft=setTimeout(fwrite,400)}
-async function fload(){const o=JSON.parse(await(await fh.getFile()).text());if(!Array.isArray(o.laws))throw 0;
-S=o;cur=S.laws[0]&&S.laws[0].id;fstat='ok'}
+async function fwrite(){const target=fh;if(!target||fstat!=='ok')return;const snapshot=JSON.stringify(S);
+const write=async()=>{if(target!==fh||fstat!=='ok')return;const w=await target.createWritable();try{await w.write(snapshot);await w.close()}catch(e){try{await w.abort()}catch(_){}throw e}};
+const job=fwq.then(write,write);fwq=job.catch(e=>{if(target===fh){fstat='err';fui();console.error('Datendatei konnte nicht gespeichert werden:',e)}});await fwq}
+function fsave(){clearTimeout(ft);ft=setTimeout(()=>{void fwrite()},400)}
+async function fload(handle=fh){if(!handle)throw new Error('Keine Datendatei ausgewählt');const file=await handle.getFile(),o=JSON.parse(await file.text());
+if(!o||!Array.isArray(o.laws))throw new Error('Ungültige Datendatei: Gesetzesliste fehlt');
+if(!o.marks||typeof o.marks!=='object'||Array.isArray(o.marks))o.marks={};return o}
+async function connectExistingFile(handle){const data=await fload(handle);fh=handle;S=data;cur=S.laws[0]&&S.laws[0].id;fstat='ok';await rememberHandle(handle);save();fui();draw()}
+async function createDataFile(){const handle=await showSaveFilePicker({suggestedName:'gesetze-daten.json',types:FT});fh=handle;fstat='ok';await rememberHandle(handle);await fwrite();fui();draw()}
 $('#fb').onclick=async()=>{try{
 if(fh&&fstat==='ok'){await fwrite();return}
-if(fh){if(await fh.requestPermission({mode:'readwrite'})!=='granted')return;await fload()}
-else{fh=await showSaveFilePicker({suggestedName:'gesetze-daten.json',types:FT});fstat='ok';await idb('put',fh);await fwrite()}
-fui();draw()}catch(e){if(e&&e.name!=='AbortError'){fstat='err'}fui()}};
+if(fh&&fstat!=='err'){if(await fh.requestPermission({mode:'readwrite'})!=='granted')return;await connectExistingFile(fh);return}
+await createDataFile()}catch(e){if(e&&e.name!=='AbortError'){if(fh)fstat='err';fui();console.error('Datendatei-Verbindung fehlgeschlagen:',e)}}};
 $('#fo').onclick=async()=>{try{const[x]=await showOpenFilePicker({types:FT});
-if(await x.requestPermission({mode:'readwrite'})!=='granted')return;fh=x;await fload();await idb('put',fh);save();fui();draw()}
-catch(e){if(!fstat)fh=null;fui()}};
-$('#bd').onclick=()=>{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(S)],{type:'application/json'}));a.download='gesetze-backup-'+new Date().toISOString().slice(0,10)+'.json';a.click()};
+if(await x.requestPermission({mode:'readwrite'})!=='granted')return;await connectExistingFile(x)}
+catch(e){if(e&&e.name!=='AbortError'){$('#me').textContent='Datei konnte nicht verbunden werden: '+(e.message||'ungültiges Format');console.error(e)}}};
+$('#bd').onclick=()=>{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(S)],{type:'application/json'}));a.download='gesetze-backup-'+new Date().toISOString().slice(0,10)+'.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),4000)};
 
 const THEMES=[['hell','Hell','Cream · Ink · Burnt Orange',['#F3EEE3','#111111','#D9541E']],['mittel','Mittel','Navy · Hot Pink',['#0F1B3D','#F2EFE8','#FF3D8B']],['dunkel','Dunkel','Charcoal · Sand · Electric Blue',['#1E1E1C','#D8CBB3','#2F6BFF']]];
 function curTheme(){let t=S.theme;if(!t){try{t=localStorage.getItem('gesetzeapp.theme')}catch(e){}}
