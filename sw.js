@@ -1,6 +1,6 @@
 const CACHE='rubrum-pwa-v1';
 const APP='./Rubrum%20mit%20Vollexport.html';
-const CORE=['./','./index.html','./manifest.webmanifest','./icons/rubrum.svg',APP];
+const CORE=['./','./index.html','./manifest.webmanifest','./icons/rubrum.svg','./icons/rubrum-352.png',APP];
 self.addEventListener('install',event=>{
   event.waitUntil((async()=>{
     const cache=await caches.open(CACHE);
@@ -33,7 +33,7 @@ self.addEventListener('fetch',event=>{
     return;
   }
   const url=new URL(request.url);
-  if(url.pathname.endsWith('.html')||url.pathname.endsWith('.webmanifest')||url.pathname.endsWith('.svg')){
+  if(url.pathname.endsWith('.html')||url.pathname.endsWith('.webmanifest')||url.pathname.endsWith('.svg')||url.pathname.endsWith('.png')){
     event.respondWith((async()=>{
       const cached=await caches.match(request);
       if(cached)return cached;
