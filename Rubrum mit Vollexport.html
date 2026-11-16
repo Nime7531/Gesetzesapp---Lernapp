@@ -190,8 +190,8 @@ const $=s=>document.querySelector(s);
 let cur=S.laws[0]&&S.laws[0].id,view='read',q='',lim=60,pend=null,mode='',delArm=false;
 function el(t,c,x){const e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e}
 const law=()=>S.laws.find(l=>l.id===cur);
-const isM=m=>!!m&&(m.star||m.hl.length>0||!!m.note);
-const getM=(l,k)=>{const a=S.marks[l.id]||(S.marks[l.id]={});return a[k]||(a[k]={star:false,hl:[]})};
+const isM=m=>!!m&&(!!m.star||(Array.isArray(m.hl)&&m.hl.length>0)||!!m.note);
+const getM=(l,k)=>{const a=S.marks[l.id]||(S.marks[l.id]={});const m=a[k]||(a[k]={star:false,hl:[]});if(!Array.isArray(m.hl))m.hl=[];if(!Array.isArray(m.refs))m.refs=[];return m};
 function parse(t){const re=/^\s*(§§?|Art\.?|Artikel)\s*(\d+[a-z]?)\b/,hr=/^\s*(Abschnitt|Unterabschnitt|Teil|Kapitel|Titel|Buch|Unterkapitel)\s+\S+/i,out=[];let c=null,pend=null;
 const real=(l,m)=>{if(/weggefallen|aufgehoben/i.test(l))return true;const r=l.slice(m[0].length).trim();return !/^(?:Abs\.?|Absatz|Sätze?|Satz|Nrn?\.?|Nummern?|und|oder|bis|sowie|ff?\.?|[,;.])(?=\s|[,;.]|$)/i.test(r)&&!/^[a-zäöüß]/.test(r)};
 const L=t.replace(/\r/g,'').split('\n').filter(x=>!/^\s*(-\s*)?\d{1,4}(\s*-)?\s*$/.test(x)&&!/^\s*Seite\s+\d+/i.test(x));
@@ -282,7 +282,7 @@ dl.onclick=()=>{if(!delArm){delArm=true;draw();return}
 S.laws=S.laws.filter(x=>x.id!==cur);delete S.marks[cur];cur=S.laws[0]&&S.laws[0].id;delArm=false;save();draw()};m.append(dl)}
 else{const bar=el('div','noprint');bar.style.cssText='display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;align-items:center';
 const c=el('button','p','Übersicht kopieren');c.onclick=()=>{const t=S.laws.map(sumText).join('\n');navigator.clipboard.writeText(t).then(()=>{c.textContent='Kopiert ✓'},()=>{c.textContent='Kopieren nicht möglich'})};
-const pr=el('button',null,'Drucken');pr.onclick=()=>print();const dl2=el('button',null,'Als Datei');dl2.onclick=()=>{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([S.laws.map(sumText).join('\n')],{type:'text/markdown'}));a.download='uebersicht.md';a.click()};
+const pr=el('button',null,'Drucken');pr.onclick=()=>print();const dl2=el('button',null,'Als Datei');dl2.onclick=()=>{const u=URL.createObjectURL(new Blob([S.laws.map(sumText).join('\n')],{type:'text/markdown'})),a=document.createElement('a');a.href=u;a.download='uebersicht.md';a.click();setTimeout(()=>URL.revokeObjectURL(u),4000)};
 bar.append(c,dl2,pr);const fb2=el('span');fb2.style.cssText='display:flex;gap:6px;align-items:center;margin-left:auto';fb2.append('Farbe:');
 [-1,0,1,2,3,4].forEach(k=>{const b=el('button',k<0&&sumC<0?'on':null,k<0?'alle':'');if(k>=0){b.style.cssText='width:30px;background:var(--h'+k+')';b.title=cl(k);if(sumC===k)b.style.outline='2px solid var(--fg)'}b.onclick=()=>{sumC=k;draw()};fb2.append(b)});bar.append(fb2);m.append(bar);
 let any=false;
@@ -327,7 +327,7 @@ if(!o||!Array.isArray(o.laws)||o.laws.some(l=>!l||typeof l.id!=='string'||!l.id|
 const incomingMarks=o.marks&&typeof o.marks==='object'&&!Array.isArray(o.marks)?o.marks:{};
 let next;
 if($('#xm').checked){next=JSON.parse(JSON.stringify(S));next.laws=Array.isArray(next.laws)?next.laws:[];next.marks=next.marks&&typeof next.marks==='object'?next.marks:{};
-o.laws.forEach(l=>{const i=next.laws.findIndex(z=>z.id===l.id);if(i>=0)next.laws[i]=l;else next.laws.push(l);next.marks[l.id]=incomingMarks[l.id]||{}});if(o.cn)next.cn=o.cn}
+o.laws.forEach(l=>{const i=next.laws.findIndex(z=>z.id===l.id);if(i>=0)next.laws[i]=l;else next.laws.push(l);if(Object.prototype.hasOwnProperty.call(incomingMarks,l.id))next.marks[l.id]=incomingMarks[l.id];else if(!next.marks[l.id])next.marks[l.id]={}});if(o.cn)next.cn=o.cn}
 else{next=o;next.marks=incomingMarks}
 S=next;
 if(o.ls&&typeof o.ls==='object'&&!Array.isArray(o.ls)){try{for(const k in o.ls)if(k.indexOf('gesetzeapp')===0&&k!==K&&typeof o.ls[k]==='string')localStorage.setItem(k,o.ls[k])}catch(e){console.warn('Zusätzliche Einstellungsdaten konnten nicht importiert werden:',e)}}
@@ -781,7 +781,7 @@ m.append(c)}
 /* Timer */
 const tmWork=T=>T.acc+(T.run&&T.ph==='f'?Date.now()-T.t0:0),tmFmt=ms=>{ms=Math.max(0,Math.round(ms/1000));const h=Math.floor(ms/3600),m=Math.floor(ms%3600/60),s=ms%60;return(h?h+':'+pad(m):m)+':'+pad(s)};
 function beep(){try{const c=new AudioContext(),o=c.createOscillator(),g=c.createGain();o.connect(g);g.connect(c.destination);g.gain.value=.08;o.frequency.value=880;o.start();setTimeout(()=>{o.stop();c.close()},350)}catch(e){}}
-function tmStart(o){ini();const P=S.pp;if(S.timer&&tmWork(S.timer)>=6e4){toast('Es läuft schon ein Timer – erst buchen oder verwerfen');view='learn';build();draw();return}
+function tmStart(o){ini();const P=S.pp;if(S.timer){toast('Es läuft bereits ein Timer – erst buchen oder verwerfen, bevor du einen neuen startest');view='learn';build();draw();return}
 S.timer={f:o.f,tid:o.tid||'',l:o.l,mode:P.tmode,acc:0,t0:Date.now(),run:true,ph:'f',pe:P.tmode==='p'?Date.now()+P.po.f*MIN:0,rem:0,n:0};save();view='learn';build();draw()}
 function tmToggle(){const T=S.timer,n=Date.now();if(T.run){if(T.ph==='f')T.acc+=n-T.t0;if(T.mode==='p')T.rem=T.pe-n;T.run=false}else{T.t0=n;if(T.mode==='p')T.pe=n+T.rem;T.run=true}save();draw()}
 function tmBook(done){const T=S.timer;if(!T)return;const h=+(tmWork(T)/H1).toFixed(2),f=S.fach.find(x=>x.id===T.f),t=S.tasks.find(x=>x.id===T.tid);
@@ -845,7 +845,7 @@ await createDataFile()}catch(e){if(e&&e.name!=='AbortError'){if(fh)fstat='err';f
 $('#fo').onclick=async()=>{try{const[x]=await showOpenFilePicker({types:FT});
 if(await x.requestPermission({mode:'readwrite'})!=='granted')return;await connectExistingFile(x)}
 catch(e){if(e&&e.name!=='AbortError'){$('#me').textContent='Datei konnte nicht verbunden werden: '+(e.message||'ungültiges Format');console.error(e)}}};
-$('#bd').onclick=()=>{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(S)],{type:'application/json'}));a.download='gesetze-backup-'+new Date().toISOString().slice(0,10)+'.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),4000)};
+$('#bd').onclick=()=>{const u=URL.createObjectURL(new Blob([JSON.stringify(S)],{type:'application/json'})),a=document.createElement('a');a.href=u;a.download='gesetze-backup-'+new Date().toISOString().slice(0,10)+'.json';a.click();setTimeout(()=>URL.revokeObjectURL(u),4000)};
 
 const THEMES=[['hell','Hell','Cream · Ink · Burnt Orange',['#F3EEE3','#111111','#D9541E']],['mittel','Mittel','Navy · Hot Pink',['#0F1B3D','#F2EFE8','#FF3D8B']],['dunkel','Dunkel','Charcoal · Sand · Electric Blue',['#1E1E1C','#D8CBB3','#2F6BFF']]];
 function curTheme(){let t=S.theme;if(!t){try{t=localStorage.getItem('gesetzeapp.theme')}catch(e){}}
@@ -859,7 +859,7 @@ $('#stx').onclick=()=>{$('#st').style.display='none'};
 $('#st').onclick=e=>{if(e.target.id==='st')$('#st').style.display='none'};
 document.addEventListener('keydown',e=>{if(e.key==='Escape')$('#st').style.display='none'});
 {const _f=fui;fui=function(){_f();const g=$('#gear');if(g)g.dataset.s=FS?(fh&&fstat==='ok'?'ok':'warn'):''}}
-(async()=>{if(FS){try{const x=await idb('get');if(x){fh=x;if(await x.queryPermission({mode:'readwrite'})==='granted')await fload()}}catch(e){fstat='err'}}fui();draw()})();
+(async()=>{if(FS){try{const x=await idb('get');if(x){fh=x;if(await x.queryPermission({mode:'readwrite'})==='granted'){const data=await fload(x);S=data;cur=S.laws[0]&&S.laws[0].id;fstat='ok';save()}}}catch(e){fstat='err';console.error('Gespeicherte Datendatei konnte nicht wiederhergestellt werden:',e)}}fui();draw()})();
 
 draw();
 </script></body></html>
