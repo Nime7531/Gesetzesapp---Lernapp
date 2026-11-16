@@ -4,7 +4,7 @@ Rubrum ist eine browserbasierte Lern- und Arbeitsumgebung für Gesetzestexte und
 
 ## Starten
 
-- **Direkt lokal:** `Rubrum mit Vollexport.html` in einem aktuellen Browser öffnen. Für die Dateiverbindung und PWA-Funktionen wird eine sichere Browserumgebung benötigt (HTTPS oder localhost).
+- **Direkt lokal:** `index.html` öffnet die App automatisch. Alternativ `Rubrum mit Vollexport.html` in einem aktuellen Browser öffnen. Für die Dateiverbindung und PWA-Funktionen wird eine sichere Browserumgebung benötigt (HTTPS oder localhost).
 - **Als installierbare Windows-PWA:** Nach dem Merge in `main` in GitHub unter **Settings → Pages** als Build-Quelle **GitHub Actions** auswählen. Der Workflow `.github/workflows/deploy-pages.yml` veröffentlicht die App anschließend. Die veröffentlichte HTTPS-Seite einmal online öffnen und danach in Microsoft Edge oder Google Chrome über das Installieren-Symbol in der Adressleiste bzw. das App-Menü installieren.
 - **Offline:** Nach dem ersten erfolgreichen Online-Aufruf legt der Service Worker App, Manifest und Icon im Cache ab. Die App kann danach auch ohne Verbindung geöffnet werden.
 
@@ -19,6 +19,7 @@ Rubrum ist eine browserbasierte Lern- und Arbeitsumgebung für Gesetzestexte und
 
 ## PWA-Dateien
 
+- `index.html`: Einstieg über die Repository-/Pages-Startadresse
 - `manifest.webmanifest`: Installationsmetadaten und Startadresse
 - `sw.js`: Offline-Cache für App, Manifest und Icon
 - `icons/rubrum.svg`: skalierbares orangefarbenes Rubrum-R-Icon
