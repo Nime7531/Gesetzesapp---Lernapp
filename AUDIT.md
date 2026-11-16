@@ -18,7 +18,8 @@ Die Oberfläche besitzt bereits drei Farbthemen, ein responsives Layout, Karten-
 4. **Lernzeit-Timer:** Ein neuer Timer konnte einen bestehenden Timer unter 60 Sekunden stillschweigend ersetzen. Jeder bereits laufende/gespeicherte Timer muss jetzt zuerst gebucht oder verworfen werden.
 5. **Download-Aufräumen:** Object-URLs der JSON- und Markdown-Backups werden nach dem Download freigegeben.
 6. **Externe Datei-Schreibpfade:** Schreibvorgänge werden serialisiert; fehlerhafte Schreibvorgänge werden abgefangen und als Verbindungsfehler angezeigt. Ungültige Dateien werden vor dem Wechsel des App-Zustands geprüft.
-7. **Import-Validierung:** Gesetzesdatensätze werden vor dem Übernehmen auf grundlegende Struktur geprüft; Merge-Operationen laufen auf einer Kopie des aktuellen Zustands.
+7. **Import-Validierung:** Gesetzesdatensätze werden vor dem Übernehmen auf ID und vollständige Paragrafenstruktur geprüft; Markierungsdaten werden normalisiert und Merge-Operationen laufen auf einer Kopie des aktuellen Zustands.
+8. **Abweichende Datenstände:** Wenn lokaler Browserstand und verbundene JSON-Datei nach einem Neustart auseinanderlaufen, fragt Rubrum vor dem Überschreiben nach: Datei übernehmen oder Browserstand in die Datei schreiben.
 
 ## PWA-Ergänzung
 
@@ -44,7 +45,7 @@ Die Oberfläche besitzt bereits drei Farbthemen, ein responsives Layout, Karten-
 - Visuelle Regressionstests auf schmalen Mobilgeräten, Tablet und Desktop.
 - Vollständige Accessibility-Prüfung mit Tastatur und Screenreader.
 - Konfliktbehandlung, wenn Browserstand und externe JSON-Datei nach einem unerwarteten Schließen auseinanderlaufen.
-- Vollständige Validierung der Importdaten und Wiederherstellung beschädigter lokaler Speicherstände.
+- Wiederherstellung beschädigter lokaler Speicherstände und ein automatisierter Regressionstest des Konflikt-Dialogs.
 
 ## Sicherheits- und Datenhinweis
 
