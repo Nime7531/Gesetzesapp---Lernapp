@@ -322,12 +322,17 @@ $('#xs').onclick=async()=>{try{await navigator.share({files:[mkFile()],title:'Ge
 try{if(navigator.canShare&&navigator.maxTouchPoints>1&&navigator.canShare({files:[new File(['x'],'x.json',{type:'application/json'})]}))$('#xs').style.display=''}catch(e){}
 $('#xi').onclick=()=>$('#xf').click();
 $('#xf').onchange=async e=>{const f=e.target.files[0];e.target.value='';if(!f)return;
-try{const o=JSON.parse(await f.text());if(!Array.isArray(o.laws))throw 0;
-if($('#xm').checked){o.laws.forEach(l=>{const i=S.laws.findIndex(z=>z.id===l.id);if(i>=0)S.laws[i]=l;else S.laws.push(l);S.marks[l.id]=(o.marks||{})[l.id]||{}});if(o.cn)S.cn=o.cn}
-else{S=o;S.marks=S.marks||{}}
-if(o.ls&&typeof o.ls==='object'){try{for(const k in o.ls)if(k.indexOf('gesetzeapp')===0&&k!==K&&typeof o.ls[k]==='string')localStorage.setItem(k,o.ls[k])}catch(e){}}
+try{const o=JSON.parse(await f.text());
+if(!o||!Array.isArray(o.laws)||o.laws.some(l=>!l||typeof l.id!=='string'||!l.id||!Array.isArray(l.paras)))throw new Error('Ungültige Gesetzesdaten');
+const incomingMarks=o.marks&&typeof o.marks==='object'&&!Array.isArray(o.marks)?o.marks:{};
+let next;
+if($('#xm').checked){next=JSON.parse(JSON.stringify(S));next.laws=Array.isArray(next.laws)?next.laws:[];next.marks=next.marks&&typeof next.marks==='object'?next.marks:{};
+o.laws.forEach(l=>{const i=next.laws.findIndex(z=>z.id===l.id);if(i>=0)next.laws[i]=l;else next.laws.push(l);next.marks[l.id]=incomingMarks[l.id]||{}});if(o.cn)next.cn=o.cn}
+else{next=o;next.marks=incomingMarks}
+S=next;
+if(o.ls&&typeof o.ls==='object'&&!Array.isArray(o.ls)){try{for(const k in o.ls)if(k.indexOf('gesetzeapp')===0&&k!==K&&typeof o.ls[k]==='string')localStorage.setItem(k,o.ls[k])}catch(e){console.warn('Zusätzliche Einstellungsdaten konnten nicht importiert werden:',e)}}
 if(!S.laws.some(z=>z.id===cur))cur=S.laws[0]&&S.laws[0].id;hbBuild();save();$('#md').style.display='none';draw();toast('Importiert: '+o.laws.length+' Gesetz(e)')}
-catch(x){$('#me').textContent='Das ist keine gültige Export-Datei.'}};
+catch(x){$('#me').textContent='Import abgebrochen: '+(x.message||'ungültige Export-Datei');console.error('JSON-Import fehlgeschlagen:',x)}};
 function legend(s){const lg=el('div','mut');lg.style.cssText='margin-top:12px;font-size:13px';lg.append('Gib jeder Farbe eine Bedeutung, z. B. „Tatbestand“ oder „Frist“.');
 CN.forEach((n,c)=>{const r=el('div'),d=el('span'),i=el('input');r.style.cssText='display:flex;gap:6px;align-items:center;margin-top:4px';
 d.style.cssText='width:14px;height:14px;border-radius:50%;flex:none;background:var(--h'+c+')';i.value=(S.cn&&S.cn[c])||'';i.placeholder=n;i.style.cssText='width:100%;min-width:0;padding:2px 6px;font-size:13px';
