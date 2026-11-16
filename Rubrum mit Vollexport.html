@@ -365,8 +365,16 @@ const scriptEntries=scriptFiles.map(f=>{if(!f||typeof f.id!=='string'||!f.id||ty
 const legacyScripts=Array.isArray(o.scripts)&&o.scripts.length>0&&scriptFiles.length===0;
 let next;
 if($('#xm').checked){next=JSON.parse(JSON.stringify(S));next.laws=Array.isArray(next.laws)?next.laws:[];next.marks=next.marks&&typeof next.marks==='object'?next.marks:{};
-o.laws.forEach(l=>{const i=next.laws.findIndex(z=>z.id===l.id);if(i>=0)next.laws[i]=l;else next.laws.push(l);if(Object.prototype.hasOwnProperty.call(incomingMarks,l.id))next.marks[l.id]=incomingMarks[l.id];else if(!next.marks[l.id])next.marks[l.id]={}});if(o.cn)next.cn=o.cn;
-if(Array.isArray(o.scripts)){next.scripts=Array.isArray(next.scripts)?next.scripts:[];o.scripts.forEach(x=>{if(!x||typeof x.id!=='string')return;const i=next.scripts.findIndex(z=>z.id===x.id);if(i>=0)next.scripts[i]=x;else next.scripts.push(x)})}}
+o.laws.forEach(l=>{const i=next.laws.findIndex(z=>z.id===l.id);if(i>=0)next.laws[i]=l;else next.laws.push(l);if(Object.prototype.hasOwnProperty.call(incomingMarks,l.id))next.marks[l.id]=incomingMarks[l.id];else if(!next.marks[l.id])next.marks[l.id]={}});
+const mergeById=k=>{if(!Array.isArray(o[k]))return;const arr=Array.isArray(next[k])?next[k]:[];o[k].forEach(x=>{if(!x||typeof x.id!=='string')return;const i=arr.findIndex(z=>z&&z.id===x.id);if(i>=0)arr[i]=x;else arr.push(x)});next[k]=arr};
+['fach','tasks','scripts','links'].forEach(mergeById);
+if(o.ev&&typeof o.ev==='object'){next.ev=next.ev||{};['uni','privat','mine'].forEach(k=>{if(!Array.isArray(o.ev[k]))return;const arr=Array.isArray(next.ev[k])?next.ev[k]:[],seen=new Set(arr.map(x=>JSON.stringify(x)));next.ev[k]=arr.concat(o.ev[k].filter(x=>{const key=JSON.stringify(x);if(seen.has(key))return false;seen.add(key);return true}))})}
+if(o.plan&&typeof o.plan==='object'){next.plan=next.plan||{};for(const wk of Object.keys(o.plan)){const arr=Array.isArray(next.plan[wk])?next.plan[wk]:[],items=new Map(arr.map(x=>[[x.f||'',x.tid||'',x.l||'',x.s||'',x.e||''].join('|'),x]));(Array.isArray(o.plan[wk])?o.plan[wk]:[]).forEach(x=>items.set([x.f||'',x.tid||'',x.l||'',x.s||'',x.e||''].join('|'),x));next.plan[wk]=[...items.values()]}}
+if(o.map&&typeof o.map==='object')next.map=Object.assign({},next.map||{},o.map);
+if(o.pp&&typeof o.pp==='object')next.pp=Object.assign({},next.pp||{},o.pp);
+if(o.cn)next.cn=o.cn;if(o.theme)next.theme=o.theme;
+if(!next.timer&&o.timer){next.timer=JSON.parse(JSON.stringify(o.timer));const T=next.timer,now=Date.now();if(T.run&&T.ph==='f')T.acc=(T.acc||0)+now-T.t0;if(T.run&&T.mode==='p')T.rem=Math.max(0,(T.pe||now)-now);T.run=false;T.t0=now}
+const reserved=new Set(['laws','marks','fach','tasks','scripts','links','ev','plan','map','pp','cn','theme','timer','_export','ls','script_files']);for(const k of Object.keys(o))if(!reserved.has(k)&&!(k in next))next[k]=o[k]}
 else{next=o;next.marks=incomingMarks}
 if(scriptEntries.length)await sdbBulk(scriptEntries);
 S=next;S.marks=normalizeMarks(S.marks);delete S.script_files;delete S._export;delete S.ls;
