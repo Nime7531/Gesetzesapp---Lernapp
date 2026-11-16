@@ -218,6 +218,11 @@ function el(t,c,x){const e=document.createElement(t);if(c)e.className=c;if(x!=nu
 const law=()=>S.laws.find(l=>l.id===cur);
 const isM=m=>!!m&&(!!m.star||(Array.isArray(m.hl)&&m.hl.length>0)||!!m.note);
 const getM=(l,k)=>{const a=S.marks[l.id]||(S.marks[l.id]={});const m=a[k]||(a[k]={star:false,hl:[]});if(!Array.isArray(m.hl))m.hl=[];if(!Array.isArray(m.refs))m.refs=[];return m};
+const validLaw=l=>!!l&&typeof l==='object'&&typeof l.id==='string'&&!!l.id.trim()&&Array.isArray(l.paras)&&l.paras.every(p=>!!p&&typeof p.key==='string'&&typeof p.text==='string');
+function normalizeMarks(marks){if(!marks||typeof marks!=='object'||Array.isArray(marks))return{};for(const id of Object.keys(marks)){const group=marks[id];if(!group||typeof group!=='object'||Array.isArray(group)){marks[id]={};continue}for(const key of Object.keys(group)){const m=group[key];if(!m||typeof m!=='object'||Array.isArray(m)){group[key]={star:false,hl:[]};continue}if(!Array.isArray(m.hl))m.hl=[];if(!Array.isArray(m.refs))m.refs=[]}}return marks}
+if(!S||typeof S!=='object'||Array.isArray(S))S={laws:[],marks:{}};
+if(!Array.isArray(S.laws))S.laws=[];
+S.marks=normalizeMarks(S.marks);
 function parse(t){const re=/^\s*(§§?|Art\.?|Artikel)\s*(\d+[a-z]?)\b/,hr=/^\s*(Abschnitt|Unterabschnitt|Teil|Kapitel|Titel|Buch|Unterkapitel)\s+\S+/i,out=[];let c=null,pend=null;
 const real=(l,m)=>{if(/weggefallen|aufgehoben/i.test(l))return true;const r=l.slice(m[0].length).trim();return !/^(?:Abs\.?|Absatz|Sätze?|Satz|Nrn?\.?|Nummern?|und|oder|bis|sowie|ff?\.?|[,;.])(?=\s|[,;.]|$)/i.test(r)&&!/^[a-zäöüß]/.test(r)};
 const L=t.replace(/\r/g,'').split('\n').filter(x=>!/^\s*(-\s*)?\d{1,4}(\s*-)?\s*$/.test(x)&&!/^\s*Seite\s+\d+/i.test(x));
@@ -349,13 +354,13 @@ try{if(navigator.canShare&&navigator.maxTouchPoints>1&&navigator.canShare({files
 $('#xi').onclick=()=>$('#xf').click();
 $('#xf').onchange=async e=>{const f=e.target.files[0];e.target.value='';if(!f)return;
 try{const o=JSON.parse(await f.text());
-if(!o||!Array.isArray(o.laws)||o.laws.some(l=>!l||typeof l.id!=='string'||!l.id||!Array.isArray(l.paras)))throw new Error('Ungültige Gesetzesdaten');
-const incomingMarks=o.marks&&typeof o.marks==='object'&&!Array.isArray(o.marks)?o.marks:{};
+if(!o||!Array.isArray(o.laws)||o.laws.some(l=>!validLaw(l)))throw new Error('Ungültige Gesetzesdaten: Gesetzes-ID oder Paragrafenstruktur fehlt');
+const incomingMarks=normalizeMarks(o.marks);
 let next;
 if($('#xm').checked){next=JSON.parse(JSON.stringify(S));next.laws=Array.isArray(next.laws)?next.laws:[];next.marks=next.marks&&typeof next.marks==='object'?next.marks:{};
 o.laws.forEach(l=>{const i=next.laws.findIndex(z=>z.id===l.id);if(i>=0)next.laws[i]=l;else next.laws.push(l);if(Object.prototype.hasOwnProperty.call(incomingMarks,l.id))next.marks[l.id]=incomingMarks[l.id];else if(!next.marks[l.id])next.marks[l.id]={}});if(o.cn)next.cn=o.cn}
 else{next=o;next.marks=incomingMarks}
-S=next;
+S=next;S.marks=normalizeMarks(S.marks);
 if(o.ls&&typeof o.ls==='object'&&!Array.isArray(o.ls)){try{for(const k in o.ls)if(k.indexOf('gesetzeapp')===0&&k!==K&&typeof o.ls[k]==='string')localStorage.setItem(k,o.ls[k])}catch(e){console.warn('Zusätzliche Einstellungsdaten konnten nicht importiert werden:',e)}}
 if(!S.laws.some(z=>z.id===cur))cur=S.laws[0]&&S.laws[0].id;hbBuild();save();$('#md').style.display='none';draw();toast('Importiert: '+o.laws.length+' Gesetz(e)')}
 catch(x){$('#me').textContent='Import abgebrochen: '+(x.message||'ungültige Export-Datei');console.error('JSON-Import fehlgeschlagen:',x)}};
@@ -860,8 +865,8 @@ const write=async()=>{if(target!==fh||fstat!=='ok')return;const w=await target.c
 const job=fwq.then(write,write);fwq=job.catch(e=>{if(target===fh){fstat='err';fui();console.error('Datendatei konnte nicht gespeichert werden:',e)}});await fwq}
 function fsave(){clearTimeout(ft);ft=setTimeout(()=>{void fwrite()},400)}
 async function fload(handle=fh){if(!handle)throw new Error('Keine Datendatei ausgewählt');const file=await handle.getFile(),o=JSON.parse(await file.text());
-if(!o||!Array.isArray(o.laws))throw new Error('Ungültige Datendatei: Gesetzesliste fehlt');
-if(!o.marks||typeof o.marks!=='object'||Array.isArray(o.marks))o.marks={};return o}
+if(!o||!Array.isArray(o.laws)||o.laws.some(l=>!validLaw(l)))throw new Error('Ungültige Datendatei: Gesetzes- oder Paragrafenstruktur fehlt');
+o.marks=normalizeMarks(o.marks);return o}
 async function connectExistingFile(handle){const data=await fload(handle);fh=handle;S=data;cur=S.laws[0]&&S.laws[0].id;fstat='ok';await rememberHandle(handle);save();fui();draw()}
 async function createDataFile(){const handle=await showSaveFilePicker({suggestedName:'gesetze-daten.json',types:FT});fh=handle;fstat='ok';await rememberHandle(handle);await fwrite();fui();draw()}
 $('#fb').onclick=async()=>{try{
