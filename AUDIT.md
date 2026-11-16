@@ -27,6 +27,7 @@ Die Oberfläche besitzt bereits drei Farbthemen, ein responsives Layout, Karten-
 - Bestehendes HTML registriert den Service Worker.
 - Offline-Cache für HTML-App, Manifest und Icon ergänzt.
 - Das originale eigenständige HTML bleibt die eigentliche App; kein iframe-Wrapper und keine zweite Datenhaltung.
+- GitHub-Actions-Workflow zur Veröffentlichung über GitHub Pages ergänzt; er läuft erst bei Push auf `main` oder manuellem Start.
 
 ## Durchgeführte Prüfungen
 
