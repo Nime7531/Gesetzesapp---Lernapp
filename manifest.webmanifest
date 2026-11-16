@@ -1,0 +1,15 @@
+{
+  "name": "Rubrum – Gesetzes- und Lernapp",
+  "short_name": "Rubrum",
+  "description": "Gesetze lesen, markieren, wiederholen und das Jurastudium organisieren.",
+  "start_url": "./Rubrum%20mit%20Vollexport.html",
+  "scope": "./",
+  "display": "standalone",
+  "display_override": ["standalone", "minimal-ui"],
+  "orientation": "any",
+  "background_color": "#F3EEE3",
+  "theme_color": "#D9541E",
+  "icons": [{"src": "./icons/rubrum-352.png", "sizes": "352x352", "type": "image/png", "purpose": "any"}],
+  "categories": ["education", "productivity"],
+  "lang": "de"
+}
