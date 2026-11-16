@@ -5,11 +5,30 @@
   "start_url": "./Rubrum%20mit%20Vollexport.html",
   "scope": "./",
   "display": "standalone",
-  "display_override": ["standalone", "minimal-ui"],
+  "display_override": [
+    "standalone",
+    "minimal-ui"
+  ],
   "orientation": "any",
   "background_color": "#F3EEE3",
   "theme_color": "#D9541E",
-  "icons": [{"src": "./icons/rubrum.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any"}],
-  "categories": ["education", "productivity"],
+  "icons": [
+    {
+      "src": "./icons/rubrum-352.png",
+      "sizes": "352x352",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./icons/rubrum.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ],
+  "categories": [
+    "education",
+    "productivity"
+  ],
   "lang": "de"
 }
