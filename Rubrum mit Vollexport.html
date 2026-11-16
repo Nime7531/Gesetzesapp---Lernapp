@@ -858,6 +858,7 @@ function fui(){const b=$('#fb'),o=$('#fo');
 if(!FS){b.style.display=o.style.display='none';$('#bd').style.display='';return}
 if(fh&&fstat==='ok'){b.textContent='💾 '+fh.name+' ✓';o.style.display='none'}
 else if(fh&&fstat==='err'){b.textContent='⚠ Fehler – neue Datendatei wählen';o.style.display=''}
+else if(fh&&fstat==='conflict'){b.textContent='⚠ Datenstände abgleichen';o.style.display=''}
 else if(fh){b.textContent='Datendatei verbinden';o.style.display=''}
 else{b.textContent='Datendatei anlegen';o.style.display=''}}
 async function fwrite(){const target=fh;if(!target||fstat!=='ok')return;const snapshot=JSON.stringify(S);
@@ -867,11 +868,17 @@ function fsave(){clearTimeout(ft);ft=setTimeout(()=>{void fwrite()},400)}
 async function fload(handle=fh){if(!handle)throw new Error('Keine Datendatei ausgewählt');const file=await handle.getFile(),o=JSON.parse(await file.text());
 if(!o||!Array.isArray(o.laws)||o.laws.some(l=>!validLaw(l)))throw new Error('Ungültige Datendatei: Gesetzes- oder Paragrafenstruktur fehlt');
 o.marks=normalizeMarks(o.marks);return o}
-async function connectExistingFile(handle){const data=await fload(handle);fh=handle;S=data;cur=S.laws[0]&&S.laws[0].id;fstat='ok';await rememberHandle(handle);save();fui();draw()}
+async function connectExistingFile(handle,checkConflict=false){const data=await fload(handle);fh=handle;await rememberHandle(handle);
+const localHasData=S.laws.length>0||Object.keys(S.marks||{}).length>0||Object.keys(S).some(k=>k!=='laws'&&k!=='marks');
+if(checkConflict&&localHasData&&JSON.stringify(S)!==JSON.stringify(data)){
+fstat='conflict';fui();
+const useFile=confirm('Die verbundene Datendatei und der lokale Browserstand unterscheiden sich.\\n\\nOK = Datendatei laden und Browserstand ersetzen.\\nAbbrechen = Browserstand behalten und in die Datendatei schreiben.');
+if(!useFile){fstat='ok';await fwrite();fui();return}}
+S=data;cur=S.laws[0]&&S.laws[0].id;fstat='ok';save();fui();draw()}
 async function createDataFile(){const handle=await showSaveFilePicker({suggestedName:'gesetze-daten.json',types:FT});fh=handle;fstat='ok';await rememberHandle(handle);await fwrite();fui();draw()}
 $('#fb').onclick=async()=>{try{
 if(fh&&fstat==='ok'){await fwrite();return}
-if(fh&&fstat!=='err'){if(await fh.requestPermission({mode:'readwrite'})!=='granted')return;await connectExistingFile(fh);return}
+if(fh&&fstat!=='err'){if(await fh.requestPermission({mode:'readwrite'})!=='granted')return;await connectExistingFile(fh,true);return}
 await createDataFile()}catch(e){if(e&&e.name!=='AbortError'){if(fh)fstat='err';fui();console.error('Datendatei-Verbindung fehlgeschlagen:',e)}}};
 $('#fo').onclick=async()=>{try{const[x]=await showOpenFilePicker({types:FT});
 if(await x.requestPermission({mode:'readwrite'})!=='granted')return;await connectExistingFile(x)}
@@ -890,7 +897,7 @@ $('#stx').onclick=()=>{$('#st').style.display='none'};
 $('#st').onclick=e=>{if(e.target.id==='st')$('#st').style.display='none'};
 document.addEventListener('keydown',e=>{if(e.key==='Escape')$('#st').style.display='none'});
 {const _f=fui;fui=function(){_f();const g=$('#gear');if(g)g.dataset.s=FS?(fh&&fstat==='ok'?'ok':'warn'):''}}
-(async()=>{if(FS){try{const x=await idb('get');if(x){fh=x;if(await x.queryPermission({mode:'readwrite'})==='granted'){const data=await fload(x);S=data;cur=S.laws[0]&&S.laws[0].id;fstat='ok';save()}}}catch(e){fstat='err';console.error('Gespeicherte Datendatei konnte nicht wiederhergestellt werden:',e)}}fui();draw()})();
+(async()=>{if(FS){try{const x=await idb('get');if(x){fh=x;if(await x.queryPermission({mode:'readwrite'})==='granted')await connectExistingFile(x,true)}}catch(e){fstat='err';console.error('Gespeicherte Datendatei konnte nicht wiederhergestellt werden:',e)}}fui();draw()})();
 
 draw();
 </script><script>
