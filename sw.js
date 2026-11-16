@@ -1,6 +1,6 @@
 const CACHE='rubrum-pwa-v1';
 const APP='./Rubrum%20mit%20Vollexport.html';
-const CORE=['./','./manifest.webmanifest','./icons/rubrum.svg',APP];
+const CORE=['./manifest.webmanifest','./icons/rubrum.svg',APP];
 self.addEventListener('install',event=>{
   event.waitUntil((async()=>{
     const cache=await caches.open(CACHE);
