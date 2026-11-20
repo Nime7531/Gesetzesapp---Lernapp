@@ -677,6 +677,149 @@ html:not([data-track=ausbildung]) .rb-track-only{display:none!important}
 .rb-track .tile{text-align:left;display:grid;gap:2px}
 .rb-track p{grid-column:1/-1;margin:4px 0 0;font-size:.85em}
 :root[data-theme=mittel] .rb-confirm-row .rb-danger,:root[data-theme=dunkel] .rb-confirm-row .rb-danger{background:#C9473D!important;border-color:#C9473D!important}
+
+/* Rubrum · visuelle Verfeinerung der bestehenden Arbeitsoberfläche */
+@media screen {
+  :root {
+    --mut: #5e554d;
+    --aura: 24%;
+    --ink-aura: 18%;
+    --rb-surface: var(--card);
+    --rb-divider: color-mix(in srgb,var(--fg) 16%,var(--card));
+    --rb-control-edge: color-mix(in srgb,var(--fg) 26%,var(--card));
+    --rb-field: color-mix(in srgb,var(--fg) 4%,var(--card));
+    --rb-focus: #943614;
+    --rb-action: #a23a17;
+    --rb-on-action: #fff;
+    --rb-glass: color-mix(in srgb,var(--card) calc(100% - var(--liquid)*24%),transparent);
+    --rb-dock: color-mix(in srgb,var(--card) calc(100% - var(--dock-glass,var(--liquid))*28%),transparent);
+    --rb-rim: color-mix(in srgb,var(--glass-rim) calc(var(--liquid)*75%),transparent);
+    --rb-card-shadow: 0 2px 10px var(--glass-shadow);
+    --rb-control-shadow: inset 0 1px var(--rb-rim),0 5px 20px var(--glass-shadow);
+    --rb-today: #ad3527;
+    --rb-on-today: #fff;
+    --rb-import: #1765a9;
+    --rb-private: #33784d;
+    --rb-study: #9a5017;
+  }
+  :root[data-theme=mittel],:root[data-theme=dunkel] {
+    --aura: 25%;
+    --ink-aura: 20%;
+    --rb-action: var(--ac);
+    --rb-on-action: var(--acf);
+    --rb-focus: var(--lk);
+    --rb-today: #ff9b89;
+    --rb-on-today: #2b1712;
+    --rb-import: #81b4f0;
+    --rb-private: #80c89a;
+    --rb-study: #f5b576;
+  }
+  :root[data-theme=mittel] { --mut:#b9c2d9 }
+  :root[data-theme=dunkel] { --mut:#b6ac9a }
+
+  /* Inhaltsflächen und aktive Arbeitswerkzeuge haben unterschiedliche Materialien. */
+  #m :is(.para:not(.star),.cal,.skc,.lk-c,.kt,.tkc,.tmc,.tnote,.rb-card,.rb-faq,.rb-learn-tools),
+  #sv .ink-split, .rb-timer-face {
+    background:var(--rb-surface);
+    border-color:var(--rb-divider);
+    box-shadow:var(--rb-card-shadow);
+    -webkit-backdrop-filter:none;
+    backdrop-filter:none;
+  }
+  #m :is(.toc,.rb-law-paper),#sb:not(:empty) {
+    background:var(--quiet);
+    border-color:var(--rb-divider);
+    box-shadow:var(--rb-card-shadow);
+  }
+  #m .rb-law-paper.star { border-inline-start-color:var(--ac) }
+  #m .para.star:not(.rb-law-paper) { background:var(--st) }
+  #m .rb-hero { -webkit-backdrop-filter:none;backdrop-filter:none;box-shadow:0 14px 38px var(--glass-shadow)!important }
+  .rb-card:hover { border-color:var(--lk) }
+  #m .cal-h { background:var(--rb-surface);-webkit-backdrop-filter:none;backdrop-filter:none }
+  #m .cal-h .td { color:var(--rb-today) }
+  #m .cal-h .td b { background:var(--rb-today);color:var(--rb-on-today) }
+  #m .nl { background:var(--rb-today) }
+  #m .nl::before { background:inherit }
+  #m .ev2.u { --rb-event:var(--rb-import) }
+  #m .ev2.p:not(.new) { --rb-event:var(--rb-private) }
+  #m .ev2.l { --rb-event:var(--rb-study) }
+  #m .ev2:is(.u,.p:not(.new),.l) {
+    color:var(--fg);
+    background:color-mix(in srgb,var(--rb-event) 14%,var(--card));
+    border-color:var(--rb-event);
+  }
+  #m .ev2.ok { opacity:1;background:color-mix(in srgb,var(--rb-study) 7%,var(--card)) }
+  #m :is(.cal-t,.phone-time,.pill,.kt,.rb-week-days,.timer-ring),
+  #timer-nav,.timer-popup { font-variant-numeric:tabular-nums }
+
+  header,#phone-nav,.phone-menu,#hb,#m .norm-nav,
+  #sv :is(.svb,.svl,.svr,.ink-controls,.ink-quick,.ink-eraser-bar),
+  #st .sheet,#md>div,.pop,dialog.ink-dialog {
+    background:var(--rb-glass);
+    color:var(--fg);
+    border-color:var(--rb-divider);
+    box-shadow:var(--rb-control-shadow);
+  }
+  header .seg {
+    background:var(--rb-field);
+    border-color:var(--rb-divider);
+    box-shadow:inset 0 1px var(--rb-rim);
+    -webkit-backdrop-filter:none;
+    backdrop-filter:none;
+  }
+  header .seg button { color:var(--fg) }
+  header .seg button.on {
+    background:color-mix(in srgb,var(--ac) 12%,var(--card))!important;
+    border-color:var(--rb-control-edge)!important;
+    box-shadow:inset 0 1px var(--rb-rim),0 2px 8px var(--glass-shadow)!important;
+    -webkit-backdrop-filter:none!important;
+    backdrop-filter:none!important;
+  }
+  #timer-nav { border-color:var(--rb-divider);box-shadow:var(--rb-control-shadow) }
+  #timer-nav.is-active { border-color:var(--rb-focus) }
+  #phone-nav button[aria-current=page],#phone-nav .phone-current {
+    color:var(--fg);
+    background:color-mix(in srgb,var(--ac) 12%,var(--card));
+    box-shadow:inset 0 0 0 1px var(--rb-control-edge);
+  }
+  #sv .ink-dock[data-edge]:not(.dragging) {
+    background:linear-gradient(155deg,var(--rb-rim),transparent 55%),var(--rb-dock)!important;
+    border-color:var(--rb-control-edge);
+    box-shadow:var(--rb-control-shadow);
+  }
+  #sv .split-head,#sv .split-mark-tools { border-color:var(--rb-divider) }
+
+  :is(#m,#md,#st,#sv,.ink-dialog) :is(input:not([type=checkbox],[type=radio],[type=range],[type=color],[type=file]),select,textarea),
+  header input[type=search] {
+    background:var(--rb-field);
+    border-color:var(--rb-control-edge);
+    color:var(--fg);
+    box-shadow:none;
+  }
+  input::placeholder,textarea::placeholder { color:var(--mut);opacity:1 }
+  input[type=file]::file-selector-button { background:var(--rb-field);border-color:var(--rb-divider) }
+  :is(#m,#st,#md,#sv,.ink-dialog) button.p { background:var(--rb-action);color:var(--rb-on-action) }
+
+  :is(header,#app,#st,#md,#sv,.ink-dialog,.rb-confirm) :is(button,a,input,select,textarea,summary,[tabindex]):focus-visible {
+    outline:2px solid var(--rb-focus);
+    outline-offset:2px;
+  }
+  header .seg button:focus-visible,#phone-nav :is(button,summary):focus-visible,#sv .ink-dock button:focus-visible {
+    outline:2px solid var(--rb-focus);
+    outline-offset:-3px;
+  }
+
+  @media (prefers-reduced-transparency:reduce),(prefers-contrast:more) {
+    :root { --rb-glass:var(--card);--rb-dock:var(--card);--rb-rim:transparent }
+    header,#phone-nav,.phone-menu,#m .norm-nav,#hb,#sv :is(.svb,.svl,.svr,.ink-dock),dialog.ink-dialog {
+      -webkit-backdrop-filter:none!important;
+      backdrop-filter:none!important;
+    }
+  }
+  @media (prefers-contrast:more) {
+    :root { --mut:var(--fg);--rb-divider:color-mix(in srgb,var(--fg) 45%,var(--card));--rb-control-edge:var(--rb-divider) }
+  }
+}
 </style>
 
 </head><body>
