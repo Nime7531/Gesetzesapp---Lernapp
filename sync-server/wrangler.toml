@@ -1,0 +1,10 @@
+name = "rubrum-sync"
+main = "worker.mjs"
+compatibility_date = "2026-11-20"
+
+[vars]
+RUBRUM_ORIGIN = "https://nime7531.github.io"
+
+[[r2_buckets]]
+binding = "SNAPSHOTS"
+bucket_name = "rubrum-sync"

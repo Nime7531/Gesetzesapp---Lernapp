@@ -1,0 +1,12 @@
+{
+  "id": "./",
+  "name": "Rubrum",
+  "short_name": "Rubrum",
+  "description": "Studienarbeitsplatz für Gesetze, Skripte und Planung.",
+  "lang": "de",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff"
+}
