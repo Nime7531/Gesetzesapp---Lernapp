@@ -1,6 +1,6 @@
 const scope = new URL(self.registration.scope);
 const cachePrefix = 'rubrum-offline:' + scope.pathname + ':';
-const cacheName = cachePrefix + '2';
+const cacheName = cachePrefix + '3';
 const home = new URL('./', scope).href;
 const manifest = new URL('manifest.webmanifest', scope).href;
 const syncPath = new URL('api/rubrum-snapshot', scope).href;
