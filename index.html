@@ -346,9 +346,8 @@ header .seg button:focus-visible{outline-offset:-3px}
 #sv .svc .pdf-surface{position:absolute;inset-block:var(--paper-margin);left:50%;width:var(--page-width);transform:translateX(-50%);background:#fff;box-shadow:0 1px 4px #0002}
 #sv .svc .pdf-surface .ink-overlay{overflow:visible}
 #sv .svc{background-color:var(--paper-color,#fffdf7)}
-#sv .svc::before{position:absolute;top:0;left:0;width:max(100%,var(--paper-width,0px));height:max(100%,var(--paper-height,0px));pointer-events:none;background-size:var(--paper-spacing) var(--paper-spacing)}
-#sv .svc[data-paper=lined]::before,#sv .svc[data-paper=grid]::before{content:'';background-image:linear-gradient(to bottom,var(--paper-rule) 0 var(--paper-thickness),transparent var(--paper-thickness))}
-#sv .svc[data-paper=grid]::before{background-image:linear-gradient(to bottom,var(--paper-rule) 0 var(--paper-thickness),transparent var(--paper-thickness)),linear-gradient(to right,var(--paper-rule) 0 var(--paper-thickness),transparent var(--paper-thickness))}
+#sv .svc[data-paper=lined],#sv .svc[data-paper=grid]{background:transparent}
+#sv .paper-grid{position:absolute;pointer-events:none}
 #sv .svc .pdf-raster{position:absolute;inset:0;width:100%;height:100%;display:block}
 #sv .svc .ink-text{transform:scale(var(--display-scale,1))}
 #sv .svc .pg[data-render-error=true]::after{content:'Seite konnte nicht gerendert werden.';position:absolute;inset:1rem auto auto 1rem;color:#60332d}
@@ -2613,12 +2612,38 @@ let cur=clampPage(initial.page??s.last),io=null,W=0,st=0,scrollAnchor=null,raste
  const paperSettings=()=>annotationDoc.paper||defaultPdfPaper();
  const writePageSize=()=>{
    body.style.setProperty('--page-width',W+'px');body.style.setProperty('--paper-margin',W*marginFraction+'px');
-   body.style.setProperty('--paper-width',W*(1+2*marginFraction)+'px');
  };
- const sizePaper=()=>{
-   const last=body.lastElementChild;if(!last||body.hidden)return;
-   body.style.setProperty('--paper-height',last.getBoundingClientRect().bottom-body.getBoundingClientRect().top+body.scrollTop+'px');
- };
+
+ const grid=el('canvas','paper-grid');grid.hidden=true;grid.setAttribute('aria-hidden','true');
+ let gridGeometry='',gridPaint='';
+ function drawPaper(paper=paperSettings()){
+   const w=body.offsetWidth,h=body.offsetHeight;
+   body.dataset.paper=paper.kind;body.style.setProperty('--paper-color',paper.color);
+   const hidden=body.hidden||paper.kind==='blank'||!w||!h;
+   if(grid.hidden!==hidden)grid.hidden=hidden;
+   if(hidden)return;
+   const x=body.offsetLeft+body.clientLeft,y=body.offsetTop+body.clientTop;
+   const density=Math.min(window.devicePixelRatio||1,2,Math.sqrt(2200000/(w*h)));
+   const pw=Math.max(1,Math.round(w*density)),ph=Math.max(1,Math.round(h*density));
+   const geometry=[x,y,w,h,pw,ph].join('/');
+   if(geometry!==gridGeometry){
+     gridGeometry=geometry;
+     grid.style.cssText='left:'+x+'px;top:'+y+'px;width:'+w+'px;height:'+h+'px';
+     if(grid.width!==pw)grid.width=pw;if(grid.height!==ph)grid.height=ph;
+     gridPaint='';
+   }
+   const spacing=Math.max(3,W*paper.spacing/100),thickness=Math.max(.4,W*paper.thickness/500);
+   const sx=pw/w,sy=ph/h,phaseX=body.scrollLeft%spacing,phaseY=body.scrollTop%spacing;
+   const key=[paper.kind,paper.color,paper.rule,spacing,thickness,phaseX,phaseY].join('/');
+   if(gridPaint===key)return;
+   gridPaint=key;
+   const ctx=grid.getContext('2d',{alpha:false});
+   ctx.fillStyle=paper.color;ctx.fillRect(0,0,pw,ph);
+   ctx.fillStyle=paper.rule;
+   const horizontal=Math.max(1,Math.round(thickness*sy)),vertical=Math.max(1,Math.round(thickness*sx));
+   for(let p=-phaseY;p<h;p+=spacing)ctx.fillRect(0,Math.round(p*sy),pw,horizontal);
+   if(paper.kind==='grid')for(let p=-phaseX;p<w;p+=spacing)ctx.fillRect(Math.round(p*sx),0,vertical,ph);
+ }
 let layoutOffset=initial.offset??(initial.page?0:s.readView?.offset||0),layoutX=initial.x??(initial.page?0:s.readView?.x||0);
 const dimensions=new Map();
 let wideListOpen=!!previousLayout?.wideListOpen,compactListOpen=false,toolsOpen=!!previousLayout?.toolsOpen;
@@ -2697,7 +2722,6 @@ async function rn(d){
     const viewport=pg.getViewport({scale:W/v1.width,rotation});
     const oldTop=pageTop(cur),oldScroll=body.scrollTop,oldHeight=d.offsetHeight;
     d._viewport=viewport;d._rotation=rotation;d.style.setProperty('--page-ratio',viewport.height/viewport.width);d.style.setProperty('--display-scale',W/viewport.width);
-    if(oldHeight!==d.offsetHeight)sizePaper();
     const delta=pageTop(cur)-oldTop;
     if(delta&&oldHeight!==d.offsetHeight){body.scrollTop=oldScroll+delta;scrollAnchor=body.scrollTop}
     else if(+d.dataset.i===cur&&Math.abs(oldHeight-d.offsetHeight)>1&&scrollAnchor===oldScroll){
@@ -2750,27 +2774,23 @@ const build=width=>{
   },{root:body,rootMargin:(ipad||iphone?'620px':'900px')+' 0px'});
   const fragment=document.createDocumentFragment();
   for(let i=1;i<=N;i++){const d=el('div','pg');d.dataset.i=i;d.style.setProperty('--page-ratio',pageRatio(i));d._pdfSurface=el('div','pdf-surface');d.append(d._pdfSurface);fragment.append(d)}
-  body.append(fragment);sizePaper();for(const d of body.children)io.observe(d);
+  body.append(fragment);for(const d of body.children)io.observe(d);
 };
 function fitPage(force=false,anchor=null){
   if(body.hidden||!body.clientWidth)return;
   const css=getComputedStyle(body),usable=body.clientWidth-parseFloat(css.paddingLeft)-parseFloat(css.paddingRight);
   const paper=paperSettings(),margin=paper.enabled?paper.margin/100:0;
   const fitWidth=usable/(1+margin*2);
-  const fitHeight=stage.classList.contains('split-stacked')?Math.max(0,body.clientHeight-16)/(pageRatio(cur)+margin*2):Infinity;
+  const fitHeight=stage.classList.contains('split-stacked')?Math.max(0,body.offsetHeight-16)/(pageRatio(cur)+margin*2):Infinity;
   const width=Math.max(80,Math.floor(Math.min(fitWidth,fitHeight)*z));
-  body.dataset.paper=paper.kind;
-  body.style.setProperty('--paper-color',paper.color);body.style.setProperty('--paper-rule',paper.rule);
-  const density=window.devicePixelRatio||1,pixels=n=>Math.max(1,Math.round(n*density))/density;
-  body.style.setProperty('--paper-spacing',pixels(Math.max(3,width*paper.spacing/100))+'px');
-  body.style.setProperty('--paper-thickness',pixels(Math.max(.4,width/500*paper.thickness))+'px');
+
   const resized=width!==W||margin!==marginFraction||force;
-  if(!resized&&!anchor)return;
+  if(!resized&&!anchor){drawPaper(paper);return}
   const p=W?capturePosition():{offset:layoutOffset,x:layoutX};
   marginFraction=margin;
   if(!W||force)build(width);
   else if(resized){
-    W=width;writePageSize();sizePaper();
+    W=width;writePageSize();
     for(const d of rendered)d.style.setProperty('--display-scale',W/d._viewport.width);
     clearTimeout(rasterTimer);rasterTimer=setTimeout(()=>{
       for(const d of rendered)renderPdfRaster(d,d._r,W);
@@ -2783,7 +2803,7 @@ function fitPage(force=false,anchor=null){
     body.scrollLeft=d.offsetLeft+anchor.fx*d.offsetWidth-anchor.x;
     rememberPage(page);
   }
-  capturePosition();
+  capturePosition();drawPaper(paper);
 }
 const xb=el('button',null,'Schließen'),tt=el('b','svt',s.name),pin=el('input'),pn=el('button',null,'‹'),px=el('button',null,'›'),zm=el('button',null,'−'),zp=el('button',null,'＋'),sb=el('button',null,'☆ Seite'),bl=el('button',null,'Lesezeichen'),sq=el('input');
 const listToggle=el('button',null,'Übersicht'),toolsToggle=el('button',null,'Ansicht');
@@ -2824,7 +2844,7 @@ backdrop.setAttribute('aria-hidden','true');
 pageControls.append(pn,pin,el('span','mut','/ '+N),px);
 const glass=el('details','sv-dock-settings'),slider=el('input'),label=el('label',null,'Glasstärke der Werkzeugleiste '),value=el('output');slider.type='range';slider.min=0;slider.max=100;slider.value=rbGlassGet('dock',rbGlass.ui);label.append(slider,value);glass.append(el('summary',null,'Werkzeugleiste · Darstellung'),label);function dockGlass(){ov.style.setProperty('--dock-glass',slider.value/100);value.textContent=slider.value+' %'}slider.oninput=()=>{dockGlass();try{localStorage.setItem('rubrum.glass.dock',slider.value)}catch{}};dockGlass();tools.append(zm,zp,sb,bl,sq,glass);
 bar0.append(editor.paperSettings,xb,listToggle,tt,pageControls,editor.toggle,toolsToggle,editor.splitButton,tools);
-stage.prepend(body);work.append(sidebar,stage,backdrop);ov.append(bar0,editor.controls,editor.quick,editor.eraserBar,work);
+stage.prepend(grid,body);work.append(sidebar,stage,backdrop);ov.append(bar0,editor.controls,editor.quick,editor.eraserBar,work);
 function adapt(){
   const compact=!wide.matches,showList=compact?compactListOpen:wideListOpen;
   if(!showList&&sidebar.contains(document.activeElement))listToggle.focus();
@@ -2843,7 +2863,7 @@ listToggle.onclick=()=>{
 };
 backdrop.onclick=()=>{compactListOpen=false;adapt();listToggle.focus()};
 toolsToggle.onclick=()=>{toolsOpen=!toolsOpen;adapt()};
-const resize=new ResizeObserver(()=>fitPage());
+const resize=new ResizeObserver(()=>{if(body.hidden)drawPaper();else fitPage()});
 s.opened=Date.now();skrV(editor.bib,id);
 closeReader=cl;saveReaderPosition=capturePosition;readerId=id;document.body.append(ov);
 document.documentElement.classList.add('reader-open');layers();
@@ -2862,7 +2882,7 @@ if(listScroll!==null&&!sidebar.hidden){
 body.onscroll=()=>{
   if(st)return;
   st=requestAnimationFrame(()=>{
-    st=0;
+    st=0;drawPaper();
     if(body.hidden||body.scrollTop===scrollAnchor)return;
     scrollAnchor=null;
     const y=body.scrollTop+Math.min(body.clientHeight*.22,160);
