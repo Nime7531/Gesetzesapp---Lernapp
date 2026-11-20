@@ -2156,25 +2156,32 @@ const mm=mk();mm.refs=mm.refs||[];if(!mm.refs.some(z=>z.law===t.law&&z.key===t.k
 row.append(ri);x.append(row);d.append(x)}
 /*NEW-START*/
 let pendLaw=null,lawReadToken=0;$('#mx').oninput=()=>{pendLaw=null;lawReadToken++;$('#mo').disabled=false};
-function rmHl(l,p,s,e){
+function rmHl(l,p,s,e,context=null){
   if(!getSelection().isCollapsed)return;
   const mm=getM(l,p.key),old=mm.hl,removed=old.filter(x=>!(x[0]===s&&x[1]===e));
-  mm.hl=removed;lawUndo=null;deckLaw=null;save();draw();
+  if(removed.length===old.length)return false;
+  mm.hl=removed;lawUndo=context?{law:l,key:p.key,hl:old}:null;deckLaw=null;save();
+  if(context){context.refresh('Markierung entfernt.');return}
+  draw();
   toast('Markierung entfernt',()=>{
     if(!S.laws.includes(l)||S.marks[l.id]?.[p.key]?.hl!==removed)return;
     mm.hl=old;deckLaw=null;save();draw();
   });
 }
-function frag(box,t,a,hl,l,p,interactive){const b=a+t.length;let pos=a;
+function frag(box,t,a,hl,l,p,interactive,context){const b=a+t.length;let pos=a;
 for(const[s,e,c]of hl){if(e<=pos||s>=b)continue;const ss=Math.max(s,pos),ee=Math.min(e,b);if(ss>pos)lawText(box,t.slice(pos-a,ss-a),pos);
-const k=cmark('',c);lawText(k,t.slice(ss-a,ee-a),ss);if(interactive){k.title='Klicken zum Entfernen (mit Rückgängig)';k.onclick=()=>rmHl(l,p,s,e)}box.append(k);pos=ee}
+const k=cmark('',c);lawText(k,t.slice(ss-a,ee-a),ss);if(interactive||context){
+  k.title='Antippen zum Entfernen';k.lawMarkColor=c||0;
+  k.removeLawMark=()=>{if(!context||context.color()<0||context.color()===(c||0))rmHl(l,p,s,e,context)};
+  k.onclick=k.removeLawMark;
+}box.append(k);pos=ee}
 if(pos<b)lawText(box,t.slice(pos-a),pos)}
 function renderTxt(l,p,m,interactive=true,context=null){const t=el('div','txt'),hl=[...m.hl].sort((a,b)=>a[0]-b[0]),xml=l.src==='xml',bl=[];let off=0,cur=null;
 sentenceDisplay(p.text).split('\n').forEach((ln,i)=>{const s=ln.trim();
 const ty=i===0?'head':/^\(\d+[a-z]?\)(\s|$)/.test(s)?'abs':/^\d+[a-z]?\.(\s|$)/.test(s)?'nr':/^[a-z]{1,2}\)(\s|$)/.test(s)?'bu':/^[a-z]{3}\)(\s|$)/.test(s)?'bb':/^│ /.test(s)?'tb':'txt';
 if(ty==='txt'&&cur&&!xml&&cur.ty!=='head'&&cur.ty!=='tb')cur.parts.push([off,ln]);else{cur={ty,parts:[[off,ln]]};bl.push(cur)}
 off+=ln.length+1});
-bl.forEach((b,bi)=>{const d=el('div','blk '+b.ty);b.parts.forEach(([a,x],pi)=>{if(pi)lawText(d,' ',a-1);frag(d,x,a,hl,l,p,interactive)});
+bl.forEach((b,bi)=>{const d=el('div','blk '+b.ty);b.parts.forEach(([a,x],pi)=>{if(pi)lawText(d,' ',a-1);frag(d,x,a,hl,l,p,interactive,context)});
 if(bi<bl.length-1){const sp=el('span');sp.style.display='none';sp.textContent='\n';d.append(sp)}t.append(d)});
 if(interactive||context)wireLawPencil(t,p,context);return t}
 function parseXml(xml){xml=xml.replace(/<!DOCTYPE[^>]*>/,'').replace(/&nbsp;/g,'&#160;').replace(/&sup([123]);/g,(_,n)=>superDigits[+n]).replace(/&(?!amp;|lt;|gt;|quot;|apos;|#)[A-Za-z]+;/g,' ');
@@ -3302,11 +3309,11 @@ function wireLawPencil(root,para,context=null){
   let finger=null;const color=()=>context?context.color():lawColor;
   root.addEventListener('pointerdown',e=>{
     if(color()>=0&&e.pointerType==='touch'){
-      if(!finger&&!lawGesture){finger={id:e.pointerId,y:e.clientY};root.setPointerCapture(e.pointerId)}
+      if(!finger&&!lawGesture){finger={id:e.pointerId,x:e.clientX,y:e.clientY,startY:e.clientY,moved:false,mark:e.target.closest('mark')};root.setPointerCapture(e.pointerId)}
       return;
     }
     if(color()<0||lawGesture||e.pointerType!=='pen'||e.button!==0)return;
-    const g={root,para,pointer:e.pointerId,color:color(),overlay:el('div','law-preview')};
+    const g={root,para,pointer:e.pointerId,color:color(),overlay:el('div','law-preview'),x:e.clientX,y:e.clientY,moved:false,mark:context?e.target.closest('mark'):null};
     const word=lawWord(g,e.clientX,e.clientY);
     if(!word)return;
     e.preventDefault();getSelection().removeAllRanges();
@@ -3316,19 +3323,22 @@ function wireLawPencil(root,para,context=null){
   function update(e){
     const g=lawGesture;
     if(g?.root!==root||g.pointer!==e.pointerId)return null;
+    if(Math.hypot(e.clientX-g.x,e.clientY-g.y)>5)g.moved=true;
     const word=lawWord(g,e.clientX,e.clientY);
     if(word)g.span={s:Math.min(g.first.s,word.s),e:Math.max(g.first.e,word.e)};
     return g;
   }
   root.onpointermove=e=>{
-    if(finger?.id===e.pointerId){if(!lawGesture){if(context)context.scroll.scrollTop+=finger.y-e.clientY;else window.scrollBy(0,finger.y-e.clientY);}finger.y=e.clientY;return;}
+    if(finger?.id===e.pointerId){if(Math.hypot(e.clientX-finger.x,e.clientY-finger.startY)>5)finger.moved=true;if(!lawGesture){if(context)context.scroll.scrollTop+=finger.y-e.clientY;else window.scrollBy(0,finger.y-e.clientY);}finger.y=e.clientY;return;}
     const g=update(e);if(!g)return;
     cancelAnimationFrame(lawPreviewFrame);lawPreviewFrame=requestAnimationFrame(()=>lawPreview(g));
   };
   root.onpointerup=e=>{
-    if(finger?.id===e.pointerId){finger=null;return;}
+    if(finger?.id===e.pointerId){const tap=finger;finger=null;if(context&&!tap.moved&&Math.hypot(e.clientX-tap.x,e.clientY-tap.startY)<=5)tap.mark?.removeLawMark?.();return;}
     const g=update(e);if(!g)return;
-    cancelLawGesture();applyHl(g.color,{k:para.key,...g.span},true,context);
+    cancelLawGesture();
+    if(g.mark&&!g.moved&&g.mark.lawMarkColor===g.color){g.mark.removeLawMark();return}
+    applyHl(g.color,{k:para.key,...g.span},true,context);
   };
   root.onpointercancel=root.onlostpointercapture=e=>{
     if(finger?.id===e.pointerId)finger=null;
@@ -4080,11 +4090,11 @@ function readerInk({s,pdf,body,ov,stage,sidebar,doc,go,position,rotate,sideHide,
     if(source)actions.append(inkButton('Zur PDF-Fundstelle · S. '+source.k.page,source.align));
     const active=split;
     if(active.panel.contains(lawGesture?.root))cancelLawGesture();
-    const context={law:l,scroll:active.scroll,color:active.color,refresh(){
+    const context={law:l,scroll:active.scroll,color:active.color,refresh(message='Gesetzesmarkierung übernommen.'){
       if(split!==active||active.markContext!==context)return;
       const top=active.scroll.scrollTop;
       active.scroll.querySelector('.txt')?.replaceWith(textView());active.scroll.scrollTop=top;
-      active.markControls();active.status.textContent='Gesetzesmarkierung übernommen.';
+      active.markControls();active.status.textContent=message;
     }};
     function textView(){return renderTxt(l,p,S.marks[l.id]?.[p.key]||{hl:[]},false,context)}
     active.markContext=context;active.scroll.replaceChildren(actions,textView());active.scroll.scrollTop=0;active.markControls();requestAnimationFrame(()=>{if(split===active)split.title.focus({preventScroll:true})});
