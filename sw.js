@@ -1,6 +1,6 @@
 const scope = new URL(self.registration.scope);
 const cachePrefix = 'rubrum-offline:' + scope.pathname + ':';
-const cacheName = cachePrefix + '10';
+const cacheName = cachePrefix + '12';
 const home = new URL('./', scope).href;
 const manifest = new URL('manifest.webmanifest', scope).href;
 const syncPath = new URL('api/rubrum-snapshot', scope).href;
@@ -38,15 +38,17 @@ async function loadApp(request) {
 }
 
 async function sync(request) {
-  const unavailable = status => new Response(null, { status, headers: { 'Cache-Control': 'no-store' } });
+  const unavailable = (status, unconfigured = false) => new Response(null, {
+    status, headers: { 'Cache-Control': 'no-store', ...(unconfigured ? { 'X-Rubrum-Sync-State': 'unconfigured' } : {}) }
+  });
   try {
     const config = await fetch(new URL('sync-server.json', scope), {
       cache: 'no-store', redirect: 'error', signal: AbortSignal.timeout(8000)
     });
-    if (config.status === 404) return unavailable(404);
+    if (config.status === 404) return unavailable(404, true);
     if (!config.ok) return unavailable(503);
     const { endpoint } = await config.json();
-    if (!endpoint) return unavailable(404);
+    if (!endpoint) return unavailable(404, true);
     const target = new URL(endpoint);
     if (target.protocol !== 'https:' || target.origin === scope.origin ||
         target.username || target.password || target.search || target.hash ||
