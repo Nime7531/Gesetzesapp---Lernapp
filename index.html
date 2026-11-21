@@ -60,17 +60,18 @@
   --bg:#f4f0ea; --pane:#f8f5ef; --card:#fffdf9; --fg:#24211e; --mut:#615952; --bd:#dfd5ca;
   --ac:#a9401f; --acf:#fff; --lk:#932f15; --sel:#eee7de; --st:#faf1e0;
   --hl:#f4e0a0; --h0:var(--hl); --h1:#c7e0bd; --h2:#f2c2b6; --h3:#c1d8ef; --h4:#f3cda7;
-  --rb-glass-base:#f8f4ef; --rb-glass-line:#c8bbad; --glass-rim:#fffdf9d9; --glass-shadow:#33201921;
+  --rb-glass-base:#fff7eb; --rb-glass-line:#aa8f88; --glass-rim:#fffdf9e6; --glass-shadow:#42283729;
   --rb-field:#f6f2ec; --rb-control-edge:#938277; --rb-divider:var(--bd);
   --rb-focus:#944228; --rb-selection:#f2dfd3; --rb-selection-edge:#935039;
   --rb-action:#a1391b; --rb-on-action:#fff; --rb-danger:#a72525; --rb-on-danger:#fff;
   --rb-today:#953921; --rb-import:#235e91; --rb-private:#336d4a; --rb-study:#87501f;
-  --rb-shell-light:#e9ded2; --rb-shell-wash:#f6f3ee;
+  --rb-shell-light:#edb59f; --rb-shell-wash:#c3c9f4; --rb-shell-trace:#b8797560;
+  --rb-glass-pass:42%; --rb-backdrop-light:1; --rb-lens-shine:#fffdf8a6; --rb-lens-depth:#8e59652b;
   --rb-paper-edge:#c5a17e; --rb-paper-level:var(--paper-glass);
   --liquid:.64; --paper-glass:.08; --rail-mist:9px;
-  --rb-ui-level:var(--liquid); --rb-ui-filter:blur(var(--rail-mist)) saturate(1.16);
+  --rb-ui-level:var(--liquid); --rb-ui-filter:blur(var(--rail-mist)) saturate(1.3) brightness(var(--rb-backdrop-light));
   --rb-card-shadow:0 1px 2px #291b120b,0 7px 24px #291b120e;
-  --rb-control-shadow:inset 0 1px var(--glass-rim),0 1px 2px var(--glass-shadow),0 8px 25px var(--glass-shadow);
+  --rb-control-shadow:inset 0 1px 0 var(--glass-rim),inset 0 -1px 0 var(--rb-lens-depth),0 2px 3px var(--glass-shadow),0 9px 27px var(--glass-shadow);
   --r:18px; --sh:var(--rb-card-shadow); --gb:var(--bd); --gs:var(--sh);
 }
 :root[data-theme=mittel] {
@@ -78,25 +79,27 @@
   --bg:#111827; --pane:#1a2336; --card:#202a40; --fg:#f5f2fc; --mut:#bbc5da; --bd:#3b4864;
   --ac:#f878b0; --acf:#241328; --lk:#ffadd0; --sel:#293650; --st:#332a47;
   --hl:#564819; --h1:#254b3e; --h2:#60344c; --h3:#2e4877; --h4:#60412c;
-  --rb-glass-base:#262f47; --rb-glass-line:#52617c; --glass-rim:#f6edff3e; --glass-shadow:#07091553;
+  --rb-glass-base:#14172c; --rb-glass-line:#7d82a3; --glass-rim:#f6edff69; --glass-shadow:#0a081b60;
   --rb-field:#222b41; --rb-control-edge:#8290ab; --rb-focus:#ffafd2;
   --rb-selection:#45354e; --rb-selection-edge:#ed9bc0;
   --rb-action:#f697c1; --rb-on-action:#261326; --rb-danger:#a82e3b;
   --rb-today:#ffa0c7; --rb-import:#a4c9fa; --rb-private:#98dbb5; --rb-study:#f6bd86;
-  --rb-shell-light:#292943; --rb-shell-wash:#19253d; --rb-paper-edge:#827bae;
+  --rb-shell-light:#713755; --rb-shell-wash:#324d88; --rb-shell-trace:#dbc2ff3f; --rb-paper-edge:#827bae;
+  --rb-glass-pass:32%; --rb-backdrop-light:.8; --rb-lens-shine:#ebefff15; --rb-lens-depth:#05071452;
   --rb-card-shadow:0 2px 4px #080b1640,0 9px 25px #0a0f202d;
 }
 :root[data-theme=dunkel] {
   color-scheme:dark;
-  --bg:#17181c; --pane:#1d2025; --card:#23262c; --fg:#f1f2f5; --mut:#bec3ce; --bd:#3b404b;
+  --bg:#191523; --pane:#211b2d; --card:#292235; --fg:#f5f3fa; --mut:#c7c1d0; --bd:#4a4058;
   --ac:#86a7ff; --acf:#131c32; --lk:#adc4ff; --sel:#2c313b; --st:#2d3342;
   --hl:#514425; --h1:#294a38; --h2:#5d3942; --h3:#304975; --h4:#593e2b;
-  --rb-glass-base:#30343c; --rb-glass-line:#555b69; --glass-rim:#f0f2ff42; --glass-shadow:#05060a65;
-  --rb-field:#272a32; --rb-control-edge:#858e9f; --rb-focus:#adc4ff;
+  --rb-glass-base:#171220; --rb-glass-line:#82748c; --glass-rim:#fff0fe6e; --glass-shadow:#08061569;
+  --rb-field:#2b2439; --rb-control-edge:#948aa3; --rb-focus:#adc4ff;
   --rb-selection:#39465f; --rb-selection-edge:#a0b9fa;
   --rb-action:#a7bdff; --rb-on-action:#141d34; --rb-danger:#aa3039;
   --rb-today:#ffab9a; --rb-import:#a5c8fc; --rb-private:#99d6af; --rb-study:#f6bd86;
-  --rb-shell-light:#292b32; --rb-shell-wash:#20242c; --rb-paper-edge:#8491ac;
+  --rb-shell-light:#7b3b53; --rb-shell-wash:#363f82; --rb-shell-trace:#ffaebb47; --rb-paper-edge:#9586ad;
+  --rb-glass-pass:32%; --rb-backdrop-light:.8; --rb-lens-shine:#ffeaff15; --rb-lens-depth:#08041057;
   --rb-card-shadow:0 2px 4px #08090c4d,0 8px 24px #0a0b102e;
 }
 :root[data-glass-ui=off] { --rb-ui-filter:none }
@@ -469,7 +472,7 @@ html[data-phone-view=read] #m,html:not(.rubrum-phone) #m:has(.norm-nav){padding-
 #reader-status:empty{display:none}
 .agenda-title>strong{font-weight:inherit;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .phone-menu{max-block-size:min(65dvh,calc(var(--usable-height,100dvh) - 80px));overflow:auto;overscroll-behavior:contain}
-.rubrum-phone .pop{background:var(--card);bottom:calc(var(--keyboard-gap,0px) + max(8px,env(safe-area-inset-bottom,0px)));max-height:calc(var(--usable-height,100dvh) - 20px)}
+.rubrum-phone .pop{bottom:calc(var(--keyboard-gap,0px) + max(8px,env(safe-area-inset-bottom,0px)));max-height:calc(var(--usable-height,100dvh) - 20px)}
 .rubrum-phone:has(.pop) #phone-nav,.rubrum-phone[data-keyboard=true] #phone-nav{visibility:hidden}
 .rubrum-phone :is(#m,.pop) :is(input:not([type=checkbox]):not([type=file]),select,textarea){font-size:1rem;max-inline-size:100%;box-sizing:border-box}
 .phone-deadline:is(button){width:100%;text-align:start;min-height:44px;border-radius:10px;background:var(--sel)}
@@ -598,8 +601,10 @@ html[data-workspace=sum] #m .sc{background:var(--card);border:1px solid var(--gb
 .rb-hero {
   position:relative;display:grid;grid-template-columns:1.45fr .92fr;isolation:isolate;overflow:hidden;
   min-height:clamp(320px,35vw,390px);border-radius:30px;border:1px solid #825b4d;
-  background:#292128;background:radial-gradient(ellipse at 86% 42%,#583a43,transparent 51%),linear-gradient(118deg,#242026,#342831);
-  color:#fff5ee;box-shadow:0 14px 40px #18121640;
+  background:#30213c;
+  background:radial-gradient(ellipse at 91% 25%,#884b63,transparent 65%),
+    radial-gradient(ellipse at 82% 115%,#424a98,transparent 65%),linear-gradient(118deg,#25192b,#3e284d);
+  color:#fff5ee;box-shadow:inset 0 1px #fff1e25c,0 14px 40px #18121640;
 }
 .rb-hero-copy{position:relative;z-index:1;padding:clamp(26px,4vw,54px);align-self:center;min-width:0}
 .rb-hero .rb-kicker{color:#f4bfa7;font-size:.75rem;letter-spacing:.13em;font-weight:750;margin:0 0 14px}
@@ -639,35 +644,61 @@ html:not([data-track=ausbildung]) .rb-track-only{display:none!important}
 .rb-track .tile{text-align:left;display:grid;gap:2px}
 .rb-track p{grid-column:1/-1;margin:4px 0 0;font-size:.85em}
 @media screen {
-  body {
-    min-height:100vh;
-    background:radial-gradient(ellipse at 4% 0%,var(--rb-shell-light),transparent 52%),
-      radial-gradient(ellipse at 100% 10%,var(--rb-shell-wash),transparent 56%),var(--bg);
-    background-repeat:no-repeat;
+  :root { background:var(--bg) }
+  body { min-height:100vh;background:transparent }
+  /* A viewport-sized colour field stays beneath the actual scrolling content. */
+  body::before {
+    content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
+    background:
+      radial-gradient(ellipse 102% 93% at 92% -39%,transparent 76%,var(--rb-shell-trace) 76.8%,transparent 79%),
+      radial-gradient(ellipse 82% 90% at var(--rb-warm-x,14%) -9%,var(--rb-shell-light),transparent 88%),
+      radial-gradient(ellipse 92% 88% at var(--rb-cool-x,93%) 98%,var(--rb-shell-wash),transparent 94%);
+  }
+  :root:is([data-workspace=read],[data-workspace=sum]) { --rb-warm-x:83%;--rb-cool-x:10% }
+  :root:is([data-workspace=week],[data-workspace=learn]) { --rb-warm-x:41%;--rb-cool-x:99% }
+  #sv {
+    background:
+      radial-gradient(ellipse 76% 245px at 18% 0%,var(--rb-shell-light),transparent 90%),
+      radial-gradient(ellipse 81% 270px at 98% 2%,var(--rb-shell-wash),transparent 90%),var(--bg);
   }
 
-  /* Only floating tools sample the backdrop. Each group has a solid fallback. */
-  header, #phone-nav, .phone-menu, #hb, #m .law-pencil, #sv :is(.svb,.svr,.ink-dock), .pop {
+  /* One backdrop filter per toolbar. Fills and rims give its controls their own shape. */
+  header, #phone-nav, .phone-menu, #hb, #m :is(.law-pencil,.norm-nav),
+  #sv :is(.svb,.svl,.svr,.ink-dock), .pop {
+    --rb-lens-level:var(--rb-ui-level);
     background-color:var(--rb-glass-base);
+    background-image:linear-gradient(154deg,
+      color-mix(in srgb,var(--rb-lens-shine) calc(var(--rb-lens-level)*100%),transparent),
+      transparent 56%,
+      color-mix(in srgb,var(--rb-lens-depth) calc(var(--rb-lens-level)*72%),transparent)),
+      var(--rb-lens-tint,none);
     border-color:var(--rb-glass-line);
     color:var(--fg);
     box-shadow:var(--rb-control-shadow);
   }
   @supports ((-webkit-backdrop-filter:blur(1px)) or (backdrop-filter:blur(1px))) and (color:color-mix(in srgb,black,white)) {
-    header, #phone-nav, #hb, #m .law-pencil, #sv :is(.svb,.svr), .pop {
-      background-color:color-mix(in srgb,var(--rb-glass-base) calc(100% - var(--rb-ui-level)*15%),transparent);
+    header, #phone-nav, #hb, #m :is(.law-pencil,.norm-nav), #sv :is(.svb,.svr), .pop {
+      background-color:color-mix(in srgb,var(--rb-glass-base) calc(100% - var(--rb-lens-level)*var(--rb-glass-pass)),transparent);
       -webkit-backdrop-filter:var(--rb-ui-filter);
       backdrop-filter:var(--rb-ui-filter);
     }
+    .phone-menu,#sv .svl {
+      background-color:color-mix(in srgb,var(--rb-glass-base) calc(100% - var(--rb-lens-level)*19%),transparent);
+    }
     #sv .ink-dock {
-      background-color:color-mix(in srgb,var(--rb-glass-base) calc(100% - var(--rb-dock-level)*20%),transparent);
+      background-color:color-mix(in srgb,var(--rb-glass-base) calc(100% - var(--rb-lens-level)*var(--rb-glass-pass)),transparent);
       -webkit-backdrop-filter:var(--rb-dock-filter);
       backdrop-filter:var(--rb-dock-filter);
     }
   }
   #sv .ink-dock {
+    --rb-lens-level:var(--rb-dock-level);
     --rb-dock-level:var(--dock-glass,var(--liquid));
-    --rb-dock-filter:blur(calc(var(--rb-dock-level)*13px)) saturate(1.14);
+    --rb-dock-filter:blur(calc(var(--rb-dock-level)*12px)) saturate(1.28) brightness(var(--rb-backdrop-light));
+    --rb-lens-tint:linear-gradient(103deg,
+      color-mix(in srgb,var(--rb-shell-light) calc(var(--rb-dock-level)*28%),transparent),
+      transparent 50%,
+      color-mix(in srgb,var(--rb-shell-wash) calc(var(--rb-dock-level)*34%),transparent));
     gap:4px;
     padding:5px;
     border-radius:23px;
@@ -693,6 +724,32 @@ html:not([data-track=ausbildung]) .rb-track-only{display:none!important}
     background:transparent;
     color:var(--fg);
   }
+  #sv .svb {
+    margin:6px 8px 4px;
+    border-radius:22px;
+  }
+  #sv .svt {
+    font-weight:690;
+    letter-spacing:-.012em;
+  }
+  #sv .sv-page {
+    padding:2px;
+    border-radius:15px;
+    background:color-mix(in srgb,var(--fg) 8%,transparent);
+  }
+  #sv .svb .reader-icon-button { border-radius:14px }
+  #sv .svl {
+    border-radius:22px;
+    padding:.6rem;
+  }
+  #sv .svl :is(.sv-script,.ink-list-button,.ink-thumbs button) {
+    border-radius:13px;
+  }
+  #sv .ink-thumbs canvas {
+    border-radius:3px;
+    box-shadow:0 2px 7px #08061536;
+  }
+  #sv .svc .pdf-surface { box-shadow:0 1px 4px #29233d24,0 8px 24px #29233d1f }
   #sv .ink-dock[data-edge]>* { flex:none }
   .ink-swatch::before { border:1px solid #12172670;box-shadow:0 1px 1px #0004 }
   .dock-snap-hint {
@@ -716,7 +773,7 @@ html:not([data-track=ausbildung]) .rb-track-only{display:none!important}
     padding:3px;
     border:1px solid var(--rb-glass-line);
     border-radius:18px;
-    background:var(--rb-field);
+    background:color-mix(in srgb,var(--rb-glass-base) 20%,transparent);
   }
   header .seg button {
     flex-shrink:0;
@@ -730,8 +787,12 @@ html:not([data-track=ausbildung]) .rb-track-only{display:none!important}
   }
   #brand-home { border-radius:16px }
   #q, #timer-nav, #gear { border-radius:999px;min-height:44px }
-  header #q { padding-inline:14px;background:var(--rb-field) }
-  #gear { border:1px solid var(--rb-glass-line);background:var(--rb-field) }
+  header #q { padding-inline:14px }
+  header :is(#q,#timer-nav,#gear) {
+    border:1px solid var(--rb-glass-line);
+    background-color:color-mix(in srgb,var(--rb-glass-base) 52%,transparent);
+    box-shadow:inset 0 1px 0 color-mix(in srgb,var(--glass-rim) 58%,transparent);
+  }
   #gear { min-width:44px }
   #phone-nav { border-radius:25px }
   #phone-nav > :is(button,details) { min-width:0 }
@@ -764,7 +825,8 @@ html:not([data-track=ausbildung]) .rb-track-only{display:none!important}
   #sv :is(.svb button[aria-pressed=true],.svb button[aria-expanded=true],
       .ink-main button[aria-pressed=true],.ink-dock button[aria-pressed=true],.ink-dock .ink-swatch.active) {
     color:var(--fg);
-    background:var(--rb-selection);
+    background-color:var(--rb-selection);
+    background-image:linear-gradient(155deg,color-mix(in srgb,var(--glass-rim) 36%,transparent),transparent 56%);
     border:1px solid var(--rb-selection-edge);
     box-shadow:inset 0 1px var(--glass-rim),0 2px 5px var(--glass-shadow);
     font-weight:730;
@@ -786,10 +848,18 @@ html:not([data-track=ausbildung]) .rb-track-only{display:none!important}
     }
   }
 
-  /* Work surfaces stay opaque even when a bright page is below the toolbar. */
-  #m :is(.para:not(.star),.cal,.skc,.lk-c,.kt,.tkc,.tmc,.rb-card,.rb-faq,.rb-learn-tools),
-  #sv :is(.svl,.ink-split),.rb-timer-face {
-    background:var(--card);
+  /* The page cards share the rim of the chrome, without filtering behind every row. */
+  #m :is(.para:not(.star,.rb-law-paper,.toc),.skc,.lk-c,.kt,.tkc,.tmc,.rb-card,.rb-faq,.rb-learn-tools),
+  html[data-workspace=sum] #m .sc {
+    background-color:var(--card);
+    background-color:color-mix(in srgb,var(--card) calc(100% - var(--rb-ui-level)*24%),transparent);
+    background-image:linear-gradient(152deg,
+      color-mix(in srgb,var(--rb-lens-shine) calc(var(--rb-ui-level)*63%),transparent),transparent 54%);
+    border-color:color-mix(in srgb,var(--rb-glass-line) 64%,var(--rb-divider));
+    box-shadow:inset 0 1px 0 color-mix(in srgb,var(--glass-rim) calc(var(--rb-ui-level)*62%),transparent),var(--rb-card-shadow);
+  }
+  #m .cal,#sv .ink-split,.rb-timer-face {
+    background-color:var(--card);
     border-color:var(--rb-divider);
     box-shadow:var(--rb-card-shadow);
   }
@@ -804,8 +874,9 @@ html:not([data-track=ausbildung]) .rb-track-only{display:none!important}
     box-shadow:inset 0 2px color-mix(in srgb,var(--rb-paper-edge) calc(var(--rb-paper-level)*55%),transparent),var(--rb-card-shadow);
   }
   #m .rb-law-paper.star { border-inline-start-color:var(--ac) }
-  #m :is(.norm-nav,.tnote),#sv :is(.ink-controls,.ink-quick,.ink-eraser-bar),.backup-picker {
-    background:var(--pane);
+  #m .tnote,#sv :is(.ink-controls,.ink-quick,.ink-eraser-bar),.backup-picker {
+    background-color:var(--pane);
+    background-image:linear-gradient(154deg,color-mix(in srgb,var(--rb-lens-shine) 42%,transparent),transparent 68%);
     border-color:var(--rb-divider);
     box-shadow:none;
   }
@@ -821,8 +892,23 @@ html:not([data-track=ausbildung]) .rb-track-only{display:none!important}
   .rb-card .mut { line-height:1.42 }
   .phone-home { margin-block-end:clamp(22px,5vw,34px) }
   .phone-section { padding:clamp(12px,4vw,18px) }
-  .phone-home .phone-link { border-radius:14px;background:var(--pane) }
+  .phone-home :is(.phone-link,.agenda-item),#m .task-row {
+    border-radius:15px;
+    background-color:var(--rb-field);
+    background-color:color-mix(in srgb,var(--rb-field) calc(100% - var(--rb-ui-level)*18%),transparent);
+    box-shadow:inset 0 0 0 1px var(--rb-divider),inset 0 1px 0 color-mix(in srgb,var(--glass-rim) 43%,transparent);
+  }
+  #m .task-row { padding:.4rem .55rem }
   .phone-home .phone-link:focus-visible { outline-offset:-2px }
+
+  /* Actions on each page use the same finish as the navigation controls. */
+  :is(#m,#md,#st,#sv) :is(.ph,.norm-nav,.exr,.lk-top,.lk-a,.task-script,.phone-heading,
+      .phone-week-actions,.phone-week-head,.tkc,.tmc,.rb-learn-tools,.fgrid,.rb-glass-settings,
+      .ink-controls,.sv-tools,.svl,.split-head) button:not(.ink-swatch,.cb,.skt),
+  #m :is(.chip,.rb-visual-switch),#phone-nav .phone-menu button {
+    background-image:linear-gradient(152deg,color-mix(in srgb,var(--rb-lens-shine) 58%,transparent),transparent 69%);
+    box-shadow:inset 0 1px color-mix(in srgb,var(--glass-rim) 45%,transparent);
+  }
 
   /* Labels and time stay readable in both the grid and the agenda. */
   #m :is(.cal-t,.cal-h,.ev2,.phone-time,.phone-days,.pill,.kt,.rb-week-days,.timer-ring),
@@ -851,7 +937,8 @@ html:not([data-track=ausbildung]) .rb-track-only{display:none!important}
 
   /* Forms and long dialogs are dense enough to read from edge to edge. */
   #st .sheet, #md>div, dialog.ink-dialog, dialog.rb-confirm {
-    background:var(--card);color:var(--fg);border-color:var(--rb-glass-line);border-radius:23px;
+    background-color:var(--card);color:var(--fg);border-color:var(--rb-glass-line);border-radius:23px;
+    background-image:linear-gradient(150deg,color-mix(in srgb,var(--rb-lens-shine) 47%,transparent),transparent 54%);
     box-shadow:inset 0 1px var(--glass-rim),0 20px 54px var(--glass-shadow);
     max-block-size:calc(var(--usable-height,100dvh) - 30px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px));
   }
