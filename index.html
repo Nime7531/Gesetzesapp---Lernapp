@@ -245,7 +245,7 @@ header{top:calc(env(safe-area-inset-top,0px) + 8px);margin:8px clamp(8px,2vw,28p
 .rubrum-phone #gear{width:44px;height:44px}.rubrum-phone #q{font-size:16px;min-width:0}
 .rubrum-phone #app{display:block}.rubrum-phone main{width:100%;box-sizing:border-box;padding:20px max(14px,env(safe-area-inset-right)) calc(var(--phone-bar) + 18px) max(14px,env(safe-area-inset-left))}.rubrum-phone #sb{position:static;width:100%;max-height:28vh;padding:9px 14px 0}
 .rubrum-phone #app>main:focus:not(:focus-visible){outline:none}
-#phone-nav{box-sizing:border-box;position:fixed;z-index:8;bottom:calc(8px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);width:min(480px,calc(100% - 20px - env(safe-area-inset-left,0px) - env(safe-area-inset-right,0px)));display:grid;grid-template-columns:repeat(5,minmax(0,1fr));align-items:center;gap:4px;padding:5px;border:1px solid var(--gb)}
+#phone-nav{box-sizing:border-box;position:fixed;z-index:8;bottom:calc(8px + env(safe-area-inset-bottom,0px));left:calc(50% + (env(safe-area-inset-left,0px) - env(safe-area-inset-right,0px)) / 2);transform:translateX(-50%);width:min(480px,calc(100% - 20px - env(safe-area-inset-left,0px) - env(safe-area-inset-right,0px)));display:grid;grid-template-columns:repeat(5,minmax(0,1fr));align-items:center;gap:4px;padding:5px;border:1px solid var(--gb)}
 #phone-nav button,#phone-nav summary{background:transparent;color:var(--fg)}
 #phone-nav summary{cursor:pointer;list-style:none}#phone-nav summary::-webkit-details-marker{display:none}
 .phone-menu{position:absolute;right:0;bottom:calc(100% + 8px);width:min(255px,100%);border:1px solid var(--gb)}
@@ -3524,11 +3524,31 @@ function rbTrackApply(){document.documentElement.dataset.track=rbTrack();const n
 {let pending=0;new MutationObserver(()=>{if(pending)return;pending=requestAnimationFrame(()=>{pending=0;rbTrackApply()})}).observe($('#m'),{childList:true,subtree:true})}
 {const drawBase=draw;draw=function(...a){const r=drawBase.apply(this,a);try{rbTrackApply()}catch(e){console.error('Rubrum: Ausbildungsmodus',e)}return r}}
 function buildSet(){rbGlassSettings();const th=$('#th');th.replaceChildren();
-{let box=$('#rb-track');if(!box){box=el('div','rb-track');box.id='rb-track';th.before(el('div','lb','Modus'),box)}box.replaceChildren();
- for(const [id,label,sub] of [['studium','Studium','Module, CP, Klausuren'],['ausbildung','Ausbildung','Lernfelder, Zwischen-/Abschlussprüfung, ohne CP']]){const b=el('button','tile'+(rbTrack()===id?' on2':''));b.type='button';b.setAttribute('aria-pressed',String(rbTrack()===id));b.append(el('b',null,label),el('small',null,sub));b.onclick=()=>{ini();S.pp.track=id;save();draw();buildSet();rbTrackApply()};box.append(b)}
- box.append(el('p','mut','Für Rechtsanwalts-, Justiz- und Steuerfachangestellte sowie Rechtspfleger. Gespeicherte CP bleiben erhalten und erscheinen wieder, wenn du zurück zu „Studium“ wechselst.'))}
-THEMES.forEach(([id,n,sub,cs])=>{const b=el('button','tile'+(curTheme()===id?' on2':'')),sw=el('span','sw');cs.forEach(c=>{const i=el('i');i.style.background=c;sw.append(i)});
-b.append(sw,el('b',null,n),el('small',null,sub));b.onclick=()=>{S.theme=id;try{localStorage.setItem('gesetzeapp.theme',id)}catch(e){}save();draw();buildSet()};th.append(b)});
+  let box=$('#rb-track');
+  if(!box){box=el('div','rb-track');box.id='rb-track';th.before(el('div','lb','Modus'),box)}
+  box.replaceChildren();
+  for(const [id,label,sub] of [['studium','Studium','Module, CP, Klausuren'],['ausbildung','Ausbildung','Lernfelder, Zwischen-/Abschlussprüfung, ohne CP']]){
+    const active=rbTrack()===id,b=el('button','tile'+(active?' on2':''));
+    b.type='button';b.setAttribute('aria-pressed',String(active));
+    b.append(el('b',null,label),el('small',null,sub));
+    b.onclick=()=>{
+      ini();S.pp.track=id;save();draw();buildSet();rbTrackApply();
+      box.querySelector('button[aria-pressed=true]')?.focus({preventScroll:true});
+    };
+    box.append(b);
+  }
+  box.append(el('p','mut','Für Rechtsanwalts-, Justiz- und Steuerfachangestellte sowie Rechtspfleger. Gespeicherte CP bleiben erhalten und erscheinen wieder, wenn du zurück zu „Studium“ wechselst.'));
+  for(const [id,n,sub,cs] of THEMES){
+    const active=curTheme()===id,b=el('button','tile'+(active?' on2':'')),sw=el('span','sw');
+    b.type='button';b.setAttribute('aria-pressed',String(active));
+    for(const c of cs){const i=el('i');i.style.background=c;sw.append(i)}
+    b.append(sw,el('b',null,n),el('small',null,sub));
+    b.onclick=()=>{
+      S.theme=id;try{localStorage.setItem('gesetzeapp.theme',id)}catch(e){}save();draw();buildSet();
+      th.querySelector('button[aria-pressed=true]')?.focus({preventScroll:true});
+    };
+    th.append(b);
+  }
 const lg=$('#lg');lg.replaceChildren();legend(lg);
  $('#study-repairs')?.remove();if(S.studyRepairs?.length){
   const details=el('details','mut');details.id='study-repairs';
@@ -3608,7 +3628,7 @@ const phoneNav=el('nav');phoneNav.id='phone-nav';phoneNav.hidden=true;phoneNav.s
 const phoneMore=el('details','phone-more'),phoneSummary=el('summary',null,'Mehr'),phoneMenu=el('div','phone-menu');phoneMore.append(phoneSummary,phoneMenu);
 const phoneButtons={};
 for(const [id,target] of Object.entries(navViews))document.getElementById(id).onclick=()=>openView(target);
-function phoneButton(label,id,host,after){const b=el('button',null,label);b.type='button';b.onclick=()=>{phoneMore.open=false;$('#'+id).click();window.scrollTo(0,0);after?.()};host.append(b);return b}
+function phoneButton(label,id,host,after){const b=el('button',null,label);b.type='button';b.onclick=()=>{phoneMore.open=false;if(id==='bk')phoneSummary.focus({preventScroll:true});$('#'+id).click();window.scrollTo(0,0);after?.()};host.append(b);return b}
 phoneButtons.skr=phoneButton('Skripte','vk',phoneNav);phoneButtons.links=phoneButton('Links','vn',phoneNav);
 phoneButtons.week=phoneButton('Planer','vw',phoneNav);phoneButtons.learn=phoneButton('Lernen','vl',phoneNav);phoneNav.append(phoneMore);
 for(const [target,path] of [...rbAreas.filter(([id])=>phoneButtons[id]).map(([id,,,d])=>[phoneButtons[id],d]),[phoneSummary,moreSymbol]]){
