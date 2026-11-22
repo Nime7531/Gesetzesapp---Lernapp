@@ -245,36 +245,54 @@ header{top:calc(env(safe-area-inset-top,0px) + 8px);margin:8px clamp(8px,2vw,28p
   display:grid;justify-items:center;gap:clamp(12px,3.5vmin,20px);
   padding:16px;text-align:center;
 }
+.rubrum-glass-shell{position:relative;isolation:isolate}
 .rubrum-tile{
   position:relative;display:grid;place-items:center;width:clamp(84px,34vmin,168px);
   aspect-ratio:1;border-radius:30%;overflow:hidden;
   background:linear-gradient(148deg,#eedbff58 0%,#d2afff17 46%,#a16ce536 100%);
   border:1px solid #eaddff62;
   box-shadow:inset 0 1px #f8eaff99,inset 0 -1px #d4b2ff40,0 16px 43px #09051283,0 0 44px #9953ee49;
-  animation:rubrumTile .58s cubic-bezier(.2,.75,.28,1) both;
+  animation:rubrumTile .58s cubic-bezier(.22,.68,.3,1) both;
 }
 .rubrum-tile img{width:76%;height:auto;border-radius:23%;filter:drop-shadow(0 8px 15px #120b1273)}
-.rubrum-tile::after{
-  content:"";position:absolute;inset:-40%;
-  background:linear-gradient(112deg,transparent 43%,#d2adff30 48%,#f7edff71 50%,#d2adff20 53%,transparent 59%);
-  mix-blend-mode:screen;animation:rubrumSweep .66s .12s ease-in-out both;
+.rubrum-reflection-canvas{
+  position:absolute;inset:0;z-index:1;width:100%;height:100%;pointer-events:none;mix-blend-mode:screen;
+}
+.rubrum-glass-shell::before{
+  content: '';
+  position: absolute;
+  z-index: -1;
+  inset: -39%;
+  pointer-events: none;
+  background: radial-gradient(ellipse 43% 39% at 50% 55%,
+    #f1b99db8 0%, #f1b99d7a 30%, #e69b7c38 55%, #e69b7c12 78%, #e69b7c00 100%);
+  opacity: 0;
+  animation:rubrumLightEcho .48s .34s ease-out both;
 }
 .rubrum-word{
   font-weight:700;font-size:clamp(34px,9.5vmin,58px);line-height:1;letter-spacing:-.064em;
-  animation:rubrumWord .45s .11s ease-out both;
+  animation:rubrumWord .44s .12s ease-out both,rubrumWordEcho .38s .445s ease-in-out both;
 }
 .rubrum-caption{
   font-size:11px;font-weight:650;letter-spacing:.21em;text-transform:uppercase;color:#e3d3f7;
-  margin-top:-6px;animation:rubrumWord .41s .22s ease-out both;
+  margin-top:-6px;animation:rubrumWord .40s .20s ease-out both;
 }
 @keyframes rubrumBootExit{
   0%,72%{opacity:1;visibility:visible;animation-timing-function:cubic-bezier(.4,0,.2,1)}
   100%{opacity:0;visibility:hidden}
 }
 @keyframes rubrumAura{from{opacity:.45;transform:scale(.96)}to{opacity:1;transform:none}}
-@keyframes rubrumTile{from{opacity:0;transform:translateY(8px) scale(.95)}to{opacity:1;transform:none}}
-@keyframes rubrumSweep{from{transform:translateX(-66%);opacity:0}25%,65%{opacity:.84}to{transform:translateX(66%);opacity:0}}
-@keyframes rubrumWord{from{transform:translateY(5px);opacity:0}to{transform:none;opacity:1}}
+@keyframes rubrumTile{from{opacity:0;transform:translateY(6px) scale(.965)}to{opacity:1;transform:none}}
+@keyframes rubrumLightEcho {
+  0% { opacity: 0; transform: translateY(-3px) scale(.74); }
+  46% { opacity: .93; transform: translateY(6px) scale(1.04); }
+  100% { opacity: 0; transform: translateY(12px) scale(1.25); }
+}
+@keyframes rubrumWordEcho {
+  0%, 100% { text-shadow: 0 2px 20px #f1b99d00; }
+  50% { text-shadow: 0 2px 20px #f1b99da0; }
+}
+@keyframes rubrumWord{from{transform:translateY(3px);opacity:0}to{transform:none;opacity:1}}
 @media print,(prefers-reduced-motion:reduce){#rubrum-intro{display:none!important}}
 </style><style id="rubrum-phone-css">
 .rubrum-phone{--phone-bar:calc(4.9rem + env(safe-area-inset-bottom,0px));scroll-padding-top:82px;scroll-padding-bottom:var(--phone-bar)}
@@ -1057,7 +1075,9 @@ html:not([data-track=ausbildung]) .rb-track-only{display:none!important}
 <div id="rubrum-intro" aria-hidden="true" hidden>
   <div class="rubrum-aura"></div>
   <div class="rubrum-lockup">
-    <div class="rubrum-tile"><img alt="" width="132" height="132"></div>
+    <div class="rubrum-glass-shell">
+      <div class="rubrum-tile"><img alt="" width="132" height="132"></div>
+    </div>
     <div class="rubrum-word">Rubrum</div>
     <div class="rubrum-caption">Lesen · Lernen · Planen</div>
   </div>
@@ -1067,12 +1087,86 @@ html:not([data-track=ausbildung]) .rb-track-only{display:none!important}
   const intro=document.getElementById('rubrum-intro');
   if(matchMedia('(prefers-reduced-motion: reduce)').matches){intro.remove();return}
   intro.querySelector('img').src=document.querySelector('link[rel=icon]').href;
+  function createReflection(tile) {
+    const size = 256;
+    const canvas = document.createElement('canvas');
+    canvas.width = canvas.height = size;
+    canvas.className = 'rubrum-reflection-canvas';
+    canvas.setAttribute('aria-hidden', 'true');
+    tile.append(canvas);
+
+    const mask = document.createElement('canvas');
+    mask.width = mask.height = size;
+    const context = canvas.getContext('2d');
+    const maskContext = mask.getContext('2d');
+    if (!context || !maskContext) return null;
+    const pixels = maskContext.createImageData(size, size);
+    const radius = size * .30;
+    const clearance = size * .036;
+    const feather = size * .13;
+
+    // Keep a clear strip inside the rounded tile, then ramp up the light smoothly.
+    for (let y = 0; y < size; y++) {
+      for (let x = 0; x < size; x++) {
+        const px = Math.abs(x + .5 - size / 2) - (size / 2 - radius);
+        const py = Math.abs(y + .5 - size / 2) - (size / 2 - radius);
+        const distance = radius - Math.hypot(Math.max(px, 0), Math.max(py, 0)) - Math.min(Math.max(px, py), 0);
+        const coverage = Math.max(0, Math.min(1, (distance - clearance) / feather));
+        pixels.data[(y * size + x) * 4 + 3] = 255 * coverage * coverage * (3 - 2 * coverage);
+      }
+    }
+    maskContext.putImageData(pixels, 0, 0);
+
+    return (position, intensity) => {
+      context.clearRect(0, 0, size, size);
+      context.save();
+      context.globalAlpha = intensity;
+      context.translate(size * (-.16 + 1.32 * position), size * (.38 + .24 * position));
+      context.rotate(Math.PI / 5);
+      context.scale(size * .46, size * .82);
+      const beam = context.createRadialGradient(0, 0, 0, 0, 0, 1);
+      beam.addColorStop(0, '#f7edffdc');
+      beam.addColorStop(.21, '#f7edffb5');
+      beam.addColorStop(.43, '#ead8ff76');
+      beam.addColorStop(.66, '#d2adff35');
+      beam.addColorStop(.85, '#d2adff0d');
+      beam.addColorStop(1, '#d2adff00');
+      context.fillStyle = beam;
+      context.fillRect(-1, -1, 2, 2);
+      context.restore();
+
+      context.save();
+      context.globalCompositeOperation = 'destination-in';
+      context.drawImage(mask, 0, 0);
+      context.restore();
+    };
+  }
+
+  let reflectionFrame;
   const listeners=new AbortController();
-  const cleanup=()=>{clearTimeout(watchdog);listeners.abort();intro.remove()};
+  const cleanup=()=>{
+    clearTimeout(watchdog);
+    cancelAnimationFrame(reflectionFrame);
+    listeners.abort();
+    intro.remove();
+  };
   const watchdog=setTimeout(cleanup,1800);
   for(const type of ['pointerdown','keydown','focusin'])
     document.addEventListener(type,cleanup,{capture:true,signal:listeners.signal});
-  intro.addEventListener('animationend',e=>{if(e.target===intro)cleanup()});
+  intro.addEventListener('animationstart', event => {
+    if (event.target !== intro || event.animationName !== 'rubrumBootExit') return;
+    const draw = createReflection(intro.querySelector('.rubrum-tile'));
+    if (!draw) return;
+
+    const started = document.timeline?.currentTime ?? performance.now();
+    function advance(now) {
+      const progress = Math.max(0, Math.min(1, (now - started - 170) / 630));
+      draw(progress, Math.sin(Math.PI * progress) * .92);
+      if (progress < 1) reflectionFrame = requestAnimationFrame(advance);
+    }
+    reflectionFrame = requestAnimationFrame(advance);
+  }, {signal:listeners.signal});
+  intro.addEventListener('animationend',e=>{if(e.target===intro)cleanup()},{signal:listeners.signal});
   intro.hidden=false;
 })();
 </script>
