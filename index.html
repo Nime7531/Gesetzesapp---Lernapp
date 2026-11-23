@@ -1273,6 +1273,9 @@ header .seg a,#brand-home{display:inline-flex;align-items:center;justify-content
   #sv .ink-settings-dialog :is(input[type=number],input[type=color],select) {
     min-block-size:44px;border-radius:var(--radius-control);font-variant-numeric:tabular-nums
   }
+  @media (max-width:30rem) {
+    #sv .ink-dock[data-edge] {box-sizing:border-box}
+  }
   @media (forced-colors:active) {
     :is(#phone-nav,header,#m,#st,#sv) :is([aria-current=page],[aria-pressed=true],.active) {outline:2px solid Highlight;outline-offset:-3px}
   }
