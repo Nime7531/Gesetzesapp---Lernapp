@@ -1089,6 +1089,195 @@ header .seg a,#brand-home{display:inline-flex;align-items:center;justify-content
 }
 </style>
 
+<style id="rubrum-freigabe-design">
+/* Rubrum · Bildschirmdarstellung. Bestandskomponenten, Layout und Startanimation bleiben im Basisthema. */
+@media screen {
+  :root {
+    --space-1:.25rem; --space-2:.5rem; --space-3:.75rem; --space-4:1rem; --space-5:1.25rem;
+    --type-caption:.8125rem; --type-subhead:.9375rem; --type-body:1.0625rem;
+    --type-section:1.375rem; --type-title:2.125rem;
+    --radius-control:.875rem; --radius-card:1.25rem; --radius-bar:1.625rem; --radius-pill:999px;
+    --bg:#f3f2ef; --pane:#f8f7f4; --card:#fffefa; --fg:#242322; --mut:#605c58; --bd:#dedbd5;
+    --ac:#91432f; --acf:#fff; --lk:#823b29; --sel:#ebe8e2; --st:#f7eddd;
+    --rb-field:#f3f1ed; --rb-control-edge:#867c75; --rb-focus:#91422c;
+    --rb-action:var(--ac); --rb-on-action:var(--acf); --rb-selection:#f1dfd5; --rb-selection-edge:#985c46;
+    --rb-glass-base:#fbfaf7; --rb-glass-line:#cbc5bd; --glass-rim:#ffffffbf; --glass-shadow:#31261e16;
+    --rb-lens-depth:#5543350c; --rb-card-shadow:0 1px 2px #30261d06,0 3px 12px #30261d05;
+    --rb-control-shadow:inset 0 1px var(--glass-rim),0 2px 5px #31282008,0 5px 18px var(--glass-shadow);
+    --wash:#eae4dc; --hero-base:#f5ece2; --hero-light:#fffbf4; --hero-ink:#36271f;
+    --hero-copy:#614d41; --hero-symbol:#98674e; --accent-line:#b69b85;
+    --sheet-mask:rgb(40 35 34 / .30); --r:var(--radius-card);
+    --control-time:130ms; --control-ease:cubic-bezier(.2,.8,.2,1);
+  }
+  :root[data-theme=mittel] {
+    --bg:#151c2b; --pane:#1b2435; --card:#202b3e; --fg:#f5f3f7; --mut:#bec7d6; --bd:#354155;
+    --ac:#efacca; --acf:#2c1822; --lk:#f2bad2; --sel:#303b50; --st:#353044;
+    --rb-field:#283346; --rb-control-edge:#8894a6; --rb-focus:#f5c1d9;
+    --rb-selection:#443b50; --rb-selection-edge:#dbafc2; --rb-action:var(--ac); --rb-on-action:var(--acf);
+    --rb-glass-base:#263043; --rb-glass-line:#475266; --glass-rim:#ffffff24; --glass-shadow:#080d1642;
+    --rb-lens-depth:#10152218; --rb-card-shadow:0 2px 8px #09122222;
+    --wash:#222c40; --hero-base:#2b3044; --hero-light:#35384a; --hero-ink:#fff1eb;
+    --hero-copy:#d8c8ca; --hero-symbol:#ddac9b; --accent-line:#826f73; --sheet-mask:rgb(5 10 20 / .48);
+  }
+  :root[data-theme=dunkel] {
+    --bg:#1a191d; --pane:#222126; --card:#28272c; --fg:#f7f4f3; --mut:#c9c3c5; --bd:#3d3b43;
+    --ac:#b2c7ff; --acf:#152037; --lk:#c1d0ff; --sel:#35353d; --st:#34343b;
+    --rb-field:#302f35; --rb-control-edge:#918b93; --rb-focus:#c3d0ff;
+    --rb-selection:#3d4355; --rb-selection-edge:#a7b5d5; --rb-action:var(--ac); --rb-on-action:var(--acf);
+    --rb-glass-base:#302f36; --rb-glass-line:#4e4b53; --glass-rim:#ffffff24; --glass-shadow:#08070b42;
+    --rb-lens-depth:#12101618; --rb-card-shadow:0 2px 8px #08070a22;
+    --wash:#26252c; --hero-base:#322c30; --hero-light:#3c3437; --hero-ink:#fff5ed;
+    --hero-copy:#d8c8c6; --hero-symbol:#d9ae97; --accent-line:#8b7774; --sheet-mask:rgb(10 9 13 / .50);
+  }
+
+  body::before {background:linear-gradient(150deg,var(--wash),var(--bg) 44%);background-repeat:no-repeat}
+  #sv {background:var(--bg)}
+  .rb-hero {
+    color:var(--hero-ink);background:linear-gradient(110deg,var(--hero-light),var(--hero-base) 75%);
+    border-color:var(--bd);box-shadow:var(--rb-card-shadow)
+  }
+  .rb-hero h1 {max-inline-size:16ch;max-width:16ch;letter-spacing:-.045em;line-height:1.06;font-weight:680}
+  .rb-hero p,.rb-hero .rb-faq-link {color:var(--hero-copy)}
+  .rb-hero .row .p {background:var(--rb-action);color:var(--rb-on-action);border-color:transparent}
+  .rb-hero .row :is(a,button){border-radius:var(--radius-pill);font-size:1rem;font-weight:620}
+  .rb-hero .row button:not(.p) {background:transparent;color:var(--hero-ink);border-color:var(--accent-line)}
+  .rb-hero .rb-faq-link {font-size:var(--type-subhead);font-weight:500;text-underline-offset:.22em}
+  .rb-hero :is(button,a):focus-visible {outline-color:var(--rb-focus)}
+  .rb-hero-symbol {color:var(--hero-symbol);text-shadow:none}
+  .rb-hero-orbit,.rb-hero-orbit.orbit-two {border-color:var(--accent-line);opacity:.42}
+  .rb-hero-stamp {color:var(--hero-copy);font-weight:540;letter-spacing:.09em}
+  .area-heading,.phone-hero h1 {font-size:clamp(1.75rem,4vw,var(--type-title));font-weight:680;line-height:1.2;letter-spacing:-.04em}
+  .rb-home>h2,.phone-home h2,.recent-work h2,.learn-overview h2 {font-size:var(--type-section);line-height:1.27;letter-spacing:-.026em;font-weight:650}
+  .rb-home-grid .rb-card {padding:var(--space-4);gap:var(--space-2);border-radius:var(--radius-card)}
+  .rb-card strong,.rb-link-line a,.agenda-title strong {font-size:var(--type-body);line-height:1.3;font-weight:620}
+  .rb-card .mut,.agenda-title small,.phone-link small {font-size:var(--type-subhead);line-height:1.35}
+  .rb-card-icon .rb-glyph,.rb-site-icon .rb-glyph {
+    border-radius:var(--radius-control);color:var(--fg);border:0;
+    background:var(--sel);background:color-mix(in srgb,var(--glyph,var(--ac)) 14%,var(--card))
+  }
+  .rb-glyph svg,.phone-nav-icon {width:1.25rem;height:1.25rem;stroke-width:1.7}
+  .rb-arrow {color:var(--mut);font-weight:500}
+
+  /* One material on the outside of each toolbar. The menu stays more opaque than its trigger. */
+  header,#phone-nav,.phone-menu,#hb,#m :is(.norm-nav,.law-pencil),#sv :is(.svb,.ink-dock,.svr),.pop {
+    --chrome-level:var(--rb-ui-level);--chrome-transmission:33%;
+    background:var(--rb-glass-base);border:1px solid var(--rb-glass-line);
+    box-shadow:var(--rb-control-shadow);-webkit-backdrop-filter:none;backdrop-filter:none
+  }
+  #sv .ink-dock {--chrome-level:var(--rb-dock-level);padding:var(--space-1);gap:var(--space-1)}
+  .phone-menu,.pop,#sv .svr {--chrome-transmission:14%}
+  @supports ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))) and (color:color-mix(in srgb,red,white)) {
+    header,#phone-nav,.phone-menu,#hb,#m :is(.norm-nav,.law-pencil),#sv :is(.svb,.ink-dock,.svr),.pop {
+      background-color:color-mix(in srgb,var(--rb-glass-base) calc(100% - var(--chrome-level)*var(--chrome-transmission)),transparent);
+      -webkit-backdrop-filter:blur(calc(var(--chrome-level)*14px)) saturate(1.16);
+      backdrop-filter:blur(calc(var(--chrome-level)*14px)) saturate(1.16)
+    }
+  }
+  header,#phone-nav,#sv .svb {border-radius:var(--radius-bar)}
+  header::after,#phone-nav::before {background:none}
+  header .seg {background:transparent;border-color:transparent;box-shadow:none}
+  header :is(#q,#gear,#timer-nav) {background:var(--rb-field);border-color:var(--bd);box-shadow:none}
+  header .seg a,#phone-nav>a,#phone-nav>details>summary {border-radius:var(--radius-pill)}
+  :is(header .seg a.on,#phone-nav a[aria-current=page],#phone-nav .phone-current,#brand-home[aria-current=page]) {
+    background:var(--rb-selection);color:var(--fg);border-color:transparent;
+    box-shadow:inset 0 -2px 0 var(--rb-selection-edge);font-weight:680
+  }
+  #phone-nav .phone-menu a,#phone-nav .phone-menu button {border-radius:var(--radius-control);font-weight:560;line-height:1.35}
+  #phone-nav .phone-menu {padding:var(--space-1);border-radius:var(--radius-card)}
+  :is(a,button,summary,select):focus-visible,#m .mark-link:focus-visible {outline:3px solid var(--rb-focus);outline-offset:2px}
+  :is(header,#phone-nav,#sv .ink-dock) :is(button,a,summary):focus-visible {outline:3px solid var(--rb-focus);outline-offset:-3px}
+  :is(header,#phone-nav,#m,#st,#md,#sv,.ink-dialog) :is(button,a,summary):active:not(:disabled) {
+    box-shadow:inset 0 0 0 2px currentColor
+  }
+  button:disabled {cursor:default;opacity:.52}
+  @media (prefers-reduced-motion:no-preference) {
+    :is(#phone-nav,header .seg,.rb-home-grid,.norm-nav,.ink-main,.phone-menu) :is(a,button,summary) {
+      transition:background-color var(--control-time) var(--control-ease),color var(--control-time) var(--control-ease)
+    }
+  }
+
+  #m :is(.para:not(.star,.rb-law-paper,.toc),.skc,.lk-c,.kt,.tkc,.tmc,.rb-card,.rb-faq,.rb-learn-tools),
+  html[data-workspace=sum] #m .sc,#m .cal,#sb:not(:empty),#sv .svl {
+    background:var(--card);border-color:var(--bd);box-shadow:var(--rb-card-shadow)
+  }
+  #m :is(.rb-law-paper,.toc),#sv .ink-split {
+    background:var(--card);border-color:var(--bd);
+    box-shadow:inset 0 1px 0 color-mix(in srgb,var(--rb-paper-edge) calc(var(--rb-paper-level)*100%),transparent),var(--rb-card-shadow)
+  }
+  #m .rb-law-paper.star {border-inline-start:3px solid var(--rb-selection-edge)}
+  #m .rb-law-paper .ph {border-block-end:1px solid var(--bd);padding-block-end:var(--space-2)}
+  #m .rb-law-paper .txt,#sv .ink-split .txt {font-size:var(--type-body);line-height:1.64;max-inline-size:72ch}
+  .rb-law-paper .blk.head,.ink-split .blk.head {font-size:1.25rem;line-height:1.33;letter-spacing:-.015em;overflow-wrap:anywhere}
+  #m .marked-quote {padding-inline-start:var(--space-3);margin-block:var(--space-3)}
+  .marked-quote strong,.phone-kicker,.agenda-slot h3 {font-size:var(--type-caption);letter-spacing:.02em;font-weight:650}
+  .marked-quote .mark-link {color:var(--fg);text-decoration-thickness:1px;text-decoration-color:var(--rb-control-edge)}
+  .phone-heading a,.recent-work a {font-size:var(--type-subhead);font-weight:570}
+  .phone-home :is(.agenda-item,.phone-link) {
+    background:var(--pane);border-color:var(--bd);box-shadow:none;border-radius:var(--radius-control)
+  }
+  .phone-home .agenda-slot h3,.phone-kicker {color:var(--lk)}
+  .phone-entry-label strong,.phone-link span {font-weight:620}
+  .phone-time,.agenda-title small,.cal-h,.tmv,.timer-label,.sv-page {font-variant-numeric:tabular-nums}
+  .phone-entry .phone-time,.phone-entry-label small {font-size:var(--type-caption)}
+  .phone-days [aria-pressed=true] {box-shadow:inset 0 -3px var(--rb-selection-edge);font-weight:700}
+  #m .task-row,.rb-faq details {border-color:var(--bd)}
+  :is(.rb-card,.rb-law-paper,.lk-c,.skc,.fc) :is(h2,h3,strong,.skn,.rb-link-line a) {overflow-wrap:anywhere}
+  #sv .svt {white-space:normal;overflow-wrap:anywhere;line-height:1.22;font-weight:630}
+  #m .script-title {font-size:var(--type-body);line-height:1.32}
+  #m .skc {border-radius:var(--radius-card)}
+  #sv :is(.ink-controls,.sv-tools,.split-head,.split-mark-tools) {background:var(--pane);border-color:var(--bd)}
+  #sv .svc .pdf-surface {box-shadow:0 1px 5px #17131924}
+  #sv .ink-dock .reader-icon {width:1.25rem;height:1.25rem}
+  #sv :is(.ink-main,.ink-dock,.split-mark-tools) button[aria-pressed=true] {
+    color:var(--fg);border-color:var(--rb-selection-edge);box-shadow:inset 0 0 0 2px var(--rb-selection-edge)
+  }
+  #sv .ink-dock .ink-swatch:is(.active,[aria-pressed=true])::before {box-shadow:0 0 0 2px var(--card),0 0 0 4px var(--fg)}
+  #sv :is(.ink-extra,.ink-controls) input[type=number] {font-variant-numeric:tabular-nums}
+  #sv :is(.split-title,.ink-list-button,.sv-script) {overflow-wrap:anywhere}
+  #st .sheet,#md>div,dialog.ink-dialog {background:var(--card);border-color:var(--bd);border-radius:var(--radius-bar)}
+  #st,#md {background-color:var(--sheet-mask)}
+  dialog.ink-dialog::backdrop {background:var(--sheet-mask)}
+  #st .tile {border-radius:var(--radius-control);background:var(--pane);border-color:var(--bd)}
+  #st .tile[aria-pressed=true] {background:var(--rb-selection);border-color:var(--rb-selection-edge);box-shadow:inset 0 0 0 1px var(--rb-selection-edge)}
+  .timer-popup .tmv,.timer-ring .big {font-weight:640;letter-spacing:-.035em}
+  :is(#m,#st,#md,.ink-dialog) :is(input:not([type=checkbox],[type=radio],[type=range],[type=file],[type=color]),select,textarea) {border-radius:var(--radius-control)}
+  #script-import-status:not(:empty),#m .law-notice #ts {background:var(--pane);border-color:var(--rb-selection-edge)}
+  #reader-status:not(:empty),#me:not(:empty){font-weight:560}
+  .phone-empty,.mut {color:var(--mut)}
+
+  :root[data-glass-ui=off] :is(header,#phone-nav,.phone-menu,#hb,.norm-nav,.law-pencil,.svb,.svr,.pop),
+  #sv[data-glass-dock=off] .ink-dock,#sv .ink-dock.dragging {
+    background:var(--rb-glass-base);-webkit-backdrop-filter:none;backdrop-filter:none
+  }
+  @media (prefers-reduced-transparency:reduce),(prefers-contrast:more) {
+    header,#phone-nav,.phone-menu,#hb,#m :is(.law-pencil,.norm-nav),#sv :is(.svb,.ink-dock,.svr),.pop {
+      background:var(--rb-glass-base);-webkit-backdrop-filter:none;backdrop-filter:none;
+      border-color:var(--rb-control-edge);box-shadow:none
+    }
+    #st,#md,dialog.ink-dialog::backdrop {background-color:var(--pane)}
+  }
+  .rubrum-phone .rb-home,.rubrum-phone .phone-home {grid-template-columns:minmax(0,1fr)}
+  .rubrum-phone .rb-home>*,.rubrum-phone .phone-heading>* {min-inline-size:0}
+  .rubrum-phone :is(.phone-heading,.phone-week-head) {flex-wrap:wrap}
+  .rubrum-phone :is(.phone-heading,.phone-hero,.phone-agenda,.rb-home-grid) :is(h1,h2,h3,button,a) {overflow-wrap:anywhere}
+  .rubrum-phone #m .norm-nav .compact-law-search {max-inline-size:100%;display:inline-block;white-space:normal;overflow-wrap:anywhere}
+  .rubrum-phone .phone-kicker,.rubrum-phone .phone-time {overflow-wrap:anywhere}
+  #m .area-heading:focus-visible {outline:2px solid var(--rb-focus);outline-offset:3px;border-radius:.18em}
+  @media (pointer:coarse) {
+    #m :is(.lk-a button,.compact-law-search,.skc select,.pill,button[id^=phone-]),
+    #sv .ink-main input[type=color] {min-block-size:44px}
+    #m .lk-a button {min-inline-size:44px}
+  }
+  .rubrum-phone .rb-home :is(h1,h2,h3,p,.rb-faq-link) {overflow-wrap:anywhere;hyphens:auto}
+  #sv .ink-settings-dialog .ink-setting {color:var(--fg);border-color:var(--bd)}
+  #sv .ink-settings-dialog :is(input[type=number],input[type=color],select) {
+    min-block-size:44px;border-radius:var(--radius-control);font-variant-numeric:tabular-nums
+  }
+  @media (forced-colors:active) {
+    :is(#phone-nav,header,#m,#st,#sv) :is([aria-current=page],[aria-pressed=true],.active) {outline:2px solid Highlight;outline-offset:-3px}
+  }
+}
+</style>
 </head><body>
 <header>
 <a href="#start" class="brand" id="brand-home" aria-label="Rubrum – Startseite"><img id="brand-icon" alt="" width="30" height="30"><strong class="rb-brand-name">Rubrum<small class="rb-current" aria-hidden="true">Start</small></strong></a>
