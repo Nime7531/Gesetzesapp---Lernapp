@@ -3809,7 +3809,7 @@ body.onscroll=()=>{
   st=requestAnimationFrame(()=>{
     st=0;if(body.hidden||!W)return;
     const x=(body.scrollLeft-centerScroll())/W;
-    if(body.scrollLeft<body.clientWidth*.4||body.scrollWidth-body.clientWidth-body.scrollLeft<body.clientWidth*.4)ensureRange(x);
+    if((wing+.5-Math.abs(x))*W<body.clientWidth)ensureRange(x);
     drawPaper();
     if(body.scrollTop===scrollAnchor){capturePosition();deferSave(650);return}
     scrollAnchor=null;
