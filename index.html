@@ -7,6 +7,7 @@
 <meta name="theme-color" content="#111111">
 
 <title>Rubrum</title>
+<script id="rubrum-wallpaper-boot">try{var w=localStorage.getItem("rubrum.wallpaper");if(w)document.documentElement.dataset.wallpaper=w}catch(e){}</script>
 <script>/**
  * @licstart The following is the entire license notice for the
  * JavaScript code in this page
@@ -1284,6 +1285,609 @@ header .seg a,#brand-home{display:inline-flex;align-items:center;justify-content
   }
 }
 </style>
+<style id="rubrum-liquid-glass">
+/* Rubrum · Liquid-Glass-Schicht. Nur Darstellung: Farben, Material, Licht, Zustände, Bewegung.
+   Keine Änderung an Geometrie von Reader, Seiten, Canvas, Text- oder Annotationsebenen.
+   Projektwerte (keine offiziellen Apple-Zahlen): abgeleitet aus HIG Materials/Motion und den Referenzaufnahmen. */
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+@property --lg-lit { syntax:'<number>'; inherits:true; initial-value:0 }
+@media screen {
+  :root {
+    /* Material */
+    --lg-tint:#fbfaf7;
+
+    --lg-blur:12px; --lg-sat:2.1; --lg-bright:1.06;
+    --lg-rim-a:rgb(255 255 255 / .98); --lg-rim-b:rgb(150 135 120 / .16); --lg-rim-c:rgb(255 255 255 / .75);
+    --lg-glow:rgb(255 255 255 / .85); --lg-depth:rgb(90 70 55 / .10);
+    --lg-edge:rgb(36 30 26 / .10);
+    --lg-spec-top:rgb(255 255 255 / .95);
+    --lg-spec-bottom:rgb(255 255 255 / .45);
+    --lg-sheen:rgb(255 255 255 / .50);
+    --lg-shadow:0 1px 1.5px rgb(40 30 22 / .05),0 10px 30px -8px rgb(40 30 22 / .20);
+    --lg-shadow-raised:0 2px 4px rgb(40 30 22 / .06),0 22px 54px -10px rgb(40 30 22 / .30);
+    --lg-control:rgb(36 30 26 / .055);
+    --lg-control-press:rgb(36 30 26 / .12);
+    --lg-selected:color-mix(in srgb,var(--ac) 15%,transparent);
+    --lg-selected-edge:color-mix(in srgb,var(--ac) 38%,transparent);
+    /* Bewegung */
+    --lg-ease:cubic-bezier(.2,.9,.25,1);          /* federnahe Abbremsung */
+    --lg-ease-out:cubic-bezier(.3,0,.2,1);
+    --lg-fast:120ms; --lg-medium:240ms;
+  }
+  :root[data-theme=mittel] {
+    --lg-tint:#1f2738; --lg-bright:.92;
+    --lg-rim-a:rgb(255 255 255 / .34); --lg-rim-b:rgb(255 255 255 / .06); --lg-rim-c:rgb(255 255 255 / .20);
+    --lg-glow:rgb(255 255 255 / .14); --lg-depth:rgb(0 0 0 / .30);
+    --lg-edge:rgb(255 255 255 / .10);
+    --lg-spec-top:rgb(255 255 255 / .16);
+    --lg-spec-bottom:rgb(255 255 255 / .06);
+    --lg-sheen:rgb(255 255 255 / .10);
+    --lg-shadow:0 1px 2px rgb(0 0 0 / .30),0 14px 34px -8px rgb(2 6 16 / .60);
+    --lg-shadow-raised:0 2px 4px rgb(0 0 0 / .32),0 26px 60px -10px rgb(2 6 16 / .70);
+    --lg-control:rgb(255 255 255 / .07);
+    --lg-control-press:rgb(255 255 255 / .14);
+    --lg-selected:color-mix(in srgb,var(--ac) 20%,transparent);
+    --lg-selected-edge:color-mix(in srgb,var(--ac) 42%,transparent);
+  }
+  :root[data-theme=dunkel] {
+    /* Neutral-graphitfarbenes Glas wie in den Referenzaufnahmen (~#2e2e2e, hohe Deckkraft) */
+    --lg-tint:#29282d; --lg-bright:.9;
+    --lg-rim-a:rgb(255 255 255 / .32); --lg-rim-b:rgb(255 255 255 / .05); --lg-rim-c:rgb(255 255 255 / .18);
+    --lg-glow:rgb(255 255 255 / .13); --lg-depth:rgb(0 0 0 / .32);
+    --lg-edge:rgb(255 255 255 / .09);
+    --lg-spec-top:rgb(255 255 255 / .15);
+    --lg-spec-bottom:rgb(255 255 255 / .06);
+    --lg-sheen:rgb(255 255 255 / .09);
+    --lg-shadow:0 1px 2px rgb(0 0 0 / .30),0 14px 34px -8px rgb(0 0 0 / .62);
+    --lg-shadow-raised:0 2px 4px rgb(0 0 0 / .34),0 26px 60px -10px rgb(0 0 0 / .72);
+    --lg-control:rgb(255 255 255 / .075);
+    --lg-control-press:rgb(255 255 255 / .15);
+    --lg-selected:color-mix(in srgb,var(--ac) 18%,transparent);
+    --lg-selected-edge:color-mix(in srgb,var(--ac) 40%,transparent);
+  }
+
+  /* ---------- Ebene 2: schwebende Leisten ---------- */
+  /* Aufbau je Glaskörper (von oben nach unten gemalt):
+     1. weicher Lichtschein oben (padding-box)   2. Tönung (padding-box)
+     3. lichtfangende Verlaufskante im 1-px-Rand (border-box) – hell oben links, dunkler Mitte, Reflex unten rechts
+     Schatten: Spekularlinien, innere Lichtwölbung oben, innere Tiefe unten, Kontakt- und Schwebeschatten. */
+  header,#phone-nav,#hb,#m :is(.norm-nav,.law-pencil),#sv :is(.svb,.ink-dock),
+  .phone-menu,.pop,#sv .svr {
+    --lg-level:var(--chrome-level,var(--rb-ui-level));
+    --lg-pass:var(--lg-bar-pass);
+    --lg-fill:var(--lg-tint);
+    border-color:transparent;
+    background:
+      radial-gradient(140% 120% at 30% -40%,var(--lg-sheen),transparent 60%) padding-box,
+      linear-gradient(var(--lg-fill),var(--lg-fill)) padding-box,
+      linear-gradient(150deg,var(--lg-rim-a),var(--lg-rim-b) 38%,var(--lg-rim-b) 62%,var(--lg-rim-c)) border-box;
+    box-shadow:
+      inset 0 1px 0 var(--lg-spec-top),inset 0 -1px 0 var(--lg-spec-bottom),
+      inset 0 14px 22px -18px var(--lg-glow),inset 0 -14px 22px -18px var(--lg-depth),
+      var(--lg-shadow);
+  }
+  .phone-menu,.pop,#sv .svr {
+    --lg-level:var(--rb-ui-level);--lg-pass:var(--lg-menu-pass);
+    box-shadow:inset 0 1px 0 var(--lg-spec-top),inset 0 -1px 0 var(--lg-spec-bottom),
+      inset 0 14px 22px -18px var(--lg-glow),var(--lg-shadow-raised);
+  }
+  @supports ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))) and (color:color-mix(in srgb,red,white)) {
+    header,#hb,#m :is(.norm-nav,.law-pencil),#sv :is(.svb,.ink-dock),.phone-menu,.pop,#sv .svr {
+      --lg-fill:color-mix(in srgb,var(--lg-tint) calc(100% - var(--lg-level)*var(--lg-pass)),transparent);
+      -webkit-backdrop-filter:blur(calc(var(--lg-level)*(1 - var(--lg-level))*4*var(--lg-blur) + var(--lg-level)*3px)) saturate(calc(1 + var(--lg-level)*(var(--lg-sat) - 1))) brightness(var(--lg-bright));
+      backdrop-filter:blur(calc(var(--lg-level)*(1 - var(--lg-level))*4*var(--lg-blur) + var(--lg-level)*3px)) saturate(calc(1 + var(--lg-level)*(var(--lg-sat) - 1))) brightness(var(--lg-bright));
+    }
+    .phone-menu,.pop,#sv .svr {
+      -webkit-backdrop-filter:blur(calc(var(--lg-level)*34px)) saturate(1.8) brightness(var(--lg-bright));
+      backdrop-filter:blur(calc(var(--lg-level)*34px)) saturate(1.8) brightness(var(--lg-bright));
+    }
+    /* Untere Leiste: Filter auf eigene Hinterebene statt aufs Element. So ist #phone-nav kein
+       Backdrop-Root mehr, und das darin liegende Mehr-Menü kann den Seiteninhalt echt weichzeichnen. */
+    #phone-nav {
+      --lg-fill:color-mix(in srgb,var(--lg-tint) calc(100% - var(--lg-level)*var(--lg-pass)),transparent);
+      -webkit-backdrop-filter:none;backdrop-filter:none;
+      background:
+        radial-gradient(140% 120% at 30% -40%,var(--lg-sheen),transparent 60%) padding-box,
+        linear-gradient(var(--lg-fill),var(--lg-fill)) padding-box,
+        linear-gradient(150deg,var(--lg-rim-a),var(--lg-rim-b) 38%,var(--lg-rim-b) 62%,var(--lg-rim-c)) border-box;
+    }
+    #phone-nav::before {
+      content:"";position:absolute;inset:-1px;block-size:auto;inline-size:auto;opacity:1;z-index:-1;
+      border-radius:inherit;background:none;pointer-events:none;
+      -webkit-backdrop-filter:blur(calc(var(--lg-level)*(1 - var(--lg-level))*4*var(--lg-blur) + var(--lg-level)*3px)) saturate(calc(1 + var(--lg-level)*(var(--lg-sat) - 1))) brightness(var(--lg-bright));
+      backdrop-filter:blur(calc(var(--lg-level)*(1 - var(--lg-level))*4*var(--lg-blur) + var(--lg-level)*3px)) saturate(calc(1 + var(--lg-level)*(var(--lg-sat) - 1))) brightness(var(--lg-bright));
+    }
+  }
+  /* Schwebende Kapsel unten (Referenz Video 1) */
+  #phone-nav { border-radius:34px }
+  #phone-nav > :is(button,a), #phone-nav > details > summary { border-radius:999px }
+  header { border-radius:28px }
+
+  /* Bedienelemente innerhalb des Glases: eigene, leicht hellere Kreis-/Kapselflächen (Video 1/2) */
+  header :is(#q,#gear,#timer-nav) {
+    background-color:var(--lg-control);border-color:transparent;
+    box-shadow:inset 0 1px 0 color-mix(in srgb,var(--lg-spec-top) 55%,transparent);
+  }
+  header #q { border-color:var(--lg-edge) }
+  header #q:focus { background-color:color-mix(in srgb,var(--card) 70%,transparent) }
+  #sv .svb .reader-icon-button,#sv .sv-page { border-radius:999px }
+  #sv .sv-page { background:var(--lg-control) }
+
+  /* Ausgewählt: getönte Glasplatte statt Rahmen */
+  :is(header .seg a.on,header .seg button.on,#phone-nav a[aria-current=page],#phone-nav .phone-current,#brand-home[aria-current=page],
+      #sv .svb button[aria-pressed=true],#sv .svb button[aria-expanded=true]) {
+    background-color:var(--lg-selected);background-image:none;color:var(--fg);
+    border-color:transparent;box-shadow:inset 0 0 0 1px var(--lg-selected-edge),inset 0 1px 0 color-mix(in srgb,var(--lg-spec-top) 60%,transparent);
+    font-weight:680;
+  }
+
+  /* Gedrückt: weiche Verdichtung statt hartem Ring */
+  :is(header,#phone-nav,#m,#st,#md,#sv,.ink-dialog,.pop) :is(button,a,summary):not(.dock-grip,.split-grip):active:not(:disabled) {
+    box-shadow:none;background-color:var(--lg-control-press);
+  }
+  :is(header,#phone-nav,#sv .svb,#sv .ink-dock,.phone-menu) :is(button,a,summary):not(.dock-grip):active:not(:disabled) { scale:.94 }
+  #m :is(.rb-card,.phone-link,.agenda-item):active { scale:.985 }
+  @media (prefers-reduced-motion:no-preference) {
+    :is(header,#phone-nav,#sv .svb,#sv .ink-dock,.phone-menu,#m,#st,#md) :is(button,a,summary) {
+      transition:background-color var(--lg-fast) var(--lg-ease-out),color var(--lg-fast) var(--lg-ease-out),
+        box-shadow var(--lg-fast) var(--lg-ease-out),scale var(--lg-medium) var(--lg-ease);
+    }
+    #m :is(.rb-card,.phone-link,.agenda-item) { transition:scale var(--lg-medium) var(--lg-ease),border-color var(--lg-fast) }
+  }
+
+  /* ---------- Ebene 3: Menüs, Popovers, Dialoge ---------- */
+  .phone-menu { border-radius:22px }
+  .pop,#sv .svr { border-radius:22px }
+  #st .sheet,#md>div,dialog.ink-dialog,dialog.rb-confirm {
+    border-color:var(--lg-edge);
+    background-image:radial-gradient(130% 70% at 50% -20%,var(--lg-sheen),transparent 60%);
+    box-shadow:inset 0 1px 0 var(--lg-spec-top),var(--lg-shadow-raised);
+  }
+  @media (prefers-reduced-motion:no-preference) {
+    @keyframes rb-lg-pop { from { opacity:0; scale:.94 } }
+    @keyframes rb-lg-sheet { from { opacity:0; translate:0 14px; scale:.985 } }
+    @keyframes rb-lg-fade { from { opacity:0 } }
+    #phone-nav details[open] > .phone-menu { transform-origin:100% 100%;animation:rb-lg-pop var(--lg-medium) var(--lg-ease) both }
+    .pop { animation:rb-lg-pop var(--lg-medium) var(--lg-ease) both }
+    #sv .svr:not([hidden]) { transform-origin:100% 0;animation:rb-lg-pop var(--lg-medium) var(--lg-ease) both }
+    #st .sheet,#md>div,dialog.ink-dialog[open],dialog.rb-confirm[open] { animation:rb-lg-sheet 280ms var(--lg-ease) both }
+    #st,#md { animation:rb-lg-fade 200ms var(--lg-ease-out) both }
+  }
+
+
+  /* Mehr-Menü: Zeilen ohne eigene Glanzflächen, feine Trenner */
+  #phone-nav .phone-menu :is(a,button) { background-image:none;box-shadow:none }
+  #phone-nav .phone-menu :is(a,button) + :is(a,button) { box-shadow:0 -1px 0 color-mix(in srgb,var(--fg) 9%,transparent) }
+
+  /* Karten (Ebene 1) bleiben ruhig; nur feinere Kontur */
+  #m :is(.para:not(.star,.rb-law-paper,.toc),.skc,.lk-c,.kt,.tkc,.tmc,.rb-card,.rb-faq,.rb-learn-tools),#m .cal,#sb:not(:empty) {
+    border-color:color-mix(in srgb,var(--bd) 80%,transparent);
+  }
+  @media(hover:hover){ #m .rb-card:hover { border-color:var(--lg-selected-edge) } }
+
+  /* Programmatischer Fokus auf Bereichsüberschriften: dezenter, gerundet */
+  #m .area-heading:focus-visible { outline-width:2px;outline-offset:4px;border-radius:.3em }
+
+  /* ---------- Bestehende Präferenzen respektieren ---------- */
+  :root[data-glass-ui=off] :is(header,#phone-nav,.phone-menu,#hb,.norm-nav,.law-pencil,.svb,.svr,.pop),
+  #sv[data-glass-dock=off] .ink-dock,#sv .ink-dock.dragging {
+    --lg-level:0;-webkit-backdrop-filter:none;backdrop-filter:none;
+  }
+  :root[data-glass-ui=off] #phone-nav::before { -webkit-backdrop-filter:none;backdrop-filter:none }
+  @media (prefers-reduced-transparency:reduce),(prefers-contrast:more) {
+    header,#phone-nav,.phone-menu,#hb,#m :is(.law-pencil,.norm-nav),#sv :is(.svb,.ink-dock,.svr),.pop {
+      background:var(--rb-glass-base);-webkit-backdrop-filter:none;backdrop-filter:none;
+      border-color:var(--rb-control-edge);box-shadow:none;
+    }
+    #phone-nav::before { -webkit-backdrop-filter:none;backdrop-filter:none }
+    :is(header .seg a.on,#phone-nav a[aria-current=page],#phone-nav .phone-current,#brand-home[aria-current=page]) {
+      box-shadow:inset 0 0 0 2px var(--rb-selection-edge);
+    }
+  }
+  @media (forced-colors:active) {
+    header,#phone-nav,.phone-menu,.pop,#sv :is(.svb,.ink-dock,.svr) { border:1px solid CanvasText }
+  }
+
+  /* ---------- Symbole (HIG Icons / SF Symbols) ----------
+     Einheitlich: 24er-Raster, Kontur 1,75, runde Enden; Gewicht passend zum benachbarten Text.
+     Kontextgrößen: Inline 1.15em · Leisten 20 px · Reader-Leiste 22 px · Tab-Leiste 22 px. */
+  .rb-sym { width:1.15em;height:1.15em;flex:none;vertical-align:-.2em;fill:none;stroke:currentColor;stroke-width:1.75;
+    stroke-linecap:round;stroke-linejoin:round;pointer-events:none;overflow:visible }
+  .rb-sym:not(:only-child) { margin-inline-end:.38em }
+  .rb-sym[data-sym$=".fill"] { fill:currentColor;stroke-width:1.2 }
+  .rb-sym[data-sym=grip] { stroke-width:2.6 }
+  .rb-sym-only .rb-sym { width:1.3em;height:1.3em;margin:0;vertical-align:-.25em }
+  .rb-arrow .rb-sym { width:1.1em;height:1.1em;color:var(--mut) }
+  #sv .ink-dock .rb-sym-only .rb-sym { width:20px;height:20px }
+  :is(.phone-nav-icon,.rb-glyph svg,#sv .reader-icon,header svg) { stroke-width:1.75 }
+  #sv .reader-icon-button[data-icon="more"] .reader-icon { stroke-width:2.75 }
+  header :is(#gear,#timer-nav) svg { width:20px;height:20px }
+  #sv .svb .reader-icon { width:22px;height:22px }
+  #sv .ink-dock .reader-icon { width:20px;height:20px }
+  #phone-nav .phone-nav-icon { width:22px;height:22px }
+  /* Tab-Leiste: ausgewählter Eintrag in Akzentfarbe mit gefüllter Variante (HIG: tab bars prefer fill) */
+  #phone-nav :is(a[aria-current=page],.phone-current) { color:var(--lk) }
+  #phone-nav :is(a[aria-current=page],.phone-current) .phone-nav-icon { fill:color-mix(in srgb,currentColor 22%,transparent) }
+
+  /* ---------- Intensiveres Liquid Glass (Regular-Variante, HIG Materials) ---------- */
+  /* Regler „Liquid Glass · Stärke“ = Durchsichtigkeit, linear: 0 % deckend · 50 % halb · 100 % fast klar (clear-Variante).
+     Unschärfe folgt einer Kurve: Maximum um 50 % (regular), bei 100 % nur noch ein Hauch (clear). */
+  :root { --lg-bar-pass:97%; --lg-blur:16px; --lg-sat:2.3; --lg-menu-pass:90%;
+    --lg-rim-a:rgb(255 255 255 / 1); --lg-rim-c:rgb(255 255 255 / .85); --lg-glow:rgb(255 255 255 / .95) }
+  :root[data-theme=mittel] { --lg-rim-a:rgb(255 255 255 / .42); --lg-rim-c:rgb(255 255 255 / .24); --lg-glow:rgb(255 255 255 / .18) }
+  :root[data-theme=dunkel] { --lg-rim-a:rgb(255 255 255 / .40); --lg-rim-c:rgb(255 255 255 / .22); --lg-glow:rgb(255 255 255 / .17) }
+  /* Glanzlicht in der oberen linken Rundung + Lichtrand: wirkt wie gewölbtes Glas */
+  header,#phone-nav,#hb,#m :is(.norm-nav,.law-pencil),#sv :is(.svb,.ink-dock),.phone-menu,.pop,#sv .svr {
+    background:
+      radial-gradient(60% 90% at 12% -10%,var(--lg-sheen),transparent 70%) padding-box,
+      radial-gradient(120% 80% at 90% 130%,color-mix(in srgb,var(--lg-sheen) 55%,transparent),transparent 60%) padding-box,
+      linear-gradient(var(--lg-fill),var(--lg-fill)) padding-box,
+      linear-gradient(150deg,var(--lg-rim-a),var(--lg-rim-b) 38%,var(--lg-rim-b) 62%,var(--lg-rim-c)) border-box;
+  }
+  /* Aktive Glas-Steuerelemente leuchten beim Berühren auf (Liquid-Glass-Interaktion) */
+  :is(header,#phone-nav,#sv .svb,#sv .ink-dock) :is(button,a,summary):not(.dock-grip):active:not(:disabled) {
+    background-image:radial-gradient(closest-side,color-mix(in srgb,var(--lg-glow) 70%,transparent),transparent);
+  }
+  /* Scroll-Edge-Effekt: Inhalt wird unter den Leisten weich ausgeblendet statt hart abgeschnitten */
+  @supports ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))) and ((mask-image:linear-gradient(#000,transparent)) or (-webkit-mask-image:linear-gradient(#000,transparent))) {
+    body::after {
+      content:"";position:fixed;z-index:4;inset-inline:0;inset-block-start:0;pointer-events:none;
+      block-size:calc(env(safe-area-inset-top,0px) + 74px);
+      -webkit-backdrop-filter:blur(calc(var(--rb-ui-level)*6px));backdrop-filter:blur(calc(var(--rb-ui-level)*6px));
+      background:none;
+      -webkit-mask-image:linear-gradient(to bottom,#000 45%,transparent);mask-image:linear-gradient(to bottom,#000 45%,transparent);
+    }
+    .rubrum-phone body::after { block-size:calc(env(safe-area-inset-top,0px) + 66px) }
+    :root.reader-open body::after,:root[data-glass-ui=off] body::after { display:none }
+  }
+  @media (prefers-reduced-transparency:reduce),(prefers-contrast:more) { body::after { display:none } }
+
+  /* ---------- Reader: Radierer-Optionen ohne Layoutsprung ----------
+     Bug: Beim Wählen des Radierers schob die Optionsleiste die PDF-Fläche um ~57 px nach unten (Dokument springt unter
+     dem Stift). Die Leiste teilt sich jetzt die Zeile mit dem Arbeitsbereich und schwebt darüber. */
+  #sv { display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:auto auto auto minmax(0,1fr) }
+  #sv > .svb { grid-row:1 } #sv > .ink-controls { grid-row:2 } #sv > .ink-quick { grid-row:3 }
+  #sv > :is(.svb,.ink-controls,.ink-quick,.sv-work) { grid-column:1 }
+  #sv > .sv-work { grid-row:4;min-height:0 }
+  /* Gegenüber dem Dock: Dock oben (Standard) → Kapsel unten; Dock links/rechts → Kapsel oben */
+  #sv > .ink-eraser-bar { grid-row:4;grid-column:1;align-self:end;justify-self:center;z-index:9;
+    margin-block-end:calc(16px + env(safe-area-inset-bottom,0px));max-inline-size:calc(100% - 16px);box-sizing:border-box;border-radius:999px;padding:4px 8px }
+  #sv:has(.ink-dock:is([data-edge=left],[data-edge=right])) > .ink-eraser-bar { align-self:start;margin-block:8px 0 }
+  #sv > .ink-eraser-bar,#sv > .ink-eraser-bar:not([hidden]) {
+    --lg-level:var(--rb-ui-level);--lg-pass:var(--lg-bar-pass);
+    background:
+      radial-gradient(60% 90% at 12% -10%,var(--lg-sheen),transparent 70%) padding-box,
+      linear-gradient(color-mix(in srgb,var(--lg-tint) calc(100% - var(--rb-ui-level)*var(--lg-bar-pass)),transparent),color-mix(in srgb,var(--lg-tint) calc(100% - var(--rb-ui-level)*var(--lg-bar-pass)),transparent)) padding-box,
+      linear-gradient(150deg,var(--lg-rim-a),var(--lg-rim-b) 38%,var(--lg-rim-b) 62%,var(--lg-rim-c)) border-box;
+    border:1px solid transparent;
+    box-shadow:inset 0 1px 0 var(--lg-spec-top),inset 0 -1px 0 var(--lg-spec-bottom),inset 0 14px 22px -18px var(--lg-glow),var(--lg-shadow);
+    -webkit-backdrop-filter:blur(calc(var(--rb-ui-level)*(1 - var(--rb-ui-level))*4*var(--lg-blur) + var(--rb-ui-level)*3px)) saturate(calc(1 + var(--rb-ui-level)*(var(--lg-sat) - 1)));
+    backdrop-filter:blur(calc(var(--rb-ui-level)*(1 - var(--rb-ui-level))*4*var(--lg-blur) + var(--rb-ui-level)*3px)) saturate(calc(1 + var(--rb-ui-level)*(var(--lg-sat) - 1)));
+  }
+  #sv > .ink-eraser-bar[hidden] { display:none!important }
+  @media (prefers-reduced-transparency:reduce),(prefers-contrast:more) {
+    #sv > .ink-eraser-bar { background:var(--card);-webkit-backdrop-filter:none;backdrop-filter:none;border-color:var(--rb-control-edge) }
+  }
+
+  /* Aufklapp-Zeilen: Chevron statt Browser-Dreieck, dreht sich beim Öffnen (wie iOS-Disclosure) */
+  :is(#m,#st,#md,dialog,#sv .svl) details > summary:not(.rb-info > summary) { list-style:none }
+  :is(#m,#st,#md,dialog,#sv .svl) details > summary:not(.rb-info > summary)::-webkit-details-marker { display:none }
+  :is(#m,#st,#md,dialog,#sv .svl) details > summary:not(.rb-info > summary)::before {
+    content:"";display:inline-block;inline-size:.8em;block-size:.8em;margin-inline-end:.45em;vertical-align:-.05em;background:currentColor;opacity:.7;
+    -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9 5.5 15.5 12 9 18.5'/%3E%3C/svg%3E") center/contain no-repeat;
+    mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9 5.5 15.5 12 9 18.5'/%3E%3C/svg%3E") center/contain no-repeat;
+  }
+  :is(#m,#st,#md,dialog,#sv .svl) details[open] > summary:not(.rb-info > summary)::before { rotate:90deg }
+  @media (prefers-reduced-motion:no-preference) {
+    :is(#m,#st,#md,dialog,#sv .svl) details > summary::before { transition:rotate var(--lg-medium) var(--lg-ease) }
+  }
+
+  /* Vibrancy: Beschriftung und Symbole auf klarem Glas bekommen einen weichen Lichthof in Glastönung (HIG: legibility) */
+  :is(header,#phone-nav,#hb,#sv .svb,#sv .ink-dock,#m .norm-nav,#m .law-pencil,#sv > .ink-eraser-bar) {
+    --lg-halo:color-mix(in srgb,var(--lg-tint) calc(var(--lg-level)*92%),transparent);
+    text-shadow:0 0 calc(var(--lg-level)*1px) var(--lg-halo),0 0 calc(var(--lg-level)*3px) var(--lg-halo),0 0 calc(var(--lg-level)*8px) var(--lg-halo);
+  }
+  :is(header,#phone-nav,#hb,#sv .svb,#sv .ink-dock,#m .norm-nav,#m .law-pencil) :is(svg.phone-nav-icon,svg.reader-icon,svg.rb-sym,button>svg,.timer-icon svg) {
+    filter:drop-shadow(0 0 calc(var(--lg-level)*2.5px) var(--lg-halo));
+  }
+  :root[data-glass-ui=off] :is(header,#phone-nav,#hb) { text-shadow:none }
+
+  /* ---------- Hintergründe (Einstellungen › Hintergrund) ----------
+     Alles CSS, offline, je Farbschema abgestimmt. Leuchtdichte bleibt nahe am Themenhintergrund, damit Text lesbar bleibt. */
+  :root {
+    --wp-a:#f6efe6; --wp-b:#efd9c8; --wp-c:#e3c4b4; --wp-d:#d9dcef; --wp-plain:#f7f5f1;
+    --wp-glow1:#f0b79c; --wp-glow2:#c7cdf2; --wp-glow3:#f4d9a8;
+  }
+  :root[data-theme=mittel] {
+    --wp-a:#0f1626; --wp-b:#1b2340; --wp-c:#3a2448; --wp-d:#123044; --wp-plain:#0b1120;
+    --wp-glow1:#c2507f; --wp-glow2:#3c5fb8; --wp-glow3:#2b8a8f;
+  }
+  :root[data-theme=dunkel] {
+    --wp-a:#121116; --wp-b:#1b1d29; --wp-c:#232a44; --wp-d:#2a1f33; --wp-plain:#0b0b0d;
+    --wp-glow1:#4d6fd6; --wp-glow2:#7b4fb0; --wp-glow3:#2c8c9c;
+  }
+  :root {
+    --wp-bg-plain:var(--wp-plain);
+    --wp-bg-gradient:linear-gradient(165deg,var(--wp-a) 0%,var(--wp-b) 48%,var(--wp-c) 100%);
+    --wp-bg-aurora:
+      radial-gradient(60% 45% at 18% 8%,color-mix(in srgb,var(--wp-glow1) 55%,transparent),transparent 70%),
+      radial-gradient(55% 50% at 92% 30%,color-mix(in srgb,var(--wp-glow2) 50%,transparent),transparent 72%),
+      radial-gradient(70% 55% at 40% 100%,color-mix(in srgb,var(--wp-glow3) 40%,transparent),transparent 70%),
+      linear-gradient(180deg,var(--wp-a),var(--wp-b));
+    --wp-bg-waves:
+      radial-gradient(140% 55% at 0% 108%,color-mix(in srgb,var(--wp-glow1) 42%,var(--wp-b)) 0 38%,transparent 38.4%),
+      radial-gradient(120% 50% at 100% 100%,color-mix(in srgb,var(--wp-glow2) 40%,var(--wp-b)) 0 46%,transparent 46.4%),
+      radial-gradient(160% 60% at 30% 112%,color-mix(in srgb,var(--wp-glow3) 34%,var(--wp-c)) 0 58%,transparent 58.4%),
+      radial-gradient(150% 45% at 80% -10%,color-mix(in srgb,var(--wp-glow2) 22%,var(--wp-a)) 0 40%,transparent 40.4%),
+      linear-gradient(180deg,var(--wp-a),var(--wp-b));
+    --wp-bg-lights:
+      radial-gradient(circle at 14% 22%,color-mix(in srgb,var(--wp-glow1) 60%,transparent) 0 5.5%,transparent 9%),
+      radial-gradient(circle at 78% 14%,color-mix(in srgb,var(--wp-glow2) 55%,transparent) 0 7%,transparent 11%),
+      radial-gradient(circle at 62% 58%,color-mix(in srgb,var(--wp-glow3) 45%,transparent) 0 9%,transparent 14%),
+      radial-gradient(circle at 26% 78%,color-mix(in srgb,var(--wp-glow2) 45%,transparent) 0 6%,transparent 10%),
+      radial-gradient(circle at 90% 82%,color-mix(in srgb,var(--wp-glow1) 50%,transparent) 0 4.5%,transparent 8%),
+      radial-gradient(circle at 46% 34%,color-mix(in srgb,var(--wp-glow3) 35%,transparent) 0 3.5%,transparent 6%),
+      linear-gradient(160deg,var(--wp-a),var(--wp-c));
+  }
+  :root[data-wallpaper=plain] body::before { background:var(--wp-bg-plain) }
+  :root[data-wallpaper=gradient] body::before { background:var(--wp-bg-gradient) }
+  :root[data-wallpaper=aurora] body::before { background:var(--wp-bg-aurora) }
+  :root[data-wallpaper=waves] body::before { background:var(--wp-bg-waves) }
+  :root[data-wallpaper=lights] body::before { background:var(--wp-bg-lights) }
+  :root[data-wallpaper]:not([data-wallpaper=standard]) { background:var(--wp-plain) }
+
+  .rb-wallpapers { display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,7.2rem),1fr));gap:10px;margin:0 0 6px }
+  .rb-wallpapers .tile { align-items:stretch;gap:6px;padding:8px }
+  .rb-wp-prev { display:block;aspect-ratio:3/4;border-radius:12px;background:var(--rb-wp-prev);
+    box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--fg) 12%,transparent) }
+  .rb-wp-prev.standard { background:linear-gradient(150deg,var(--wash,var(--bg)),var(--bg) 44%) }
+  .rb-wallpapers .tile[aria-pressed=true] .rb-wp-prev { box-shadow:inset 0 0 0 2px var(--rb-selection-edge) }
+
+  /* =====================================================================
+     Glaskörper v2 – Schichtaufbau nach Apple („Meet Liquid Glass“, WWDC25):
+     Element  = Geometrie + Außenschatten (kein eigener Filter → kein Backdrop-Root)
+     ::before = Optik: Brechung (wo unterstützt) → Unschärfe → Sättigung/Helligkeit
+     ::after  = Oberfläche: Tönung, Glanz, gebündeltes Kantenlicht, Lichtkante, Farbsaum
+     ===================================================================== */
+  :root {
+    --lg-edge-light:rgb(255 255 255 / .55);   /* Licht, das sich an der Kante bündelt */
+    --lg-fringe-warm:rgb(255 196 150 / .55);  /* Dispersion oben links */
+    --lg-fringe-cool:rgb(140 190 255 / .55);  /* Dispersion unten rechts */
+  }
+  :root[data-theme=mittel],:root[data-theme=dunkel] {
+    --lg-edge-light:rgb(255 255 255 / .22);
+    --lg-fringe-warm:rgb(255 190 150 / .30);
+    --lg-fringe-cool:rgb(140 185 255 / .32);
+  }
+  header,#phone-nav,#sv .svb,#sv .ink-dock,#sv > .ink-eraser-bar {
+    --lg-fill:color-mix(in srgb,var(--lg-tint) calc(100% - var(--lg-level)*var(--lg-bar-pass)),transparent);
+    --lg-backdrop:blur(calc(var(--lg-level)*(1 - var(--lg-level))*4*var(--lg-blur) + var(--lg-level)*3px)) saturate(calc(1 + var(--lg-level)*(var(--lg-sat) - 1))) brightness(var(--lg-bright));
+    --lg-lx:30%;--lg-ly:-30%;--lg-lit:0;
+  }
+  @supports ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))) and (color:color-mix(in srgb,red,white)) {
+    header,#phone-nav,#sv .svb,#sv .ink-dock,#sv > .ink-eraser-bar {
+      background:none;border-color:transparent;isolation:isolate;
+      -webkit-backdrop-filter:none;backdrop-filter:none;
+      box-shadow:var(--lg-shadow);
+    }
+    #sv .svb,#sv > .ink-eraser-bar { position:relative }
+    :is(header,#phone-nav,#sv .svb,#sv .ink-dock,#sv > .ink-eraser-bar)::before,
+    :is(header,#phone-nav,#sv .svb,#sv .ink-dock,#sv > .ink-eraser-bar)::after {
+      content:"";display:block;position:absolute;inset:-1px;inline-size:auto;block-size:auto;opacity:1;
+      border-radius:inherit;pointer-events:none;z-index:-1;
+    }
+    :is(header,#phone-nav,#sv .svb,#sv .ink-dock,#sv > .ink-eraser-bar)::before {
+      background:none;-webkit-backdrop-filter:var(--lg-backdrop);backdrop-filter:var(--lg-backdrop);
+    }
+    :is(header,#phone-nav,#sv .svb,#sv .ink-dock,#sv > .ink-eraser-bar)::after {
+      border:1px solid transparent;
+      background:
+        /* Leuchten unter dem Finger, breitet sich aus (Interaktion) */
+        radial-gradient(circle at var(--lg-px,50%) var(--lg-py,50%),color-mix(in srgb,var(--lg-glow) calc(var(--lg-lit)*85%),transparent),transparent 65%) padding-box,
+        /* Glanzlicht in der oberen Rundung + Gegenlicht unten */
+        radial-gradient(60% 90% at 12% -10%,var(--lg-sheen),transparent 70%) padding-box,
+        radial-gradient(120% 80% at 90% 130%,color-mix(in srgb,var(--lg-sheen) 55%,transparent),transparent 60%) padding-box,
+        linear-gradient(var(--lg-fill),var(--lg-fill)) padding-box,
+        /* Lichtkante: hell, wo die Rundung zum Licht zeigt; schwächer an den Flanken */
+        linear-gradient(150deg,var(--lg-rim-a),var(--lg-rim-b) 38%,var(--lg-rim-b) 62%,var(--lg-rim-c)) border-box;
+      box-shadow:
+        inset 0 1px 0 var(--lg-spec-top),inset 0 -1px 0 var(--lg-spec-bottom),
+        /* gebündeltes Licht im Randband (Lensing-Eindruck) */
+        inset 0 0 calc(3px + var(--lg-level)*7px) calc(var(--lg-level)*1.5px) color-mix(in srgb,var(--lg-edge-light) calc(35% + var(--lg-level)*65%),transparent),
+        /* Dispersion: warmer Saum oben links, kühler Saum unten rechts */
+        inset 1.5px 1.5px 1.5px -1px color-mix(in srgb,var(--lg-fringe-warm) calc(var(--lg-level)*100%),transparent),
+        inset -1.5px -1.5px 1.5px -1px color-mix(in srgb,var(--lg-fringe-cool) calc(var(--lg-level)*100%),transparent),
+        inset 0 14px 22px -18px var(--lg-glow),inset 0 -14px 22px -18px var(--lg-depth);
+      transition:background-color .2s;
+    }
+    /* Echte Kantenbrechung, wo der Browser SVG-Filter im Hintergrundfilter rendert (Chromium) */
+    :root[data-lg-refract] :is(header,#phone-nav,#sv .svb,#sv .ink-dock,#sv > .ink-eraser-bar) {
+      --lg-backdrop:var(--lg-refract,) blur(calc(var(--lg-level)*(1 - var(--lg-level))*4*var(--lg-blur) + var(--lg-level)*1.5px)) saturate(calc(1 + var(--lg-level)*(var(--lg-sat) - 1))) brightness(var(--lg-bright));
+    }
+    :root[data-glass-ui=off] :is(header,#phone-nav)::before,
+    #sv[data-glass-dock=off] .ink-dock::before,#sv .ink-dock.dragging::before { -webkit-backdrop-filter:none;backdrop-filter:none }
+  }
+  @media (prefers-reduced-motion:no-preference) {
+    :is(header,#phone-nav,#sv .svb,#sv .ink-dock,#sv > .ink-eraser-bar)::after { transition:--lg-lit .5s }
+  }
+  @media (prefers-reduced-transparency:reduce),(prefers-contrast:more) {
+    :is(header,#phone-nav,#sv .svb,#sv .ink-dock,#sv > .ink-eraser-bar)::before { -webkit-backdrop-filter:none;backdrop-filter:none }
+    :is(header,#phone-nav,#sv .svb,#sv .ink-dock,#sv > .ink-eraser-bar)::after {
+      background:var(--rb-glass-base);box-shadow:none;border-color:var(--rb-control-edge);
+    }
+  }
+
+  /* =====================================================================
+     Liquid Glass für alle Blöcke – Regler „Liquid Glass · Flächen“ (--paper-glass, früher „Glas beim Lesen“)
+     Jede Karte / jeder Block auf jeder Seite (Start, Gesetze, Planer, Fächer, Skripte, Lernen, Links, Markierungen, Seitenleiste).
+     Skala wie Regler 1: 0 % deckend (wie bisher) · 50 % halb · 100 % fast klar. Großes Glas: dicker, weicher gestreut.
+     Verschachtelte Blöcke werden nur durchsichtig (Apple: kein Glas auf Glas). Der PDF-Reader bleibt ohne Glas.
+     ===================================================================== */
+  #m :is(.para,.skc,.lk-c,.kt,.tkc,.tmc,.rb-card,.rb-faq,.rb-learn-tools,.cal,.wd,.phone-section,.backup-picker):not(:is(.para,.skc,.lk-c,.kt,.tkc,.tmc,.rb-card,.rb-faq,.rb-learn-tools,.cal,.wd,.phone-section,.backup-picker) *),#sb:not(:empty) {
+    --lg-level:var(--rb-paper-level);
+    --lg-surface:var(--card);
+    --lg-fill:color-mix(in srgb,var(--lg-surface) calc(100% - var(--lg-level)*var(--lg-bar-pass)),transparent);
+    --lg-backdrop:blur(calc(var(--lg-level)*(1 - var(--lg-level))*4*20px + var(--lg-level)*10px)) saturate(calc(1 + var(--lg-level)*.9)) brightness(var(--lg-bright));
+    --lg-px:50%;--lg-py:50%;--lg-lit:0;
+  }
+  #m .para.star:not(:is(.para,.skc,.lk-c,.kt,.tkc,.tmc,.rb-card,.rb-faq,.rb-learn-tools,.cal,.wd,.phone-section,.backup-picker) *) { --lg-surface:var(--st) }
+  @supports ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))) and (color:color-mix(in srgb,red,white)) {
+    #m :is(.para,.skc,.lk-c,.kt,.tkc,.tmc,.rb-card,.rb-faq,.rb-learn-tools,.cal,.wd,.phone-section,.backup-picker):not(:is(.para,.skc,.lk-c,.kt,.tkc,.tmc,.rb-card,.rb-faq,.rb-learn-tools,.cal,.wd,.phone-section,.backup-picker) *),#sb:not(:empty) {
+      isolation:isolate;background:none;border-color:transparent;
+      box-shadow:0 1px 2px rgb(0 0 0 / calc(.04 + var(--lg-level)*.06)),0 calc(4px + var(--lg-level)*12px) calc(14px + var(--lg-level)*28px) calc(var(--lg-level)*-8px) rgb(20 14 10 / calc(.05 + var(--lg-level)*.15));
+    }
+    #m :is(.para,.skc,.lk-c,.kt,.tkc,.tmc,.rb-card,.rb-faq,.rb-learn-tools,.cal,.wd,.phone-section,.backup-picker):not(:is(.para,.skc,.lk-c,.kt,.tkc,.tmc,.rb-card,.rb-faq,.rb-learn-tools,.cal,.wd,.phone-section,.backup-picker) *) { position:relative }
+    /* Seitenleiste: sticky (iPad quer) ist bereits positioniert; statisch (Telefonansicht) ohne Versatz positionieren */
+    .rubrum-phone #sb:not(:empty) { position:relative;inset:auto }
+    #m .rb-law-paper.star { border-inline-start-color:transparent }
+    :is(#m :is(.para,.skc,.lk-c,.kt,.tkc,.tmc,.rb-card,.rb-faq,.rb-learn-tools,.cal,.wd,.phone-section,.backup-picker):not(:is(.para,.skc,.lk-c,.kt,.tkc,.tmc,.rb-card,.rb-faq,.rb-learn-tools,.cal,.wd,.phone-section,.backup-picker) *),#sb:not(:empty))::before,:is(#m :is(.para,.skc,.lk-c,.kt,.tkc,.tmc,.rb-card,.rb-faq,.rb-learn-tools,.cal,.wd,.phone-section,.backup-picker):not(:is(.para,.skc,.lk-c,.kt,.tkc,.tmc,.rb-card,.rb-faq,.rb-learn-tools,.cal,.wd,.phone-section,.backup-picker) *),#sb:not(:empty))::after {
+      content:"";position:absolute;inset:-1px;border-radius:inherit;pointer-events:none;z-index:-1;
+    }
+    :is(#m :is(.para,.skc,.lk-c,.kt,.tkc,.tmc,.rb-card,.rb-faq,.rb-learn-tools,.cal,.wd,.phone-section,.backup-picker):not(:is(.para,.skc,.lk-c,.kt,.tkc,.tmc,.rb-card,.rb-faq,.rb-learn-tools,.cal,.wd,.phone-section,.backup-picker) *),#sb:not(:empty))[data-lg-backdrop]::before { -webkit-backdrop-filter:var(--lg-backdrop);backdrop-filter:var(--lg-backdrop) }
+    :root[data-lg-refract] :is(#m :is(.para,.skc,.lk-c,.kt,.tkc,.tmc,.rb-card,.rb-faq,.rb-learn-tools,.cal,.wd,.phone-section,.backup-picker):not(:is(.para,.skc,.lk-c,.kt,.tkc,.tmc,.rb-card,.rb-faq,.rb-learn-tools,.cal,.wd,.phone-section,.backup-picker) *),#sb:not(:empty))[data-lg-backdrop] {
+      --lg-backdrop:var(--lg-refract,) blur(calc(var(--lg-level)*(1 - var(--lg-level))*4*20px + var(--lg-level)*10px)) saturate(calc(1 + var(--lg-level)*.9)) brightness(var(--lg-bright));
+    }
+    :is(#m :is(.para,.skc,.lk-c,.kt,.tkc,.tmc,.rb-card,.rb-faq,.rb-learn-tools,.cal,.wd,.phone-section,.backup-picker):not(:is(.para,.skc,.lk-c,.kt,.tkc,.tmc,.rb-card,.rb-faq,.rb-learn-tools,.cal,.wd,.phone-section,.backup-picker) *),#sb:not(:empty))::after {
+      border:1px solid transparent;
+      background:
+        radial-gradient(circle at var(--lg-px) var(--lg-py),color-mix(in srgb,var(--lg-glow) calc(var(--lg-lit)*55%),transparent),transparent 55%) padding-box,
+        radial-gradient(70% 50% at 10% -8%,color-mix(in srgb,var(--lg-sheen) calc(var(--lg-level)*100%),transparent),transparent 70%) padding-box,
+        linear-gradient(var(--lg-fill),var(--lg-fill)) padding-box,
+        linear-gradient(150deg,
+          color-mix(in srgb,var(--lg-rim-a) calc(var(--lg-level)*100%),var(--bd)),
+          color-mix(in srgb,var(--lg-rim-b) calc(var(--lg-level)*100%),var(--bd)) 38%,
+          color-mix(in srgb,var(--lg-rim-b) calc(var(--lg-level)*100%),var(--bd)) 62%,
+          color-mix(in srgb,var(--lg-rim-c) calc(var(--lg-level)*100%),var(--bd))) border-box;
+      box-shadow:
+        inset 0 1px 0 color-mix(in srgb,var(--lg-spec-top) calc(var(--lg-level)*100%),transparent),
+        inset 0 -1px 0 color-mix(in srgb,var(--lg-spec-bottom) calc(var(--lg-level)*100%),transparent),
+        inset 0 0 calc(4px + var(--lg-level)*12px) calc(var(--lg-level)*2px) color-mix(in srgb,var(--lg-edge-light) calc(var(--lg-level)*100%),transparent),
+        inset 2px 2px 2px -1px color-mix(in srgb,var(--lg-fringe-warm) calc(var(--lg-level)*100%),transparent),
+        inset -2px -2px 2px -1px color-mix(in srgb,var(--lg-fringe-cool) calc(var(--lg-level)*100%),transparent);
+    }
+    #m .rb-law-paper.star::after { box-shadow:inset 3px 0 0 var(--rb-selection-edge),inset 0 1px 0 color-mix(in srgb,var(--lg-spec-top) calc(var(--lg-level)*100%),transparent) }
+    #m .fc:not(:is(.para,.skc,.lk-c,.kt,.tkc,.tmc,.rb-card,.rb-faq,.rb-learn-tools,.cal,.wd,.phone-section,.backup-picker) *)::after { box-shadow:inset 0 1px 0 color-mix(in srgb,var(--lg-spec-top) calc(var(--lg-level)*100%),transparent),inset 0 0 calc(4px + var(--lg-level)*12px) calc(var(--lg-level)*2px) color-mix(in srgb,var(--lg-edge-light) calc(var(--lg-level)*100%),transparent) }
+    /* Verschachtelt: nur Durchsicht, keine zweite Glasebene */
+    #m :is(.para,.skc,.lk-c,.kt,.tkc,.tmc,.rb-card,.rb-faq,.rb-learn-tools,.cal,.wd,.phone-section,.backup-picker) :is(.para,.skc,.lk-c,.kt,.tkc,.tmc,.rb-card,.rb-faq,.rb-learn-tools,.cal,.wd,.phone-section,.backup-picker) { background-color:color-mix(in srgb,var(--card) calc(100% - var(--rb-paper-level)*var(--lg-bar-pass)),transparent);
+      border-color:color-mix(in srgb,var(--bd) calc(100% - var(--rb-paper-level)*50%),transparent);box-shadow:none }
+    /* Kalenderkopf und Tagesraster folgen der Durchsicht des Kalenders */
+    #m .cal .cal-h { background:color-mix(in srgb,var(--card) calc(100% - var(--rb-paper-level)*var(--lg-bar-pass)),transparent) }
+  }
+  @media (prefers-reduced-transparency:reduce),(prefers-contrast:more) {
+    :is(#m :is(.para,.skc,.lk-c,.kt,.tkc,.tmc,.rb-card,.rb-faq,.rb-learn-tools,.cal,.wd,.phone-section,.backup-picker):not(:is(.para,.skc,.lk-c,.kt,.tkc,.tmc,.rb-card,.rb-faq,.rb-learn-tools,.cal,.wd,.phone-section,.backup-picker) *),#sb:not(:empty))::before { -webkit-backdrop-filter:none;backdrop-filter:none }
+    :is(#m :is(.para,.skc,.lk-c,.kt,.tkc,.tmc,.rb-card,.rb-faq,.rb-learn-tools,.cal,.wd,.phone-section,.backup-picker):not(:is(.para,.skc,.lk-c,.kt,.tkc,.tmc,.rb-card,.rb-faq,.rb-learn-tools,.cal,.wd,.phone-section,.backup-picker) *),#sb:not(:empty))::after { background:var(--card);box-shadow:none;border-color:var(--rb-control-edge) }
+  }
+
+  /* =====================================================================
+     PDF-Reader ohne Liquid Glass: ruhige, deckende Leisten und Flächen
+     ===================================================================== */
+  #sv :is(.svb,.ink-dock,.svr,.ink-split),#sv > .ink-eraser-bar { --lg-level:0;--lg-lit:0;text-shadow:none }
+  #sv :is(.svb,.ink-dock,.svr),#sv > .ink-eraser-bar,#sv > .ink-eraser-bar:not([hidden]) {
+    background:var(--card);border:1px solid var(--bd);-webkit-backdrop-filter:none;backdrop-filter:none;isolation:auto;
+    box-shadow:0 1px 2px rgb(0 0 0 / .06);
+  }
+  #sv :is(.ink-dock,.svr),#sv > .ink-eraser-bar { box-shadow:0 1px 2px rgb(0 0 0 / .08),0 8px 22px rgb(0 0 0 / .14) }
+  #sv :is(.svb,.ink-dock,.ink-split)::before,#sv :is(.svb,.ink-dock,.ink-split)::after,
+  #sv > .ink-eraser-bar::before,#sv > .ink-eraser-bar::after { content:none;display:none }
+  #sv .ink-split { background:var(--card);border-color:var(--bd);box-shadow:none }
+  #sv .ink-split :is(.split-head,.split-mark-tools) { background:var(--pane);border-color:var(--bd) }
+  #sv :is(.svb,.ink-dock) :is(svg,.rb-sym) { filter:none }
+  #sv :is(.svb,.ink-dock) :is(button,a,summary):active:not(:disabled) { background-image:none }
+  #sv .sv-dock-settings { display:none }   /* Glasstärke der Werkzeugleiste: im Reader gibt es kein Glas mehr */
+
+  /* =====================================================================
+     Lernen · Grafische Ansichten
+     ===================================================================== */
+  .rb-chart { display:grid;gap:12px;padding:16px 16px 10px }
+  .rb-chart-head { display:grid;gap:6px }
+  .rb-chart-title { font-size:var(--type-subhead);font-weight:620;color:var(--mut) }
+  .rb-chart-hero { display:flex;align-items:baseline;gap:8px;flex-wrap:wrap }
+  .rb-chart-hero b { font-size:clamp(1.9rem,6vw,2.4rem);font-weight:680;letter-spacing:-.035em;line-height:1;font-variant-numeric:tabular-nums;color:var(--fg) }
+  .rb-chart-hero .mut { font-size:var(--type-subhead) }
+  .rb-chart-progress { position:relative;height:8px;border-radius:999px;background:color-mix(in srgb,var(--fg) 9%,transparent);overflow:hidden;margin-top:2px }
+  .rb-chart-progress i { position:absolute;inset:0 auto 0 0;inline-size:var(--p);border-radius:inherit;background:var(--ac) }
+  .rb-chart-body { position:relative }
+  .rb-chart-plot { display:block;inline-size:100%;max-inline-size:620px;margin-inline:auto;block-size:auto;overflow:visible;touch-action:pan-y }
+  .rb-chart-body { max-inline-size:620px;margin-inline:auto;inline-size:100% }
+  .rb-chart-plot .rb-grid { stroke:color-mix(in srgb,var(--fg) 9%,transparent);stroke-width:1;shape-rendering:crispEdges }
+  .rb-chart-plot .rb-base { stroke:color-mix(in srgb,var(--fg) 22%,transparent);stroke-width:1;shape-rendering:crispEdges }
+  .rb-chart-plot .rb-tick { fill:var(--mut);font-size:10px;font-variant-numeric:tabular-nums }
+  .rb-chart-plot .rb-xlabel { fill:var(--mut);font-size:11px;font-weight:560 }
+  .rb-chart-plot .is-today .rb-xlabel { fill:var(--fg);font-weight:760 }
+  .rb-chart-plot .rb-bar { fill:color-mix(in srgb,var(--ac) 58%,var(--card));transition:fill .2s }
+  .rb-chart-plot .is-today .rb-bar,.rb-chart-plot .is-active .rb-bar { fill:var(--ac) }
+  .rb-chart-plot .rb-zero { fill:color-mix(in srgb,var(--fg) 20%,transparent) }
+  .rb-chart-plot .is-future .rb-xlabel { opacity:.6 }
+  .rb-chart-plot .rb-hit { fill:transparent;cursor:pointer;outline:none }
+  .rb-chart-plot .rb-hit:focus-visible { stroke:var(--rb-focus);stroke-width:2;rx:8 }
+  .rb-chart-plot .rb-goal { stroke:var(--fg);stroke-opacity:.45;stroke-width:1.25;stroke-dasharray:4 4 }
+  .rb-chart-plot .rb-goal-label { fill:var(--mut);font-size:10px;font-weight:600;paint-order:stroke;stroke:var(--card);stroke-width:3px;stroke-linejoin:round }
+  .rb-chart-tip { position:absolute;left:var(--x);top:var(--y);translate:-50% calc(-100% - 10px);pointer-events:none;opacity:0;scale:.92;
+    padding:5px 9px;border-radius:10px;font-size:.8125rem;font-weight:620;white-space:nowrap;font-variant-numeric:tabular-nums;
+    color:var(--bg);background:var(--fg);box-shadow:0 6px 18px rgb(0 0 0 / .18) }
+  .rb-chart.tip-on .rb-chart-tip { opacity:1;scale:1 }
+  @media (prefers-reduced-motion:no-preference) {
+    .rb-chart-tip { transition:opacity .16s var(--lg-ease-out),scale .22s var(--lg-ease),left .22s var(--lg-ease),top .22s var(--lg-ease) }
+    .rb-chart-progress i { animation:rb-grow-x .7s var(--lg-ease) both }
+    .rb-grow .rb-bar { transform-box:fill-box;transform-origin:50% 100%;animation:rb-grow-y .6s var(--lg-ease) both }
+    .rb-grow .rb-day:nth-child(2) .rb-bar{animation-delay:.03s} .rb-grow .rb-day:nth-child(3) .rb-bar{animation-delay:.06s}
+    .rb-grow .rb-day:nth-child(4) .rb-bar{animation-delay:.09s} .rb-grow .rb-day:nth-child(5) .rb-bar{animation-delay:.12s}
+    .rb-grow .rb-day:nth-child(6) .rb-bar{animation-delay:.15s} .rb-grow .rb-day:nth-child(7) .rb-bar{animation-delay:.18s}
+    @keyframes rb-grow-y { from { scale:1 0 } }
+    @keyframes rb-grow-x { from { inline-size:0 } }
+  }
+  /* Timer: Ring im Stil der Aktivitätsringe – runde Enden, Verlauf, flüssige Bewegung zwischen den Sekunden */
+  .timer-ring.rb-has-ring { position:relative;background:none;padding:0;box-shadow:none;inline-size:min(220px,72vw);margin:18px auto 20px }
+  .timer-ring .rb-ring { position:absolute;inset:0;inline-size:100%;block-size:100%;rotate:-90deg;overflow:visible }
+  .rb-ring-track { fill:none;stroke:color-mix(in srgb,var(--fg) 9%,transparent);stroke-width:10 }
+  .rb-ring-fill { fill:none;stroke-width:10;stroke-linecap:round;stroke-dasharray:100;stroke-dashoffset:100;
+    filter:drop-shadow(0 0 6px color-mix(in srgb,var(--ac) 35%,transparent)) }
+  .rb-ring-a { stop-color:color-mix(in srgb,var(--ac) 70%,var(--fg)) } .rb-ring-b { stop-color:var(--ac) }
+  :root:is([data-theme=mittel],[data-theme=dunkel]) .rb-ring-a { stop-color:color-mix(in srgb,var(--ac) 70%,#fff) }
+  @media (prefers-reduced-motion:no-preference) { .rb-ring-fill { transition:stroke-dashoffset 1s linear,opacity .3s } }
+  .timer-ring.rb-has-ring .rb-timer-face { position:relative;z-index:1;background:none;box-shadow:none;border:0 }
+  .timer-ring.rb-has-ring .big { font-size:clamp(1.9rem,7vw,2.5rem);font-weight:640;letter-spacing:-.03em;font-variant-numeric:tabular-nums }
+  .timer-ring.rb-has-ring small { font-size:var(--type-caption);font-weight:600;letter-spacing:.04em;text-transform:uppercase }
+
+  /* =====================================================================
+     Reader: Trenner zwischen PDF und Gesetz – dünn wie die Mac-Split-View
+     Sichtbar 1 px; greifbarer Bereich unsichtbar breiter (Maus 13 px, Touch/Pencil 25 px).
+     ===================================================================== */
+  #sv .split-grip,#sv .split-stacked>.split-grip { flex:0 0 1px;inline-size:auto;background:var(--bd);border:0;outline:none;z-index:6;display:block;position:relative }
+  #sv .split-grip::before { content:"";position:absolute;inset-block:0;inset-inline:-6px;cursor:col-resize }
+  #sv .split-stacked>.split-grip::before { inset-inline:0;inset-block:-6px;cursor:row-resize }
+  @media (pointer:coarse) {
+    #sv .split-grip,#sv .split-stacked>.split-grip { flex-basis:1px }
+    #sv .split-grip::before { inset-inline:-12px }
+    #sv .split-stacked>.split-grip::before { inset-block:-12px;inset-inline:0 }
+  }
+  /* Griff: unsichtbar in Ruhe (Mac), dezent auf Touch-Geräten, deutlich bei Hover/Fokus/Ziehen */
+  #sv .split-grip::after,#sv .split-stacked>.split-grip::after {
+    content:"";position:absolute;left:50%;top:50%;translate:-50% -50%;inline-size:5px;block-size:36px;border-radius:999px;
+    background:var(--mut);opacity:0;pointer-events:none }
+  #sv .split-stacked>.split-grip::after { inline-size:36px;block-size:5px }
+  @media (pointer:coarse) { #sv .split-grip::after { opacity:.45 } }
+  @media (hover:hover) { #sv .split-grip:hover::after { opacity:.7 } #sv .split-grip:hover { background:color-mix(in srgb,var(--fg) 30%,var(--bd)) } }
+  #sv .split-grip:focus-visible,#sv .split-resizing>.split-grip { background:var(--ac);box-shadow:0 0 0 1px var(--ac);outline:none }
+  #sv .split-grip:focus-visible::after,#sv .split-resizing>.split-grip::after { opacity:1;background:var(--ac) }
+  @media (prefers-reduced-motion:no-preference) {
+    #sv .split-grip { transition:background-color .15s,box-shadow .15s }
+    #sv .split-grip::after { transition:opacity .15s }
+  }
+  #sv .split-resizing,#sv .split-resizing * { cursor:col-resize;user-select:none;-webkit-user-select:none }
+  #sv .split-stacked.split-resizing,#sv .split-stacked.split-resizing * { cursor:row-resize }
+
+  /* ---------- Audit-Korrekturen ---------- */
+  /* Kontrast: „Start“ unter dem Markennamen auf der getönten Auswahlplatte lag in Dunkel/Navy unter 4,5 : 1 */
+  #brand-home[aria-current=page] .rb-current { color:color-mix(in srgb,var(--lk) 45%,var(--fg)) }
+  /* Vibrancy für Glasblöcke: bei hoher Durchsicht bleibt Text lesbar (wächst mit dem Flächen-Regler; 0 % = unverändert) */
+  #m :is(.para,.skc,.lk-c,.kt,.tkc,.tmc,.rb-card,.rb-faq,.rb-learn-tools,.cal,.wd,.phone-section,.backup-picker):not(:is(.para,.skc,.lk-c,.kt,.tkc,.tmc,.rb-card,.rb-faq,.rb-learn-tools,.cal,.wd,.phone-section,.backup-picker) *),#sb:not(:empty) {
+    --lg-halo:color-mix(in srgb,var(--card) calc(var(--lg-level)*90%),transparent);
+    text-shadow:0 0 calc(var(--lg-level)*1px) var(--lg-halo),0 0 calc(var(--lg-level)*3px) var(--lg-halo),0 0 calc(var(--lg-level)*9px) var(--lg-halo);
+  }
+  :is(header,#phone-nav) { --lg-halo:color-mix(in srgb,var(--lg-tint) calc(var(--lg-level)*100%),transparent) }
+}
+</style>
 </head><body>
 <header>
 <a href="#start" class="brand" id="brand-home" aria-label="Rubrum – Startseite"><img id="brand-icon" alt="" width="30" height="30"><strong class="rb-brand-name">Rubrum<small class="rb-current" aria-hidden="true">Start</small></strong></a>
@@ -1295,7 +1899,7 @@ header .seg a,#brand-home{display:inline-flex;align-items:center;justify-content
 <div class="storage-alert" data-storage-status role="alert" hidden></div><div id="app"><aside id="sb"></aside><main id="m"></main></div>
 <div id="ts" role="status" aria-live="polite"></div><div id="hb"></div>
 <div id="st" role="dialog" aria-modal="true" aria-labelledby="settings-title"><div class="sheet"><div class="sh"><span id="settings-title">Einstellungen</span><button id="stx" class="p">Fertig</button></div>
-<div class="lb">Darstellung</div><div class="ths" id="th"></div><div class="rb-glass-settings" id="rb-glass-settings"></div>
+<div class="lb">Darstellung</div><div class="ths" id="th"></div><div class="rb-glass-settings" id="rb-glass-settings"></div><div class="lb">Hintergrund</div><div class="rb-wallpapers" id="rb-wallpapers" role="group" aria-label="Hintergrund"></div>
 <div class="lb">Markierungsfarben</div><div id="lg"></div>
 <section class="settings-data" aria-labelledby="backup-title"><h2 id="backup-title">Datensicherung</h2>
 <p class="mut">Die vollständige Sicherung enthält Gesetze, Lernplan, Skript-PDFs und Anmerkungen.</p>
@@ -2327,7 +2931,7 @@ function rbGlassApply(){
   root.style.setProperty('--rail-mist',14*ui+'px');
   root.dataset.glassUi=ui?'on':'off';
 }
-function rbGlassSettings(){const box=$('#rb-glass-settings');box.replaceChildren();for(const [key,label,help] of [['ui','Liquid Glass · Stärke','Kopfzeile, Navigation und schwebende Werkzeuge'],['paper','Glas beim Lesen · Stärke','Lichtkante an Gesetzestext, Inhaltsverzeichnis und geteilter Leseansicht']]){const l=el('label'),r=el('input'),o=el('output'),h=el('small',null,help);r.type='range';r.min=0;r.max=100;r.step=1;r.id='rb-glass-'+key;h.id=r.id+'-hint';r.setAttribute('aria-describedby',h.id);o.htmlFor=r.id;r.value=rbGlass[key];const show=()=>{o.textContent=r.value+' %';r.setAttribute('aria-valuetext',r.value==='0'?'Aus':o.textContent)};show();r.oninput=()=>{rbGlass[key]=+r.value;show();rbGlassApply();try{localStorage.setItem('rubrum.glass.'+key,r.value)}catch{}};l.append(el('span',null,label),o,r);box.append(l,h)}}
+function rbGlassSettings(){const box=$('#rb-glass-settings');box.replaceChildren();for(const [key,label,help] of [['ui','Liquid Glass · Stärke','Durchsichtigkeit von Kopfzeile, Navigation und Werkzeugen: 0 % deckend · 50 % halb durchsichtig · 100 % klares Glas'],['paper','Liquid Glass · Flächen','Durchsichtigkeit aller Karten und Blöcke auf allen Seiten (nicht im PDF-Reader): 0 % deckend · 50 % halb durchsichtig · 100 % klares Glas']]){const l=el('label'),r=el('input'),o=el('output'),h=el('small',null,help);r.type='range';r.min=0;r.max=100;r.step=1;r.id='rb-glass-'+key;h.id=r.id+'-hint';r.setAttribute('aria-describedby',h.id);o.htmlFor=r.id;r.value=rbGlass[key];const show=()=>{o.textContent=r.value+' %';r.setAttribute('aria-valuetext',r.value==='0'?'Aus':o.textContent)};show();r.oninput=()=>{rbGlass[key]=+r.value;show();rbGlassApply();try{localStorage.setItem('rubrum.glass.'+key,r.value)}catch{}};l.append(el('span',null,label),o,r);box.append(l,h)}}
 rbGlassApply();
 
 function phoneHome(m){
@@ -3992,7 +4596,7 @@ function tmTick(){const T=S.timer,navBtn=$('#timer-nav');const n=Date.now();
   document.querySelectorAll('.timer-state').forEach(e=>e.textContent=T.run?'Läuft':'Pausiert');
   document.querySelectorAll('.timer-phase').forEach(e=>e.textContent=T.mode==='p'?(T.ph==='f'?'Fokus':'Pause'):'Lernzeit');
   document.querySelectorAll('.timer-pomodoro').forEach(e=>e.textContent='Pomodoro '+(T.ph==='b'?T.n:T.n+1)+(T.ph==='b'&&T.n%4===0?' · lange Pause':''));
- {document.querySelectorAll('.timer-ring:has(.tmv)').forEach(face=>{const duration=T.mode==='p'?Math.max(1,(T.ph==='f'?S.pp.po.f:(T.n%4===0?S.pp.po.l:S.pp.po.b))*MIN):H1;const used=T.mode==='p'?duration-(T.run?Math.max(0,T.pe-n):T.rem):tmWork(T)%H1;face.style.setProperty('--timer-pct',Math.max(0,Math.min(100,used/duration*100))+'%')})}
+ {document.querySelectorAll('.timer-ring:has(.tmv)').forEach(face=>{const duration=T.mode==='p'?Math.max(1,(T.ph==='f'?S.pp.po.f:(T.n%4===0?S.pp.po.l:S.pp.po.b))*MIN):H1;const used=T.mode==='p'?duration-(T.run?Math.max(0,T.pe-n):T.rem):tmWork(T)%H1;rbRing(face,Math.max(0,Math.min(100,used/duration*100))+'%')})}
  if(navBtn){navBtn.classList.add('is-active');navBtn.title='Timer öffnen – '+T.l;navBtn.setAttribute('aria-label','Timer öffnen – '+txt+' · '+T.l);const label=navBtn.querySelector('.timer-label');if(label)label.textContent=txt;let ctx=navBtn.querySelector('.timer-context');if(!ctx){ctx=el('span','timer-context');navBtn.append(ctx)}ctx.textContent=T.l}}
 setInterval(tmTick,1000);
 const dueL=d=>{const now=new Date(),due=Date.parse(d+'T00:00Z');if(!Number.isFinite(due))return['ohne Frist',''];
@@ -4008,25 +4612,71 @@ function timerStartRow(){
 }
 function buildTimer(){ini();const P=S.pp,T=S.timer;
 const tc=el('section','para tmc'),th=el('div','rb-learn-heading');th.append(el('strong',null,'Fokustimer'),rbLearnSwitch('timer',rbVisualTimer));tc.append(th);
-if(T){tc.append(el('div','mut',(T.mode==='p'?'Pomodoro':'Timer')+' · '+fn(T.f)),el('b',null,T.l));if(rbVisualTimer){const duration=T.mode==='p'?Math.max(1,(T.ph==='f'?P.po.f:(T.n%4===0?P.po.l:P.po.b))*MIN):H1;const used=T.mode==='p'?duration-(T.run?Math.max(0,T.pe-Date.now()):T.rem):tmWork(T)%H1;const face=el('div','timer-ring');face.style.setProperty('--timer-pct',Math.max(0,Math.min(100,used/duration*100))+'%');face.append(el('div','rb-timer-face'));face.firstChild.append(el('div','tmv big'),el('small','mut timer-phase',T.mode==='p'?(T.ph==='f'?'Fokus':'Pause'):'Lernzeit'));tc.append(face)}else tc.append(el('div','tmv big rb-timer-number'));tc.append(el('div','mut timer-work'),el('div','mut timer-state'));if(T.mode==='p')tc.append(el('div','mut timer-pomodoro'));
+if(T){tc.append(el('div','mut',(T.mode==='p'?'Pomodoro':'Timer')+' · '+fn(T.f)),el('b',null,T.l));if(rbVisualTimer){const duration=T.mode==='p'?Math.max(1,(T.ph==='f'?P.po.f:(T.n%4===0?P.po.l:P.po.b))*MIN):H1;const used=T.mode==='p'?duration-(T.run?Math.max(0,T.pe-Date.now()):T.rem):tmWork(T)%H1;const face=el('div','timer-ring');rbRing(face,Math.max(0,Math.min(100,used/duration*100))+'%');face.append(el('div','rb-timer-face'));face.firstChild.append(el('div','tmv big'),el('small','mut timer-phase',T.mode==='p'?(T.ph==='f'?'Fokus':'Pause'):'Lernzeit'));tc.append(face)}else tc.append(el('div','tmv big rb-timer-number'));tc.append(el('div','mut timer-work'),el('div','mut timer-state'));if(T.mode==='p')tc.append(el('div','mut timer-pomodoro'));
 const r=el('div','row'),pb=el('button','p',T.run?'⏸ Pause':'▶ Weiter'),bk=el('button',null,'Buchen & beenden'),ds=el('button',null,'Verwerfen');pb.dataset.timerAction='pause';pb.onclick=tmToggle;bk.dataset.timerAction='book';bk.onclick=()=>tmBook(false);ds.onclick=async()=>{if(await rbConfirm('Timer verwerfen? Die Zeit wird nicht gebucht.','Verwerfen')){S.timer=null;save();tmRefresh()}};r.append(pb,bk);if(T.tid){const dn=el('button',null,'✓ Aufgabe erledigt');dn.onclick=()=>tmBook(true);r.append(dn)}r.append(ds);const sg2=el('div','seg');[['n','Normal'],['p','Pomodoro']].forEach(([v,n])=>{const b=el('button',T.mode===v?'on':null,n);b.dataset.timerAction=v;b.onclick=()=>tmMode(v);sg2.append(b)});tc.append(sg2,r);setTimeout(tmTick,0)}
 else{tc.append(el('div','mut','Starte an einer Aufgabe, einem Lernblock oder frei für ein Fach.'));
-if(rbVisualTimer){const face=el('div','timer-ring');face.style.setProperty('--timer-pct','0%');face.append(el('div','rb-timer-face'));face.firstChild.append(el('div','big','00:00:00'),el('small','mut','Bereit zum Lernen'));tc.append(face)}
+if(rbVisualTimer){const face=el('div','timer-ring');rbRing(face,'0%');face.append(el('div','rb-timer-face'));face.firstChild.append(el('div','big','00:00:00'),el('small','mut','Bereit zum Lernen'));tc.append(face)}
 const r=el('div','row'),sg=el('div','seg'),bn=el('button',P.tmode==='p'?null:'on','Normal'),bp=el('button',P.tmode==='p'?'on':null,'Pomodoro');bn.onclick=()=>{P.tmode='n';save();tmRefresh()};bp.onclick=()=>{P.tmode='p';save();tmRefresh()};sg.append(bn,bp);r.append(sg);if(P.tmode==='p')[['Fokus','f'],['Pause','b'],['Lange Pause','l']].forEach(([n,key])=>{const l=el('label','mut',n+' ');l.append(studySetting(P.po,key,'56px'));r.append(l)});tc.append(r);tc.append(timerStartRow());}
 return tc;
+}
+/* Rubrum · Lernen: grafische Ansichten (Wochen-Diagramm, Timer-Ring). Nur Darstellung; Daten wie bisher. */
+let rbChartSeen=false,rbRingSeq=0;
+function rbNiceMax(v){for(const n of [.5,1,1.5,2,3,4,5,6,8,10,12,15,20,24])if(v<=n)return n;return Math.ceil(v)}
+function rbWeekChart(days,daily,plH,today){
+ const NS='http://www.w3.org/2000/svg',names=['Mo','Di','Mi','Do','Fr','Sa','So'],long=['Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag','Sonntag'];
+ const total=daily.reduce((a,b)=>a+b,0),goal=plH?plH/7:0,card=el('div','kt learn-graph rb-chart');
+ const head=el('div','rb-chart-head'),hero=el('div','rb-chart-hero');
+ hero.append(el('b',null,f1(total)+' h'),el('span','mut',plH?'von '+f1(plH)+' h geplant':'gebucht'));
+ head.append(el('strong','rb-chart-title','Lernzeit diese Woche'),hero);
+ if(plH){const pct=Math.min(100,total/plH*100),bar=el('div','rb-chart-progress'),fill=el('i');
+  bar.setAttribute('role','progressbar');bar.setAttribute('aria-label','Wochenplan erreicht');bar.setAttribute('aria-valuemin','0');bar.setAttribute('aria-valuemax','100');bar.setAttribute('aria-valuenow',String(Math.round(pct)));bar.setAttribute('aria-valuetext',Math.round(pct)+' Prozent des Wochenplans');
+  fill.style.setProperty('--p',pct+'%');bar.append(fill);head.append(bar)}
+ card.append(head);
+ const W=340,H=168,L=30,R=8,T=10,B=24,pw=W-L-R,ph=H-T-B,max=rbNiceMax(Math.max(...daily,goal,.5)),band=pw/7,bw=Math.min(26,band*.58);
+ const yOf=v=>T+ph-v/max*ph,svg=document.createElementNS(NS,'svg'),add=(p,n,a)=>{const x=document.createElementNS(NS,n);for(const [k,v] of Object.entries(a))x.setAttribute(k,v);p.append(x);return x};
+ svg.setAttribute('viewBox','0 0 '+W+' '+H);svg.setAttribute('class','rb-chart-plot');svg.setAttribute('role','img');
+ svg.setAttribute('aria-label','Gebuchte Lernzeit pro Tag: '+daily.map((v,i)=>names[i]+' '+f1(v)+' Stunden').join(', ')+(goal?'. Tagesziel laut Plan '+f1(goal)+' Stunden.':''));
+ for(const t of [0,max/2,max]){const y=yOf(t);add(svg,'line',{x1:L,x2:W-R,y1:y,y2:y,class:t?'rb-grid':'rb-base'});const lab=add(svg,'text',{x:L-6,y:y+3.5,class:'rb-tick','text-anchor':'end'});lab.textContent=f1(t)+(t===max?' h':'')}
+ const bars=add(svg,'g',{class:'rb-bars'+(rbChartSeen?'':' rb-grow')});
+ const tip=el('div','rb-chart-tip');tip.setAttribute('aria-hidden','true');
+ daily.forEach((v,i)=>{
+  const x=L+i*band+(band-bw)/2,y=yOf(v),h=T+ph-y,r=Math.min(4,h,bw/2),isToday=days[i]===today;
+  const g=add(bars,'g',{class:'rb-day'+(isToday?' is-today':'')+(days[i]>today?' is-future':''),'data-i':i});
+  if(v>0)add(g,'path',{d:`M${x},${T+ph}V${y+r}Q${x},${y} ${x+r},${y}H${x+bw-r}Q${x+bw},${y} ${x+bw},${y+r}V${T+ph}Z`,class:'rb-bar'});
+  else add(g,'rect',{x:x+bw/2-2,y:T+ph-2,width:4,height:2,rx:1,class:'rb-zero'});
+  const hit=add(g,'rect',{x:L+i*band,y:T,width:band,height:ph+B,class:'rb-hit',tabindex:'0',role:'img','aria-label':long[i]+', '+days[i].slice(8)+'.'+days[i].slice(5,7)+'.: '+f1(v)+' Stunden'+(isToday?' (heute)':'')});
+  const lab=add(g,'text',{x:L+i*band+band/2,y:H-7,class:'rb-xlabel','text-anchor':'middle'});lab.textContent=names[i];
+  const show=()=>{tip.textContent=(isToday?'Heute':long[i])+' · '+f1(v)+' h';tip.style.setProperty('--x',((L+i*band+band/2)/W*100)+'%');tip.style.setProperty('--y',((v>0?y:T+ph)/H*100)+'%');card.classList.add('tip-on');bars.querySelectorAll('.is-active').forEach(n=>n.classList.remove('is-active'));g.classList.add('is-active')};
+  const hide=()=>{card.classList.remove('tip-on');g.classList.remove('is-active')};
+  hit.addEventListener('pointerenter',show);hit.addEventListener('pointerdown',show);hit.addEventListener('focus',show);hit.addEventListener('pointerleave',e=>{if(e.pointerType==='mouse')hide()});hit.addEventListener('blur',hide);
+ });
+ if(goal){const y=yOf(goal);add(svg,'line',{x1:L,x2:W-R,y1:y,y2:y,class:'rb-goal'});const t=add(svg,'text',{x:W-R,y:y-4,class:'rb-goal-label','text-anchor':'end'});t.textContent='Ziel '+f1(goal)+' h/Tag'}
+ const plot=el('div','rb-chart-body');plot.append(svg,tip);card.append(plot);
+ const table=el('table','sr-only'),tb=el('tbody');table.append(el('caption',null,'Gebuchte Lernzeit pro Tag'));daily.forEach((v,i)=>{const tr=el('tr');tr.append(el('th',null,long[i]),el('td',null,f1(v)+' h'));tb.append(tr)});table.append(tb);card.append(table);
+ rbChartSeen=true;return card;
+}
+function rbRing(face,p){
+ face.style.setProperty('--timer-pct',p);const v=Math.max(0,Math.min(100,parseFloat(p)||0));
+ const set=()=>{let svg=face.querySelector(':scope>svg.rb-ring');
+  if(!svg){const NS='http://www.w3.org/2000/svg',id='rb-ring-g'+(++rbRingSeq);svg=document.createElementNS(NS,'svg');svg.setAttribute('class','rb-ring');svg.setAttribute('viewBox','0 0 120 120');svg.setAttribute('aria-hidden','true');
+   svg.innerHTML=`<defs><linearGradient id="${id}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" class="rb-ring-a"/><stop offset="1" class="rb-ring-b"/></linearGradient></defs><circle class="rb-ring-track" cx="60" cy="60" r="52" pathLength="100"/><circle class="rb-ring-fill" cx="60" cy="60" r="52" pathLength="100" stroke="url(#${id})"/>`;
+   face.append(svg);face.classList.add('rb-has-ring')}
+  const fill=svg.querySelector('.rb-ring-fill');fill.style.strokeDashoffset=String(100-v);fill.style.opacity=v>.3?'1':'0'};
+ // Erst nach dem Aufbau des Ziffernblatts anhängen: der Timer-Code nutzt face.firstChild für die Zeitanzeige.
+ if(face.firstChild)set();else queueMicrotask(set);
 }
 function dash(m){ini();const P=S.pp,T=S.timer,now=new Date(),tdk=ymd(now),wkk=ymd(mon0(0)),pl=S.plan[wkk]||[],logs=[...S.fach.flatMap(f=>f.log||[]),...(S.focusLog||[])],
 tdH=logs.filter(x=>x.d===tdk).reduce((a,x)=>a+x.h,0)+(T?tmWork(T)/H1:0),wkH=logs.filter(x=>x.d>=wkk&&x.d<=ymd((()=>{const d=mon0(0);d.setDate(d.getDate()+6);return d})())).reduce((a,x)=>a+x.h,0),plH=pl.reduce((a,b)=>a+(b.e-b.s),0)/H1,open=S.tasks.filter(t=>!t.done),od=open.filter(t=>t.due&&t.due<tdk).length,
 nx=S.fach.filter(f=>f.exam&&f.exam>=tdk).sort((a,b)=>a.exam.localeCompare(b.exam))[0];
 const overview=el('section','para learn-overview'),heading=el('div','rb-learn-heading');heading.append(el('strong',null,'Lernübersicht'),rbLearnSwitch('stats',rbVisualStats));overview.append(heading);
 const st=el('div','stats');const stat=(value,label)=>{const cell=el('div','kt');cell.append(el('b',null,value),el('div','mut',label));st.append(cell)};
-if(rbVisualStats){const graph=el('div','kt learn-graph'),days=Array.from({length:7},(_,i)=>{const d=mon0(0);d.setDate(d.getDate()+i);return ymd(d)}),daily=days.map(d=>logs.filter(x=>x.d===d).reduce((sum,x)=>sum+x.h,0));let total=0;const points=daily.map(h=>total+=h),max=Math.max(1,total,plH),coords=points.map((h,i)=>[25+i*50,100-h/max*86]);graph.append(el('b',null,'Gebuchte Lernzeit · Wochenverlauf'),el('p','mut',f1(total)+' h gebucht · '+f1(plH)+' h geplant'));const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');svg.setAttribute('viewBox','0 0 350 110');svg.setAttribute('class','rb-week-line');svg.setAttribute('aria-hidden','true');svg.setAttribute('preserveAspectRatio','none');const shape=(name,attrs)=>{const node=document.createElementNS(svg.namespaceURI,name);for(const [k,v] of Object.entries(attrs))node.setAttribute(k,v);svg.append(node)};const path=coords.map(p=>p.join(',')).join(' ');shape('polygon',{points:'25,100 '+path+' 325,100',fill:'currentColor',opacity:'.16'});shape('polyline',{points:path,fill:'none',stroke:'currentColor','stroke-width':3,'vector-effect':'non-scaling-stroke'});coords.forEach(([x,y])=>shape('circle',{cx:x,cy:y,r:3,fill:'currentColor'}));const values=el('div','rb-week-days');['Mo','Di','Mi','Do','Fr','Sa','So'].forEach((d,i)=>{const cell=el('div',null,d);cell.append(el('strong',null,f1(daily[i])+' h'));values.append(cell)});graph.append(svg,values);st.append(graph)}else{stat(f1(tdH)+' h','Heute gelernt');stat(f1(wkH)+(plH?' / '+f1(plH):'')+' h','Diese Woche gebucht / geplant')}
+if(rbVisualStats){const days=Array.from({length:7},(_,i)=>{const d=mon0(0);d.setDate(d.getDate()+i);return ymd(d)}),daily=days.map(d=>logs.filter(x=>x.d===d).reduce((sum,x)=>sum+x.h,0));st.append(rbWeekChart(days,daily,plH,tdk))}else{stat(f1(tdH)+' h','Heute gelernt');stat(f1(wkH)+(plH?' / '+f1(plH):'')+' h','Diese Woche gebucht / geplant')}
 stat(open.length+(od?' · '+od+' überfällig':''),'Offene Aufgaben');stat(nx?Math.ceil((new Date(nx.exam+'T08:00')-now)/D1)+' Tage':'–',nx?'bis '+nx.name:'Nächste Klausur');overview.append(st);m.append(overview);
 const tc=el('section','para tmc'),th=el('div','rb-learn-heading');th.append(el('strong',null,'Fokustimer'),rbLearnSwitch('timer',rbVisualTimer));tc.append(th);
-if(T){tc.append(el('div','mut',(T.mode==='p'?'Pomodoro':'Timer')+' · '+fn(T.f)),el('b',null,T.l));if(rbVisualTimer){const duration=T.mode==='p'?Math.max(1,(T.ph==='f'?P.po.f:(T.n%4===0?P.po.l:P.po.b))*MIN):H1;const used=T.mode==='p'?duration-(T.run?Math.max(0,T.pe-Date.now()):T.rem):tmWork(T)%H1;const face=el('div','timer-ring');face.style.setProperty('--timer-pct',Math.max(0,Math.min(100,used/duration*100))+'%');face.append(el('div','rb-timer-face'));face.firstChild.append(el('div','tmv big'),el('small','mut',T.mode==='p'?(T.ph==='f'?'Fokus':'Pause'):'Lernzeit'));tc.append(face)}else tc.append(el('div','tmv big rb-timer-number'));if(T.mode==='p')tc.append(el('div','mut','Pomodoro '+(T.n+1)+' · der Rhythmus läuft, bis du buchst'));
+if(T){tc.append(el('div','mut',(T.mode==='p'?'Pomodoro':'Timer')+' · '+fn(T.f)),el('b',null,T.l));if(rbVisualTimer){const duration=T.mode==='p'?Math.max(1,(T.ph==='f'?P.po.f:(T.n%4===0?P.po.l:P.po.b))*MIN):H1;const used=T.mode==='p'?duration-(T.run?Math.max(0,T.pe-Date.now()):T.rem):tmWork(T)%H1;const face=el('div','timer-ring');rbRing(face,Math.max(0,Math.min(100,used/duration*100))+'%');face.append(el('div','rb-timer-face'));face.firstChild.append(el('div','tmv big'),el('small','mut',T.mode==='p'?(T.ph==='f'?'Fokus':'Pause'):'Lernzeit'));tc.append(face)}else tc.append(el('div','tmv big rb-timer-number'));if(T.mode==='p')tc.append(el('div','mut','Pomodoro '+(T.n+1)+' · der Rhythmus läuft, bis du buchst'));
 const r=el('div','row'),pb=el('button','p',T.run?'⏸ Pause':'▶ Weiter'),bk=el('button',null,'Buchen & beenden'),ds=el('button',null,'Verwerfen');pb.onclick=tmToggle;bk.onclick=()=>tmBook(false);ds.onclick=async()=>{if(await rbConfirm('Timer verwerfen? Die Zeit wird nicht gebucht.','Verwerfen')){S.timer=null;save();draw()}};r.append(pb,bk);if(T.tid){const dn=el('button',null,'✓ Aufgabe erledigt');dn.onclick=()=>tmBook(true);r.append(dn)}r.append(ds);const sg2=el('div','seg');[['n','Normal'],['p','Pomodoro']].forEach(([v,n])=>{const b=el('button',T.mode===v?'on':null,n);b.onclick=()=>tmMode(v);sg2.append(b)});tc.append(sg2,r);setTimeout(tmTick,0)}
 else{tc.append(el('div','mut','Starte an einer Aufgabe, einem Lernblock oder frei für ein Fach.'));
-if(rbVisualTimer){const face=el('div','timer-ring');face.style.setProperty('--timer-pct','0%');face.append(el('div','rb-timer-face'));face.firstChild.append(el('div','big','00:00:00'),el('small','mut','Bereit zum Lernen'));tc.append(face)}
+if(rbVisualTimer){const face=el('div','timer-ring');rbRing(face,'0%');face.append(el('div','rb-timer-face'));face.firstChild.append(el('div','big','00:00:00'),el('small','mut','Bereit zum Lernen'));tc.append(face)}
 const r=el('div','row'),sg=el('div','seg'),bn=el('button',P.tmode==='p'?null:'on','Normal'),bp=el('button',P.tmode==='p'?'on':null,'Pomodoro');bn.onclick=()=>{P.tmode='n';save();draw()};bp.onclick=()=>{P.tmode='p';save();draw()};sg.append(bn,bp);r.append(sg);if(P.tmode==='p')[['Fokus','f'],['Pause','b'],['Lange Pause','l']].forEach(([n,key])=>{const l=el('label','mut',n+' ');l.append(studySetting(P.po,key,'56px'));r.append(l)});tc.append(r);tc.append(timerStartRow());}
 m.append(tc);
 const td=pl.filter(b=>ymd(new Date(b.s))===tdk).sort((a,b)=>a.s-b.s),hp=el('div','para');hp.append(el('b',null,'Heute geplant'));
@@ -5325,10 +5975,15 @@ function readerInk({s,pdf,body,ov,stage,sidebar,doc,go,position,rotate,sideHide,
     for(const {target,isIntersecting} of entries){
       const slot=target.parentNode;
       if(!slot?.isConnected)continue;
-      if(isIntersecting){if(!target.nextSibling)slot.append(slot.paint())}
+      // WebKit may report unpainted SVG bounds as not intersecting; confirm geometrically before unloading.
+      if(isIntersecting||nearPane(target)){if(!target.nextSibling)slot.append(slot.paint())}
       else target.nextSibling?.remove();
     }
   },{root:body,rootMargin:'96px'});
+  function nearPane(target){
+    const r=target.getBoundingClientRect(),p=body.getBoundingClientRect();
+    return r.left<p.right+96&&r.right>p.left-96&&r.top<p.bottom+96&&r.bottom>p.top-96;
+  }
   function releaseVectors(d){
     for(const bounds of d._ink?.querySelectorAll('[data-ink-bounds]')||[])vectorObserver.unobserve(bounds);
   }
@@ -5343,7 +5998,7 @@ function readerInk({s,pdf,body,ov,stage,sidebar,doc,go,position,rotate,sideHide,
       let box=vectorBounds.get(a);if(!box){box=inkBounds(a);vectorBounds.set(a,box)}
       const p=project([box[0],box[1]]),q=project([box[2],box[3]]);
       const x=Math.min(p[0],q[0]),y=Math.min(p[1],q[1]),w=Math.abs(q[0]-p[0]),h=Math.abs(q[1]-p[1]);
-      const slot=inkSvg('g',{}),bounds=inkSvg('rect',{x,y,width:w,height:h,fill:'none','data-ink-bounds':''});
+      const slot=inkSvg('g',{}),bounds=inkSvg('rect',{x,y,width:w,height:h,fill:'transparent','data-ink-bounds':''});
       slot.paint=()=>vectorInk(a,project,v.scale);slot.append(bounds);fragment.append(slot);
       const sx=surface.width/v.width,sy=surface.height/v.height;
       if(surface.left+x*sx<pane.right+96&&surface.left+(x+w)*sx>pane.left-96&&
@@ -5504,7 +6159,12 @@ function readerInk({s,pdf,body,ov,stage,sidebar,doc,go,position,rotate,sideHide,
         }
       }
     };
-    host.onpointercancel=host.onlostpointercapture=e=>{if(gesture?.id===e.pointerId)cancelGesture()};
+    host.onpointercancel=host.onlostpointercapture=e=>{
+      const g=gesture;if(g?.id!==e.pointerId)return;
+      cancelGesture();
+      // iPadOS can cancel a Pencil pointer (palm, system gesture). Keep the written stroke instead of discarding it.
+      if(g.stroke&&g.points.length>1&&!dataBusy){lastInk={k:g.k,id:g.stroke.id};selected.clear();commit(g.k,[...items(g.k),g.stroke])}
+    };
   };
   bindOn(body);bindOn(me);me.hidden=true;stage.append(me);
   function rectQuads(range,d){
@@ -6227,4 +6887,219 @@ if(entryNorm)focusNorm(entryNorm.start);
 if(restoringReader)skOpen(savedView.readerId).finally(()=>{restoringReader=false;rememberReadingView()});
 }
 bootRubrum();
+</script>
+<script id="rubrum-symbols">
+/* Rubrum · Symbole. Ersetzt als Icon verwendete Schriftzeichen und Emoji (＋ ‹ › ✎ 🗑 ⠿ …) durch
+   einheitliche SVG-Symbole im Stil von SF Symbols (24er-Raster, Kontur, runde Enden).
+   Nur Darstellung: Elemente, Event-Handler, Titel und ARIA-Beschriftungen bleiben unverändert.
+   Eigene Zeichnungen – keine Apple-Symboldateien (Lizenz). */
+(() => {
+  const P = {
+    plus: 'M12 5.5v13M5.5 12h13',
+    minus: 'M5.5 12h13',
+    chevL: 'M14.5 5.5 8 12l6.5 6.5',
+    chevR: 'M9.5 5.5 16 12l-6.5 6.5',
+    chevU: 'M5.5 14.5 12 8l6.5 6.5',
+    chevD: 'M5.5 9.5 12 16l6.5-6.5',
+    left: 'M19 12H5.5M11 6l-6 6 6 6',
+    right: 'M5 12h13.5M13 6l6 6-6 6',
+    pencil: 'M14.8 5.2l4 4L8.5 19.5 4 20l.5-4.5zM12.8 7.2l4 4',
+    trash: 'M4.5 6.5h15M9.5 6.5v-2h5v2M6.5 6.5l.9 12.2a1.5 1.5 0 0 0 1.5 1.3h6.2a1.5 1.5 0 0 0 1.5-1.3l.9-12.2M10 10.5v6M14 10.5v6',
+    clockwise: 'M19.5 12a7.5 7.5 0 1 1-2.2-5.3M19.5 4v4.5H15',
+    undo: 'M9 6l-5 5 5 5m-5-5h10a5 5 0 0 1 5 5v2',
+    updown: 'M8 19.5V4.5M4.5 8 8 4.5 11.5 8M16 4.5v15M12.5 16l3.5 3.5 3.5-3.5',
+    info: 'M12 3.5a8.5 8.5 0 1 0 0 17 8.5 8.5 0 0 0 0-17zM12 11v5.5M12 7.75v.01',
+    xmark: 'M6.5 6.5l11 11M17.5 6.5l-11 11',
+    check: 'M5 12.5l4.5 4.5L19 7.5',
+    star: 'M12 4.2l2.4 4.9 5.4.8-3.9 3.8.9 5.4L12 16.6l-4.8 2.5.9-5.4-3.9-3.8 5.4-.8z',
+    play: 'M8.5 5.8v12.4a.8.8 0 0 0 1.2.7l9.6-6.2a.8.8 0 0 0 0-1.4L9.7 5.1a.8.8 0 0 0-1.2.7z',
+    pause: 'M8.5 5.5v13M15.5 5.5v13',
+    grip: 'M9 6.5v.01M15 6.5v.01M9 12v.01M15 12v.01M9 17.5v.01M15 17.5v.01',
+  };
+  const MAP = {
+    '＋': 'plus', '+': 'plus', '−': 'minus', '‹': 'chevL', '›': 'chevR', '⌃': 'chevU', '⌄': 'chevD',
+    '←': 'left', '→': 'right', '✎': 'pencil', '🗑️': 'trash', '🗑': 'trash', '⟳': 'clockwise', '↶': 'undo',
+    '↕': 'updown', 'ⓘ': 'info', '×': 'xmark', '✕': 'xmark', '✓': 'check', '☆': 'star', '★': 'star.fill',
+    '▶': 'play.fill', '⏸': 'pause', '⠿': 'grip',
+  };
+  // Beschriftung für reine Symbolknöpfe ohne eigene Bezeichnung (VoiceOver)
+  const LABEL = {plus: 'Hinzufügen', minus: 'Verkleinern', chevL: 'Zurück', chevR: 'Weiter', chevU: 'Einklappen', chevD: 'Ausklappen',
+    pencil: 'Bearbeiten', trash: 'Löschen', check: 'Erledigt', 'play.fill': 'Starten', pause: 'Pause', info: 'Information', undo: 'Rückgängig'};
+  const KEYS = Object.keys(MAP).sort((a, b) => b.length - a.length);
+  const SEL = 'button,a,summary,[role=button],.rb-arrow';
+  const SKIP = '.svc,.ink-overlay,.ink-sheet .pg,.paper-grid,.txt,[data-law-key],textarea,[contenteditable]';
+  const NS = 'http://www.w3.org/2000/svg';
+  function symbol(name) {
+    const base = name.replace('.fill', ''), svg = document.createElementNS(NS, 'svg'), path = document.createElementNS(NS, 'path');
+    svg.setAttribute('viewBox', '0 0 24 24'); svg.setAttribute('aria-hidden', 'true'); svg.setAttribute('focusable', 'false');
+    svg.setAttribute('class', 'rb-sym'); svg.dataset.sym = name; path.setAttribute('d', P[base]); svg.append(path);
+    return svg;
+  }
+  function decorate(el) {
+    const first = el.firstChild;
+    if (!first || first.nodeType !== 3 || el.closest(SKIP)) return;
+    const text = first.data.replace(/^\s+/, '');
+    const key = KEYS.find(k => text.startsWith(k) && (text.length === k.length || /^[\s️]/.test(text.slice(k.length))));
+    if (!key) return;
+    const rest = text.slice(key.length).replace(/^[\s️]+/, '');
+    if (!rest && !el.title && !el.getAttribute('aria-label') && !el.getAttribute('aria-labelledby') && !el.classList.contains('rb-arrow')) {
+      const name = MAP[key] === 'xmark' ? (el.closest('.svr,dialog,.pop') ? 'Schließen' : 'Entfernen') : LABEL[MAP[key]];
+      if (!name) return;                              // ohne Beschriftung kein Austausch
+      el.setAttribute('aria-label', name);
+    }
+    first.data = rest;
+    if (!rest) first.remove();
+    el.insertBefore(symbol(MAP[key]), el.firstChild);
+    el.classList.add('rb-has-sym');
+    if (!rest) el.classList.add('rb-sym-only');
+  }
+  const scan = root => { if (root.matches?.(SEL)) decorate(root); root.querySelectorAll?.(SEL).forEach(decorate); };
+  let queue = new Set(), frame = 0;
+  const flush = () => { frame = 0; const q = queue; queue = new Set(); for (const n of q) if (n.isConnected) scan(n); };
+  const observer = new MutationObserver(records => {
+    for (const r of records) {
+      const t = r.target.nodeType === 1 ? r.target : r.target.parentElement;
+      if (!t || t.closest(SKIP)) continue;          // Lese- und Schreibflächen nie anfassen
+      if (r.type === 'characterData') { const host = t.closest(SEL); if (host) queue.add(host); continue; }
+      for (const n of r.addedNodes) if (n.nodeType === 1) queue.add(n); else if (n.nodeType === 3 && t.matches(SEL)) queue.add(t);
+    }
+    if (queue.size && !frame) frame = requestAnimationFrame(flush);
+  });
+  const start = () => { scan(document.body); observer.observe(document.body, {childList: true, subtree: true, characterData: true}); };
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start); else start();
+})();
+</script>
+<script id="rubrum-wallpaper">
+/* Rubrum · Hintergrundauswahl. Speichert nur die eigene Einstellung 'rubrum.wallpaper' (keine Nutzerdaten). */
+(() => {
+  const KEY = 'rubrum.wallpaper', root = document.documentElement;
+  const OPTIONS = [
+    ['standard', 'Standard', 'Rubrum-Verlauf'],
+    ['plain', () => isDark() ? 'Schlicht dunkel' : 'Schlicht hell', 'Einfarbig, ruhig'],
+    ['gradient', 'Verlauf', 'Passend zum Farbschema'],
+    ['aurora', 'Polarlicht', 'Weiche Farbfelder'],
+    ['waves', 'Wellen', 'Bildmotiv'],
+    ['lights', 'Lichter', 'Bildmotiv'],
+  ];
+  const isDark = () => ['mittel', 'dunkel'].includes(root.dataset.theme);
+  const current = () => { try { const v = localStorage.getItem(KEY); if (OPTIONS.some(o => o[0] === v)) return v; } catch {} return 'standard'; };
+  const apply = id => { root.dataset.wallpaper = id; };
+  function render() {
+    const box = document.getElementById('rb-wallpapers'); if (!box) return;
+    const active = current(), focused = box.contains(document.activeElement);
+    box.replaceChildren();
+    for (const [id, name, sub] of OPTIONS) {
+      const b = document.createElement('button'), prev = document.createElement('span'), t = document.createElement('b'), s = document.createElement('small');
+      b.type = 'button'; b.className = 'tile' + (id === active ? ' on2' : ''); b.setAttribute('aria-pressed', String(id === active)); b.dataset.wp = id;
+      prev.className = 'rb-wp-prev' + (id === 'standard' ? ' standard' : ''); prev.setAttribute('aria-hidden', 'true');
+      if (id !== 'standard') prev.style.setProperty('--rb-wp-prev', `var(--wp-bg-${id})`);
+      t.textContent = typeof name === 'function' ? name() : name; s.textContent = sub;
+      b.append(prev, t, s);
+      b.onclick = () => { try { localStorage.setItem(KEY, id); } catch {} apply(id); render(); box.querySelector('[aria-pressed=true]')?.focus({preventScroll: true}); };
+      box.append(b);
+    }
+    if (focused) box.querySelector('[aria-pressed=true]')?.focus({preventScroll: true});
+  }
+  apply(current());
+  const start = () => { render(); new MutationObserver(render).observe(root, {attributes: true, attributeFilter: ['data-theme']}); };
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start); else start();
+})();
+</script>
+<script id="rubrum-glass-optics">
+/* Rubrum · Glas-Optik: Kantenbrechung (nur wo gerendert) und Leuchten am Berührungspunkt. Reine Darstellung. */
+(() => {
+  const root = document.documentElement;
+  const BARS = 'header,#phone-nav';   // Reader bewusst ohne Glas
+  const SURFACES = '#m :is(.para,.skc,.lk-c,.kt,.tkc,.tmc,.rb-card,.rb-faq,.rb-learn-tools,.cal,.wd,.phone-section,.backup-picker):not(:is(.para,.skc,.lk-c,.kt,.tkc,.tmc,.rb-card,.rb-faq,.rb-learn-tools,.cal,.wd,.phone-section,.backup-picker) *),#sb';
+  const MAX_BACKDROP = 2400;   // sehr hohe Flächen ohne Hintergrundfilter (GPU-Speicher auf iOS)
+  // Chromium rendert SVG-Filter in backdrop-filter; WebKit (Safari/iOS) nicht → dort bleibt die CSS-Kantenoptik.
+  const blink = !!navigator.userAgentData?.brands?.some(b => /Chromium/.test(b.brand));
+  if (blink && 'ResizeObserver' in window) {
+    const NS = 'http://www.w3.org/2000/svg';
+    const host = document.createElementNS(NS, 'svg');
+    host.setAttribute('aria-hidden', 'true'); host.setAttribute('width', '0'); host.setAttribute('height', '0');
+    host.style.cssText = 'position:absolute;width:0;height:0;overflow:hidden;pointer-events:none';
+    const ids = new WeakMap(); let seq = 0;
+    // Verschiebungskarte in Pixeln: neutral (0.5) in der Fläche, zur Kante hin nach außen gekrümmt (Linse).
+    // R = waagrecht (linke/rechte Rundung), G = senkrecht (obere/untere Kante). Weicher, gekrümmter Abfall.
+    function mapURI(w, h) {
+      const bx = Math.min(28, Math.max(10, h * .5)), by = Math.min(16, Math.max(6, h * .32));
+      const fx = (a, b) => `<stop offset='${(a / w).toFixed(4)}' stop-color='rgb(${b},0,0)'/>`;
+      const fy = (a, b) => `<stop offset='${(a / h).toFixed(4)}' stop-color='rgb(0,${b},0)'/>`;
+      const curve = [[0, 255], [.25, 200], [.55, 160], [1, 128]];
+      const gx = [...curve.map(([t, v]) => fx(t * bx, v)), ...curve.reverse().map(([t, v]) => fx(w - t * bx, 256 - v))].join('');
+      curve.reverse();
+      const gy = [...curve.map(([t, v]) => fy(t * by, v)), ...curve.reverse().map(([t, v]) => fy(h - t * by, 256 - v))].join('');
+      curve.reverse();
+      const svg = `<svg xmlns='http://www.w3.org/2000/svg' width='${w}' height='${h}'><defs>` +
+        `<linearGradient id='x' x1='0' y1='0' x2='1' y2='0'>${gx}</linearGradient>` +
+        `<linearGradient id='y' x1='0' y1='0' x2='0' y2='1'>${gy}</linearGradient></defs>` +
+        `<rect width='${w}' height='${h}' fill='url(#x)'/><rect width='${w}' height='${h}' fill='url(#y)' style='mix-blend-mode:screen'/></svg>`;
+      return 'data:image/svg+xml,' + encodeURIComponent(svg);
+    }
+    function build(el) {
+      const w = Math.round(el.offsetWidth), h = Math.round(el.offsetHeight);
+      if (!w || !h) return;
+      let id = ids.get(el); if (!id) { id = 'rb-lgr-' + (++seq); ids.set(el, id); }
+      let f = host.querySelector('#' + id);
+      if (!f) { f = document.createElementNS(NS, 'filter'); f.id = id; host.append(f); }
+      if (f.dataset.size === w + 'x' + h) return;
+      f.dataset.size = w + 'x' + h;
+      const scale = Math.min(34, 10 + h * .3);       // größere Glaskörper brechen stärker (Apple: „more pronounced lensing“)
+      f.setAttribute('x', '0'); f.setAttribute('y', '0'); f.setAttribute('width', w); f.setAttribute('height', h);
+      f.setAttribute('filterUnits', 'userSpaceOnUse'); f.setAttribute('primitiveUnits', 'userSpaceOnUse');
+      f.setAttribute('color-interpolation-filters', 'sRGB');
+      f.innerHTML = `<feImage href="${mapURI(w, h)}" x="0" y="0" width="${w}" height="${h}" preserveAspectRatio="none" result="map"/>` +
+        `<feDisplacementMap in="SourceGraphic" in2="map" scale="${scale.toFixed(1)}" xChannelSelector="R" yChannelSelector="G"/>`;
+      el.style.setProperty('--lg-refract', `url(#${id})`);
+    }
+    window.__rbRefract = build;
+    // Aufräumen: Filter von Elementen entfernen, die nicht mehr im Dokument sind (sonst wachsen DOM und Speicher)
+    window.__rbRefractDrop = el => { const id = ids.get(el); if (id) { host.querySelector('#' + id)?.remove(); ids.delete(el); } };
+    const ro = new ResizeObserver(entries => { for (const e of entries) build(e.target); });
+    const seen = new WeakSet();
+    const scan = () => { for (const el of document.querySelectorAll(BARS)) if (!seen.has(el)) { seen.add(el); ro.observe(el); build(el); } };
+    const start = () => {
+      document.body.append(host); root.dataset.lgRefract = ''; scan();
+      new MutationObserver(scan).observe(document.body, {childList: true});   // nur oberste Ebene (Reader wird dort eingefügt)
+    };
+    if (document.body) start(); else document.addEventListener('DOMContentLoaded', start);
+  }
+  // Große Flächen: Hintergrundoptik nur bis MAX_BACKDROP Höhe; Brechung (Chromium) wie bei den Leisten.
+  if ('ResizeObserver' in window) {
+    const sro = new ResizeObserver(entries => { for (const {target: el} of entries) {
+      const on = el.offsetHeight > 0 && el.offsetHeight <= MAX_BACKDROP;
+      if (on) el.setAttribute('data-lg-backdrop', ''); else el.removeAttribute('data-lg-backdrop');
+      if (on && window.__rbRefract) window.__rbRefract(el);
+    } });
+    const tracked = new Set();
+    let pending = 0;
+    const scanSurfaces = () => {
+      pending = 0;
+      for (const el of tracked) if (!el.isConnected) { sro.unobserve(el); tracked.delete(el); window.__rbRefractDrop?.(el); }
+      for (const el of document.querySelectorAll(SURFACES)) if (!tracked.has(el)) { tracked.add(el); sro.observe(el); }
+    };
+    const watch = () => {
+      scanSurfaces();
+      new MutationObserver(recs => {
+        if (pending) return;
+        for (const r of recs) { const t = r.target; if (t.id === 'm' || t === document.body || t.closest?.('#m') && !t.closest('.txt')) { pending = requestAnimationFrame(scanSurfaces); return; } }
+      }).observe(document.body, {childList: true, subtree: true});
+    };
+    if (document.body) watch(); else document.addEventListener('DOMContentLoaded', watch);
+  }
+  // Leuchten startet unter dem Finger und breitet sich über die Leiste aus (Apple: „illuminates from within“).
+  let lit = null, timer = 0;
+  document.addEventListener('pointerdown', e => {
+    const bar = e.target.closest?.(BARS) || e.target.closest?.(SURFACES); if (!bar) return;
+    if (e.target.closest('#sv,.svc,.ink-overlay,[data-law-key],.cal-g')) return;   // nie auf Lese-/Schreibflächen selbst
+    const r = bar.getBoundingClientRect();
+    bar.style.setProperty('--lg-px', ((e.clientX - r.left) / r.width * 100).toFixed(1) + '%');
+    bar.style.setProperty('--lg-py', ((e.clientY - r.top) / r.height * 100).toFixed(1) + '%');
+    bar.style.setProperty('--lg-lit', '1'); lit = bar; clearTimeout(timer);
+  }, {capture: true, passive: true});
+  const release = () => { if (!lit) return; const bar = lit; lit = null; timer = setTimeout(() => bar.style.setProperty('--lg-lit', '0'), 140); };
+  document.addEventListener('pointerup', release, {capture: true, passive: true});
+  document.addEventListener('pointercancel', release, {capture: true, passive: true});
+})();
 </script></body></html>
